@@ -1,1016 +1,1025 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GMRJ Super Admin System</title>
-    <style>
-        /* =========================================
-           CORE VARIABLES & RESET
-           ========================================= */
-        :root {
-            /* Super Admin Theme (Dark Navy & Gold/Purple Accent) */
-            --color-primary: #1e293b;       /* Slate 800 */
-            --color-primary-light: #334155; /* Slate 700 */
-            --color-accent: #6366f1;       /* Indigo 500 */
-            --color-accent-hover: #4f46e5; /* Indigo 600 */
-            --color-bg: #f8fafc;           /* Slate 50 */
-            --color-surface: #ffffff;
-            --color-text: #0f172a;
-            --color-text-light: #64748b;
-            --color-border: #e2e8f0;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-error: #ef4444;
-            
-            --spacing-4: 4px;
-            --spacing-8: 8px;
-            --spacing-16: 16px;
-            --spacing-24: 24px;
-            --radius: 8px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMRJ Super Admin System - Global ID Based</title>
+<style>
+/* =========================================
+CORE VARIABLES & RESET
+========================================= */
+:root {
+--color-primary: #1e293b;
+--color-primary-light: #334155;
+--color-accent: #6366f1;
+--color-accent-hover: #4f46e5;
+--color-bg: #f8fafc;
+--color-surface: #ffffff;
+--color-text: #0f172a;
+--color-text-light: #64748b;
+--color-border: #e2e8f0;
+--color-success: #10b981;
+--color-warning: #f59e0b;
+--color-error: #ef4444;
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+--spacing-4: 4px;
+--spacing-8: 8px;
+--spacing-16: 16px;
+--spacing-24: 24px;
+--radius: 8px;
+--shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
 
-        body {
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
 
-        /* =========================================
-           LOGIN SCREEN
-           ========================================= */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            display: flex; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .login-box {
-            background: white; padding: 40px; border-radius: 12px;
-            width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .login-box h2 { color: #1e293b; margin-bottom: 24px; font-size: 24px; font-weight: 800; }
-        .input-group { margin-bottom: 16px; text-align: left; }
-        .input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #64748b; }
-        .input-group input {
-            width: 100%; padding: 12px; border: 1px solid #cbd5e1;
-            border-radius: 6px; font-size: 14px; transition: border 0.2s;
-        }
-        .input-group input:focus { outline: none; border-color: var(--color-accent); }
-        .btn-login {
-            width: 100%; padding: 12px; background: var(--color-accent); color: white;
-            border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 10px;
-            transition: background 0.2s;
-        }
-        .btn-login:hover { background: var(--color-accent-hover); }
+body {
+background-color: var(--color-bg);
+color: var(--color-text);
+height: 100vh;
+display: flex;
+overflow: hidden;
+}
 
-        /* =========================================
-           LAYOUT (SIDEBAR & MAIN)
-           ========================================= */
-        .sidebar {
-            width: 280px; background: var(--color-primary); color: white;
-            display: flex; flex-direction: column; border-right: 1px solid #334155;
-        }
-        .sidebar-header {
-            padding: 24px; border-bottom: 1px solid #334155;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .logo-circle {
-            width: 40px; height: 40px; background: var(--color-accent);
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 18px;
-        }
-        .sidebar-title { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
-        
-        .nav-menu { list-style: none; padding: 20px 16px; flex: 1; overflow-y: auto; }
-        .nav-item { margin-bottom: 4px; }
-        .nav-btn {
-            width: 100%; text-align: left; padding: 12px 16px;
-            background: transparent; border: none; color: #94a3b8;
-            cursor: pointer; border-radius: 6px; font-size: 14px; font-weight: 500;
-            display: flex; align-items: center; gap: 10px; transition: all 0.2s;
-        }
-        .nav-btn:hover { background: rgba(255,255,255,0.05); color: white; }
-        .nav-btn.active { background: var(--color-accent); color: white; font-weight: 600; }
-        
-        .sidebar-footer {
-            padding: 16px; border-top: 1px solid #334155; font-size: 12px; color: #64748b;
-            text-align: center;
-        }
+/* LOGIN SCREEN */
+#login-overlay {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+display: flex; justify-content: center; align-items: center; z-index: 9999;
+}
+.login-box {
+background: white; padding: 40px; border-radius: 12px;
+width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+text-align: center;
+}
+.login-box h2 { color: #1e293b; margin-bottom: 24px; font-size: 24px; font-weight: 800; }
+.input-group { margin-bottom: 16px; text-align: left; }
+.input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #64748b; }
+.input-group input {
+width: 100%; padding: 12px; border: 1px solid #cbd5e1;
+border-radius: 6px; font-size: 14px; transition: border 0.2s;
+}
+.input-group input:focus { outline: none; border-color: var(--color-accent); }
+.btn-login {
+width: 100%; padding: 12px; background: var(--color-accent); color: white;
+border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 10px;
+transition: background 0.2s;
+}
+.btn-login:hover { background: var(--color-accent-hover); }
 
-        .main-content {
-            flex: 1; display: flex; flex-direction: column; overflow: hidden;
-            background: var(--color-bg);
-        }
+/* LAYOUT */
+.sidebar {
+width: 280px; background: var(--color-primary); color: white;
+display: flex; flex-direction: column; border-right: 1px solid #334155;
+}
+.sidebar-header {
+padding: 24px; border-bottom: 1px solid #334155;
+display: flex; align-items: center; gap: 12px;
+}
+.logo-circle {
+width: 40px; height: 40px; background: var(--color-accent);
+border-radius: 8px; display: flex; align-items: center; justify-content: center;
+font-weight: 800; font-size: 18px;
+}
+.sidebar-title { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+.nav-menu { list-style: none; padding: 20px 16px; flex: 1; overflow-y: auto; }
+.nav-item { margin-bottom: 4px; }
+.nav-btn {
+width: 100%; text-align: left; padding: 12px 16px;
+background: transparent; border: none; color: #94a3b8;
+cursor: pointer; border-radius: 6px; font-size: 14px; font-weight: 500;
+display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.05); color: white; }
+.nav-btn.active { background: var(--color-accent); color: white; font-weight: 600; }
+.sidebar-footer {
+padding: 16px; border-top: 1px solid #334155; font-size: 12px; color: #64748b; text-align: center;
+}
+.main-content {
+flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--color-bg);
+}
+.top-bar {
+height: 64px; background: white; border-bottom: 1px solid var(--color-border);
+display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+}
+.current-context { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; color: var(--color-text-light); }
+.context-selector { padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); font-size: 14px; min-width: 200px; }
+.content-area { flex: 1; overflow-y: auto; padding: 24px; }
 
-        .top-bar {
-            height: 64px; background: white; border-bottom: 1px solid var(--color-border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px;
-        }
-        .current-context {
-            display: flex; align-items: center; gap: 12px;
-            font-size: 14px; font-weight: 600; color: var(--color-text-light);
-        }
-        .context-badge {
-            background: #eff6ff; color: #3b82f6; padding: 4px 12px;
-            border-radius: 20px; border: 1px solid #bfdbfe; font-weight: 600;
-        }
+/* COMPONENTS */
+.grid-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+.stat-card { background: white; padding: 24px; border-radius: 8px; border: 1px solid var(--color-border); box-shadow: var(--shadow); }
+.stat-label { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-value { font-size: 28px; font-weight: 800; color: var(--color-primary); margin-top: 8px; }
+.card { background: white; border-radius: 8px; border: 1px solid var(--color-border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px; }
+.card-header { padding: 16px 24px; border-bottom: 1px solid var(--color-border); background: #f8fafc; display: flex; justify-content: space-between; align-items: center; }
+.card-title { font-size: 16px; font-weight: 700; color: var(--color-primary); }
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: #f1f5f9; text-align: left; padding: 12px 16px; font-weight: 600; color: #475569; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); color: #334155; }
+tr:hover { background: #f8fafc; }
+.btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: var(--color-accent); color: white; }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-danger { background: #fee2e2; color: var(--color-error); }
+.btn-danger:hover { background: #fecaca; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
 
-        .content-area {
-            flex: 1; overflow-y: auto; padding: 24px;
-        }
+/* Modals */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+.modal.active { display: flex; }
+.modal-box { background: white; width: 90%; max-width: 500px; border-radius: 8px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--color-primary); }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #475569; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
 
-        /* =========================================
-           COMPONENTS (CARDS, TABLES, FORMS)
-           ========================================= */
-        .grid-dashboard {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px; margin-bottom: 32px;
-        }
-        .stat-card {
-            background: white; padding: 24px; border-radius: 8px;
-            border: 1px solid var(--color-border); box-shadow: var(--shadow);
-        }
-        .stat-label { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-value { font-size: 28px; font-weight: 800; color: var(--color-primary); margin-top: 8px; }
+/* Utilities */
+.hidden { display: none !important; }
+.badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.badge-green { background: #dcfce7; color: #166534; }
+.badge-red { background: #fee2e2; color: #991b1b; }
+.badge-blue { background: #dbeafe; color: #1e40af; }
+.empty-state { text-align: center; padding: 48px; color: #94a3b8; }
+.spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--color-accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .card {
-            background: white; border-radius: 8px; border: 1px solid var(--color-border);
-            box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px;
-        }
-        .card-header {
-            padding: 16px 24px; border-bottom: 1px solid var(--color-border);
-            background: #f8fafc; display: flex; justify-content: space-between; align-items: center;
-        }
-        .card-title { font-size: 16px; font-weight: 700; color: var(--color-primary); }
-        
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th { 
-            background: #f1f5f9; text-align: left; padding: 12px 16px; 
-            font-weight: 600; color: #475569; border-bottom: 1px solid var(--color-border); white-space: nowrap;
-        }
-        td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); color: #334155; }
-        tr:hover { background: #f8fafc; }
-        tr:last-child td { border-bottom: none; }
+/* TREE & RANKING */
+.tree-container { padding: 20px; overflow: auto; background: #ffffff; border-radius: 8px; }
+.tree ul { padding-top: 20px; position: relative; transition: all 0.5s; padding-left: 20px; }
+.tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 20px 5px 0 5px; transition: all 0.5s; }
+.tree li::before, .tree li::after { content: ''; position: absolute; top: 0; right: 50%; border-top: 1px solid #ccc; width: 50%; height: 20px; }
+.tree li::after { right: auto; left: 50%; border-left: 1px solid #ccc; }
+.tree li:only-child::after, .tree li:only-child::before { display: none; }
+.tree li:only-child { padding-top: 0; }
+.tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
+.tree li:last-child::before { border-right: 1px solid #ccc; border-radius: 0 5px 0 0; }
+.tree li:first-child::after { border-radius: 5px 0 0 0; }
+.tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 1px solid #ccc; width: 0; height: 20px; }
+.tree-node { border: 1px solid #cbd5e1; padding: 10px 15px; text-decoration: none; color: #334155; font-family: arial, verdana, tahoma; font-size: 12px; display: inline-block; border-radius: 5px; background: white; transition: all 0.3s; min-width: 120px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.tree-node:hover { border-color: var(--color-accent); background: #eff6ff; transform: scale(1.05); z-index: 10; position: relative;}
+.tree-node strong { display: block; font-size: 14px; color: #0f172a; margin-bottom: 2px; }
+.tree-node small { color: #64748b; font-size: 11px; }
 
-        .btn {
-            padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px;
-            font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-        }
-        .btn-primary { background: var(--color-accent); color: white; }
-        .btn-primary:hover { background: var(--color-accent-hover); }
-        .btn-danger { background: #fee2e2; color: var(--color-error); }
-        .btn-danger:hover { background: #fecaca; }
-        .btn-sm { padding: 4px 10px; font-size: 12px; }
+.rank-badge { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; font-size: 12px; margin-right: 8px; }
+.rank-1 { background: #fbbf24; color: white; }
+.rank-2 { background: #94a3b8; color: white; }
+.rank-3 { background: #b45309; color: white; }
+.rank-other { background: #e2e8f0; color: #475569; }
 
-        .context-selector { padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); font-size: 14px; min-width: 200px; }
-
-        /* Modals */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;
-        }
-        .modal.active { display: flex; }
-        .modal-box {
-            background: white; width: 90%; max-width: 500px; border-radius: 8px;
-            padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-        }
-        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--color-primary); }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #475569; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;
-        }
-
-        /* Utilities */
-        .hidden { display: none !important; }
-        .badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .badge-green { background: #dcfce7; color: #166534; }
-        .badge-red { background: #fee2e2; color: #991b1b; }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center; padding: 48px; color: #94a3b8;
-        }
-        .empty-icon { font-size: 40px; margin-bottom: 16px; display: block; opacity: 0.5; }
-    </style>
+</style>
 </head>
 <body>
 
-    <!-- LOGIN OVERLAY -->
-    <div id="login-overlay">
-        <div class="login-box">
-            <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
-            <h2>Super Admin Login</h2>
-            <form onsubmit="handleAdminLogin(event)">
-                <div class="input-group">
-                    <label>Super Username</label>
-                    <input type="text" id="adminUser" placeholder="admin" required>
-                </div>
-                <div class="input-group">
-                    <label>Super Password</label>
-                    <input type="password" id="adminPass" placeholder="••••••" required>
-                </div>
-                <button type="submit" class="btn-login">Masuk Dashboard</button>
-            </form>
-            <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">
-                Gunakan: <strong>admin</strong> / <strong>master</strong>
-            </p>
-        </div>
-    </div>
-
-    <!-- APP STRUCTURE -->
-    <div class="sidebar hidden" id="mainSidebar">
-        <div class="sidebar-header">
-            <div class="logo-circle">SA</div>
-            <div class="sidebar-title">GMRJ Admin</div>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <button class="nav-btn active" onclick="switchTab('dashboard')">
-                    📊 Dashboard Global
-                </button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-btn" onclick="switchTab('users')">
-                    👥 Manajemen Stokis (User)
-                </button>
-            </li>
-            <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">
-                Editor Data Stokis
-            </li>
-            <li class="nav-item">
-                <button class="nav-btn" onclick="switchTab('profile')">👤 Profil Stokis</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-btn" onclick="switchTab('products')">📦 Produk</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-btn" onclick="switchTab('members')">👥 Member Stokis</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-btn" onclick="switchTab('transactions')">💰 Transaksi</button>
-            </li>
-        </ul>
-        <div class="sidebar-footer">
-            v1.1.0 Super Admin<br>Realtime Sync + Migration
-        </div>
-    </div>
-
-    <div class="main-content hidden" id="mainContent">
-        <!-- TOP BAR -->
-        <div class="top-bar">
-            <div class="current-context">
-                Target Stokis:
-                <select id="stokisSelector" class="context-selector" onchange="loadSelectedStokis(this.value)">
-                    <option value="">-- Pilih Stokis --</option>
-                </select>
-                <span id="stokisStatus" class="badge badge-green hidden">Live Connected</span>
-            </div>
-            <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
-        </div>
-
-        <!-- DYNAMIC CONTENT -->
-        <div class="content-area" id="contentArea">
-            <!-- Will be populated by JS -->
-        </div>
-    </div>
-
-    <!-- GENERIC MODAL -->
-    <div id="genericModal" class="modal">
-        <div class="modal-box">
-            <h3 class="modal-title" id="modalTitle">Judul Modal</h3>
-            <div id="modalBody">
-                <!-- Form content goes here -->
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
-                <button class="btn" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
-                <button class="btn btn-primary" id="modalActionBtn">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MIGRASI DATA MODAL (BARU) -->
-    <div id="migrateModal" class="modal">
-        <div class="modal-box">
-            <h3 class="modal-title">📋 Migrasi / Copy Data Stokis</h3>
-            <div class="form-group">
-                <label>Sumber Data (Dari)</label>
-                <select id="migrateSource"></select>
-            </div>
-            <div class="form-group">
-                <label>Tujuan Data (Ke)</label>
-                <select id="migrateDest"></select>
-            </div>
-            <div class="form-group">
-                <label>Opsi Penimpaan</label>
-                <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
-                    <input type="checkbox" id="migrateOverwrite" style="width: 20px; height: 20px;">
-                    <span style="font-size: 14px; color: #64748b;">Timpa data lama di stokis Tujuan (Hilangkan data asli)</span>
-                </div>
-                <small style="color: #ef4444; display: block; margin-top: 5px;">
-                    ⚠️ Jika dicentang, data produk/member/transaksi lama di Tujuan akan HILANG diganti data Sumber.
-                </small>
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
-                <button class="btn" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
-                <button class="btn btn-primary" onclick="executeMigrate()">Mulai Migrasi</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FIREBASE & LOGIC -->
-    <script type="module">
-      import { 
-        initializeApp 
-      } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-      import { 
-        getFirestore, 
-        collection, 
-        doc, 
-        getDoc,
-        getDocs,
-        setDoc,
-        updateDoc,
-        deleteDoc,
-        onSnapshot,
-        query,
-        where
-      } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
-      // --- KONFIGURASI FIREBASE (SAMA DENGAN APLIKASI STOKIS) ---
-      const firebaseConfig = {
-        apiKey: "AIzaSyA7i0bGhjKHZ788Ir7xTDFM0LXAevnWKsI",
-        authDomain: "sistem-stokis-gmrj.firebaseapp.com",
-        projectId: "sistem-stokis-gmrj",
-        storageBucket: "sistem-stokis-gmrj.firebasestorage.app",
-        messagingSenderId: "288883517168",
-        appId: "1:288883517168:web:d5cdd864aa944205df8435",
-        measurementId: "G-12KELDXJ1J"
-      };
-
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const COLLECTION_STOKIS = 'stokisDatas';
-      const COLLECTION_USERS = 'stokis_users'; // Koleksi khusus untuk menyimpan user/pass
-
-      // --- STATE MANAGEMENT ---
-      let currentStokisId = null;
-      let currentDataUnsubscribe = null;
-      let stokisCache = {}; // Cache data agar UI cepat
-
-      // --- AUTH ---
-      window.handleAdminLogin = (e) => {
-        e.preventDefault();
-        const u = document.getElementById('adminUser').value.trim();
-        const p = document.getElementById('adminPass').value.trim();
-
-        // Simple Hardcoded Check for Super Admin
-        if (u === 'admin' && p === 'master') {
-            document.getElementById('login-overlay').classList.add('hidden');
-            document.getElementById('mainSidebar').classList.remove('hidden');
-            document.getElementById('mainContent').classList.remove('hidden');
-            initDashboard();
-        } else {
-            alert('Akses Ditolak! Gunakan: admin / master');
-        }
-      };
-
-      window.logout = () => {
-        location.reload();
-      };
-
-      // --- CORE FUNCTIONS ---
-
-      async function initDashboard() {
-        await loadStokisList();
-        renderDashboardGlobal();
-      }
-
-      // 1. Fetch semua list stokis dari collection 'stokisDatas'
-      async function loadStokisList() {
-        const selector = document.getElementById('stokisSelector');
-        selector.innerHTML = '<option value="">-- Pilih Stokis untuk Edit --</option>';
-        
-        try {
-            const querySnapshot = await getDocs(collection(db, COLLECTION_STOKIS));
-            querySnapshot.forEach((doc) => {
-                const username = doc.id; // Document ID adalah username
-                const data = doc.data();
-                const nama = data.profile?.namaStokis || username;
-                
-                const option = document.createElement('option');
-                option.value = username;
-                option.textContent = `${username} (${nama})`;
-                selector.appendChild(option);
-            });
-        } catch (error) {
-            console.error("Error fetching stokis list:", error);
-            alert("Gagal memuat daftar Stokis. Cek koneksi Firestore.");
-        }
-      }
-
-      // 2. Load data spesifik stokis (Realtime)
-      window.loadSelectedStokis = (username) => {
-        // Unsubscribe listener lama jika ada
-        if (currentDataUnsubscribe) {
-            currentDataUnsubscribe();
-            currentDataUnsubscribe = null;
-        }
-
-        if (!username) {
-            currentStokisId = null;
-            document.getElementById('contentArea').innerHTML = `
-                <div class="empty-state">
-                    <span class="empty-icon">👈</span>
-                    <h3>Silakan Pilih Stokis</h3>
-                    <p>Pilih nama Stokis di menu atas untuk mengelola data mereka.</p>
-                </div>
-            `;
-            return;
-        }
-
-        currentStokisId = username;
-        const docRef = doc(db, COLLECTION_STOKIS, username);
-
-        // Realtime Listener
-        currentDataUnsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                stokisCache[currentStokisId] = docSnap.data();
-                document.getElementById('stokisStatus').classList.remove('hidden');
-                document.getElementById('stokisStatus').className = 'badge badge-green';
-                
-                // Re-render tab yang sedang aktif
-                const activeTab = document.querySelector('.nav-btn.active');
-                if (activeTab) {
-                    const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)[1];
-                    if (tabName !== 'dashboard' && tabName !== 'users') {
-                        renderTabContent(tabName);
-                    }
-                }
-            } else {
-                document.getElementById('stokisStatus').textContent = "Data Kosong";
-                document.getElementById('stokisStatus').className = 'badge badge-red';
-            }
-        }, (error) => {
-            console.error("Realtime error:", error);
-            alert("Error realtime: " + error.message);
-        });
-      };
-
-      // --- RENDER LOGIC ---
-
-      window.switchTab = (tabName) => {
-        // Update sidebar active state
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        const clickedBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabName));
-        if(clickedBtn) clickedBtn.classList.add('active');
-
-        if (tabName === 'dashboard' || tabName === 'users') {
-            // Global tabs don't need specific stokis selected
-            renderDashboardGlobal();
-          if(tabName === 'users') renderUsersManagement();
-        } else {
-          if (!currentStokisId) {
-            document.getElementById('contentArea').innerHTML = `
-              <div class="empty-state">
-                <span class="empty-icon">⚠️</span>
-                <h3>Stokis Belum Dipilih</h3>
-                <p>Silakan pilih Stokis di menu dropdown atas sebelum mengedit ${tabName}.</p>
-              </div>
-            `;
-            return;
-          }
-          renderTabContent(tabName);
-        }
-      };
-
-      function renderDashboardGlobal() {
-        const content = document.getElementById('contentArea');
-        content.innerHTML = `
-            <h2 style="margin-bottom: 24px;">Dashboard Global</h2>
-            <div class="grid-dashboard">
-                <div class="stat-card">
-                    <div class="stat-label">Total Stokis Terdaftar</div>
-                    <div class="stat-value" id="global-count-stokis">...</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Status Sistem</div>
-                    <div class="stat-value" style="color: var(--color-success); font-size: 20px; margin-top: 12px;">🟢 Online</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Database</div>
-                    <div class="stat-value" style="font-size: 16px; margin-top: 14px;">Firestore (Realtime)</div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Log Aktivitas Sistem</span>
-                </div>
-                <div style="padding: 24px;">
-                    <p style="color: #64748b;">Selamat datang di Super Admin. Gunakan sidebar untuk navigasi.</p>
-                    <ul style="margin-top: 16px; padding-left: 20px; color: #334155; line-height: 1.8;">
-                        <li><strong>Manajemen Stokis:</strong> Untuk melihat dan mengedit Username/Password user stokis.</li>
-                        <li><strong>Editor Data:</strong> Pilih stokis di pojok kanan atas, lalu edit Produk/Member mereka secara langsung.</li>
-                        <li><strong>Migrasi:</strong> Gunakan tombol "Copy Data" di tabel user untuk memindahkan data akun lama ke akun baru.</li>
-                    </ul>
-                </div>
-            </div>
-        `;
-
-        // Count stokis
-        getDocs(collection(db, COLLECTION_STOKIS)).then(snap => {
-            const counterElement = document.getElementById('global-count-stokis');
-            if (counterElement) {
-                counterElement.textContent = snap.size;
-            }
-        });
-      }
-
-      // --- USER MANAGEMENT (CREDENTIALS) + MIGRASI ---
-      async function renderUsersManagement() {
-        const content = document.getElementById('contentArea');
-        content.innerHTML = `
-            <h2 style="margin-bottom: 24px;">Manajemen Akun (Username & Password)</h2>
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Daftar Pengguna Stokis</span>
-                    <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">+ Buat User Baru</button>
-                </div>
-                <div class="table-container">
-                    <table id="usersTable">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Password (Firestore)</th>
-                                <th>Nama Stokis</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody><tr><td colspan="4" style="text-align:center;">Loading...</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-
-        // Kita gabungkan data dari 'stokisDatas' (profil) dan 'stokis_users' (auth)
-        const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-        const tbody = document.querySelector('#usersTable tbody');
-        tbody.innerHTML = '';
-
-        if (stokisSnap.empty) {
-            tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Belum ada data stokis.</td></tr>`;
-            return;
-        }
-
-        for (const doc of stokisSnap.docs) {
-            const username = doc.id;
-            const data = doc.data();
-            const namaStokis = data.profile?.namaStokis || 'N/A';
-
-            // Cek credentials di collection khusus users (jika ada), atau gunakan default
-            let passDisplay = '<span style="color:#cbd5e1; font-style:italic;">Belum diset di Firestore</span>';
-            
-            try {
-                const userDoc = await getDoc(doc(db, COLLECTION_USERS, username));
-                if (userDoc.exists()) {
-                    passDisplay = `<strong>${userDoc.data().password}</strong> <span style="font-size:10px; color:#64748b;">(Firestore)</span>`;
-                }
-            } catch(e) {}
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${username}</strong></td>
-                <td>${passDisplay}</td>
-                <td>${namaStokis}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary" onclick="openEditUserModal('${username}')">Edit Password</button>
-                    <button class="btn btn-sm btn-primary" style="background: var(--color-success);" onclick="openMigrateModal('${username}')">📋 Copy Data</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteStokisData('${username}')">Hapus Data</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        }
-      }
-
-      window.openEditUserModal = (username) => {
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
-        const actionBtn = document.getElementById('modalActionBtn');
-
-        modalTitle.textContent = `Edit Password: ${username}`;
-        modalBody.innerHTML = `
-            <div class="form-group">
-                <label>Password Baru (Disimpan di Firestore)</label>
-                <input type="text" id="newUserPass" placeholder="Masukkan password baru">
-                <small style="color: #64748b;">Password ini akan digunakan jika aplikasi Stokis diupdate untuk mengecek Firestore.</small>
-            </div>
-        `;
-        
-        actionBtn.onclick = () => {
-            const newPass = document.getElementById('newUserPass').value.trim();
-            if (!newPass) return alert('Password tidak boleh kosong');
-            
-            // Save to 'stokis_users' collection
-            setDoc(doc(db, COLLECTION_USERS, username), {
-                username: username,
-                password: newPass,
-                updatedAt: new Date().toISOString()
-            }).then(() => {
-                alert('Password berhasil diperbarui di Firestore!');
-                closeModal();
-                renderUsersManagement();
-            }).catch(e => alert('Error: ' + e.message));
-        };
-        
-        document.getElementById('genericModal').classList.add('active');
-      };
-
-      window.deleteStokisData = async (username) => {
-        if(!confirm(`Yakin hapus SEMUA data milik ${username}? Tidak bisa dikembalikan.`)) return;
-        
-        try {
-            await deleteDoc(doc(db, COLLECTION_STOKIS, username));
-            await deleteDoc(doc(db, COLLECTION_USERS, username));
-            alert('Data dihapus.');
-            renderUsersManagement();
-            loadStokisList(); // refresh dropdown
-        } catch(e) {
-            alert('Gagal menghapus: ' + e.message);
-        }
-      };
-
-      // --- FITUR MIGRASI DATA (BARU) ---
-      window.openMigrateModal = (defaultSource) => {
-        document.getElementById('migrateModal').classList.add('active');
-        
-        const sourceSel = document.getElementById('migrateSource');
-        const destSel = document.getElementById('migrateDest');
-
-        // Populate dropdowns with current stokis list
-        sourceSel.innerHTML = '<option value="">-- Pilih Sumber --</option>';
-        destSel.innerHTML = '<option value="">-- Pilih Tujuan --</option>';
-
-        // Get list from DOM options (optimization) or re-fetch
-        const options = document.querySelectorAll('#stokisSelector option');
-        options.forEach(opt => {
-            if (opt.value) {
-                sourceSel.innerHTML += `<option value="${opt.value}" ${opt.value === defaultSource ? 'selected' : ''}>${opt.textContent}</option>`;
-                destSel.innerHTML += `<option value="${opt.value}">${opt.textContent}</option>`;
-            }
-        });
-      };
-
-      window.closeMigrateModal = () => {
-        document.getElementById('migrateModal').classList.remove('active');
-      };
-
-      window.executeMigrate = async () => {
-        const sourceId = document.getElementById('migrateSource').value;
-        const destId = document.getElementById('migrateDest').value;
-        const overwrite = document.getElementById('migrateOverwrite').checked;
-
-        if (!sourceId || !destId) return alert("Pilih Sumber dan Tujuan!");
-        if (sourceId === destId) return alert("Sumber dan Tujuan tidak boleh sama!");
-
-        try {
-            // 1. Fetch Source Data
-            const sourceSnap = await getDoc(doc(db, COLLECTION_STOKIS, sourceId));
-            if (!sourceSnap.exists()) return alert("Data Sumber tidak ditemukan.");
-            const sourceData = sourceSnap.data();
-
-            // 2. Fetch Dest Data (to decide merge or overwrite)
-            const destSnap = await getDoc(doc(db, COLLECTION_STOKIS, destId));
-            
-            let newData = {};
-
-            if (overwrite || !destSnap.exists()) {
-                // CASE OVERWRITE: Source replaces Dest completely
-                console.log("Migrating: Overwrite mode");
-                newData = sourceData;
-            } else {
-                // CASE MERGE: Source appended to Dest
-                console.log("Migrating: Merge mode");
-                const destData = destSnap.data();
-                
-                newData = {
-                    profile: { ...destData.profile, ...sourceData.profile }, // Profil usually updated by source
-                    products: [...(destData.products || []), ...(sourceData.products || [])],
-                    members: [...(destData.members || []), ...(sourceData.members || [])],
-                    transactions: [...(destData.transactions || []), ...(sourceData.transactions || [])]
-                };
-            }
-
-            // 3. Write to Dest
-            await setDoc(doc(db, COLLECTION_STOKIS, destId), newData, { merge: true });
-
-            alert(`Berhasil migrasi data dari ${sourceId} ke ${destId}!`);
-            closeMigrateModal();
-
-            // Refresh UI if viewing the destination
-            if (currentStokisId === destId) {
-                // Realtime listener will catch it, but force reload just in case
-                loadSelectedStokis(destId);
-            }
-
-        } catch (error) {
-            console.error(error);
-            alert("Gagal migrasi: " + error.message);
-        }
-      };
-
-      // --- EDITOR TABS (Reuse Logic from Stokis App but adapted) ---
-
-      function renderTabContent(tabName) {
-        const data = stokisCache[currentStokisId];
-        if (!data) return;
-
-        const content = document.getElementById('contentArea');
-        let html = '';
-
-        if (tabName === 'profile') {
-            const p = data.profile || {};
-            html = `
-                <h2>Profil Stokis: ${currentStokisId}</h2>
-                <div class="card" style="margin-top:16px;">
-                    <div class="card-header"><span class="card-title">Edit Data Identitas</span></div>
-                    <div style="padding:24px;">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Nama Koordinat</label>
-                                <input type="text" id="p_koord" value="${p.namaKoordinat || ''}">
-                            </div>
-                            <div class="form-group">
-                                <label>Kode Koordinat</label>
-                                <input type="text" id="p_kode" value="${p.kodeKoordinat || ''}" style="text-transform:uppercase">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Nama Stokis</label>
-                            <input type="text" id="p_nama" value="${p.namaStokis || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Alamat</label>
-                            <textarea id="p_alamat" rows="3">${p.alamatStokis || ''}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>No WA Admin</label>
-                            <input type="text" id="p_wa" value="${p.waNumber || ''}">
-                        </div>
-                        <button class="btn btn-primary" onclick="saveProfile()">Simpan Perubahan Profil</button>
-                    </div>
-                </div>
-            `;
-        } else if (tabName === 'products') {
-            html = `<h2>Produk Milik: ${currentStokisId}</h2>
-                    <button class="btn btn-primary" style="margin: 10px 0;" onclick="addProductModal()">+ Tambah Produk</button>
-                    <div class="card">
-                        <div class="table-container">
-                            <table>
-                                <thead><tr><th>Nama Produk</th><th>Poin</th><th>Stok (Beli)</th><th>Aksi</th></tr></thead>
-                                <tbody>
-                                    ${(data.products || []).map((prod, idx) => `
-                                        <tr>
-                                            <td>${prod.name}</td>
-                                            <td>${prod.point}</td>
-                                            <td>${prod.pembelian}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary" onclick="editProduct(${idx})">Edit</button>
-                                                <button class="btn btn-sm btn-danger" onclick="deleteItem('products', ${idx})">Hapus</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>`;
-        } else if (tabName === 'members') {
-            html = `<h2>Member Milik: ${currentStokisId}</h2>
-                    <button class="btn btn-primary" style="margin: 10px 0;" onclick="addMemberModal()">+ Tambah Member</button>
-                    <div class="card">
-                        <div class="table-container">
-                            <table>
-                                <thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Total Poin</th><th>Aksi</th></tr></thead>
-                                <tbody>
-                                    ${(data.members || []).map((m, idx) => `
-                                        <tr>
-                                            <td>${m.id}</td>
-                                            <td>${m.name}</td>
-                                            <td>${m.upline || '-'}</td>
-                                            <td>${m.totalPoints ? m.totalPoints.toFixed(2) : 0}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary" onclick="editMember(${idx})">Edit</button>
-                                                <button class="btn btn-sm btn-danger" onclick="deleteItem('members', ${idx})">Hapus</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>`;
-        } else if (tabName === 'transactions') {
-            html = `<h2>Riwayat Transaksi: ${currentStokisId}</h2>
-                    <div class="card">
-                        <div class="table-container">
-                            <table>
-                                <thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead>
-                                <tbody>
-                                    ${(data.transactions || []).map((t, idx) => `
-                                        <tr>
-                                            <td>${t.date}</td>
-                                            <td>${t.code}</td>
-                                            <td>${t.memberId}</td>
-                                            <td>${t.productCode}</td>
-                                            <td>${t.qty}</td>
-                                            <td>${t.totalPoints}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-danger" onclick="deleteItem('transactions', ${idx})">Batal</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>`;
-        }
-
-        content.innerHTML = html;
-      }
-
-      // --- CRUD ACTIONS ---
-
-      window.saveProfile = async () => {
-          if(!confirm('Simpan profil stokis ini?')) return;
-          const newData = {
-              ...stokisCache[currentStokisId],
-              profile: {
-                  ...stokisCache[currentStokisId].profile,
-                  namaKoordinat: document.getElementById('p_koord').value,
-                  kodeKoordinat: document.getElementById('p_kode').value,
-                  namaStokis: document.getElementById('p_nama').value,
-                  alamatStokis: document.getElementById('p_alamat').value,
-                  waNumber: document.getElementById('p_wa').value
-              }
-          };
-          await saveData(newData);
-      };
-
-      window.deleteItem = async (collection, index) => {
-          if(!confirm('Hapus item ini?')) return;
-          const data = stokisCache[currentStokisId];
-          data[collection].splice(index, 1);
-          await saveData(data);
-      };
-
-      window.addProductModal = () => {
-          showModalForm('Tambah Produk', `
-              <input id="edit_name" placeholder="Nama Produk" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="edit_point" type="number" placeholder="Poin" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="edit_pembelian" type="number" placeholder="Stok Awal" class="form-control" style="width:100%; padding:8px;">
-          `, async () => {
-              const name = document.getElementById('edit_name').value;
-              const point = parseFloat(document.getElementById('edit_point').value);
-              const pembelian = parseInt(document.getElementById('edit_pembelian').value);
-              if(!name || isNaN(point)) return alert('Data tidak lengkap');
-
-              const data = stokisCache[currentStokisId];
-              data.products.push({
-                  code: 'PROD_'+Date.now(),
-                  name, point, pembelian
-              });
-              await saveData(data);
-          });
-      };
-
-      window.editProduct = (index) => {
-          const prod = stokisCache[currentStokisId].products[index];
-          showModalForm('Edit Produk', `
-              <input id="edit_name" value="${prod.name}" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="edit_point" type="number" value="${prod.point}" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="edit_pembelian" type="number" value="${prod.pembelian}" class="form-control" style="width:100%; padding:8px;">
-          `, async () => {
-              prod.name = document.getElementById('edit_name').value;
-              prod.point = parseFloat(document.getElementById('edit_point').value);
-              prod.pembelian = parseInt(document.getElementById('edit_pembelian').value);
-              await saveData(stokisCache[currentStokisId]);
-          });
-      };
-
-      window.addMemberModal = () => {
-           showModalForm('Tambah Member', `
-              <input id="m_id" placeholder="ID Member" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="m_name" placeholder="Nama" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="m_upline" placeholder="Upline ID (Opsional)" class="form-control" style="width:100%; padding:8px;">
-          `, async () => {
-              const id = document.getElementById('m_id').value;
-              const name = document.getElementById('m_name').value;
-              const upline = document.getElementById('m_upline').value || null;
-              if(!id || !name) return alert('Lengkapi data');
-
-              const data = stokisCache[currentStokisId];
-              data.members.push({ id, name, upline, status:'aktif', totalPoints:0, waNumber:'', koordinat:'' });
-              await saveData(data);
-          });
-      };
-      
-      window.editMember = (index) => {
-          const m = stokisCache[currentStokisId].members[index];
-          showModalForm('Edit Member', `
-              <input id="m_id" value="${m.id}" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="m_name" value="${m.name}" class="form-control" style="width:100%; margin-bottom:10px; padding:8px;">
-              <input id="m_upline" value="${m.upline || ''}" class="form-control" style="width:100%; padding:8px;">
-              <select id="m_status" class="form-control" style="width:100%; padding:8px;">
-                  <option value="aktif" ${m.status==='aktif'?'selected':''}>Aktif</option>
-                  <option value="tidak aktif" ${m.status==='tidak aktif'?'selected':''}>Tidak Aktif</option>
-              </select>
-          `, async () => {
-              m.id = document.getElementById('m_id').value;
-              m.name = document.getElementById('m_name').value;
-              m.upline = document.getElementById('m_upline').value || null;
-              m.status = document.getElementById('m_status').value;
-              await saveData(stokisCache[currentStokisId]);
-          });
-      }
-
-      // --- HELPER: SAVE DATA TO FIRESTORE ---
-      async function saveData(newData) {
-          try {
-              await setDoc(doc(db, COLLECTION_STOKIS, currentStokisId), newData, { merge: true });
-              // Cache will update via realtime listener
-              alert('Data berhasil disimpan dan disinkronkan!');
-              closeModal();
-          } catch (e) {
-              alert('Gagal menyimpan: ' + e.message);
-          }
-      }
-
-      // --- MODAL HELPER ---
-      function showModalForm(title, htmlContent, onSave) {
-          document.getElementById('modalTitle').textContent = title;
-          document.getElementById('modalBody').innerHTML = htmlContent;
-          document.getElementById('modalActionBtn').onclick = onSave;
-          document.getElementById('genericModal').classList.add('active');
-      }
-
-      window.closeModal = () => {
-          document.getElementById('genericModal').classList.remove('active');
-      }
-
-      window.openAddUserModal = () => {
-          const modalTitle = document.getElementById('modalTitle');
-          const modalBody = document.getElementById('modalBody');
-          const actionBtn = document.getElementById('modalActionBtn');
-
-          modalTitle.textContent = "Buat User Stokis Baru";
-          modalBody.innerHTML = `
-              <div class="form-group">
-                  <label>Username (ID Dokumen)</label>
-                  <input type="text" id="newUserName" style="text-transform:lowercase">
-              </div>
-              <div class="form-group">
-                  <label>Password</label>
-                  <input type="text" id="newUserPass">
-              </div>
-              <div class="form-group">
-                  <label>Nama Stokis</label>
-                  <input type="text" id="newUserRealName">
-              </div>
-          `;
-          
-          actionBtn.onclick = async () => {
-              const u = document.getElementById('newUserName').value.trim().toLowerCase();
-              const p = document.getElementById('newUserPass').value.trim();
-              const n = document.getElementById('newUserRealName').value.trim();
-              
-              if(!u || !p) return alert('Lengkapi semua field');
-              
-              // 1. Save Credentials
-              await setDoc(doc(db, COLLECTION_USERS, u), { username: u, password: p, createdAt: new Date() });
-              
-              // 2. Initialize Empty Data
-              await setDoc(doc(db, COLLECTION_STOKIS, u), {
-                  profile: { namaStokis: n, kodeKoordinat: 'NEW' },
-                  products: [], members: [], transactions: []
-              });
-
-              alert('User baru dibuat!');
-              closeModal();
-              renderUsersManagement();
-              loadStokisList(); // Update dropdown
-          };
-
-          document.getElementById('genericModal').classList.add('active');
-      }
-
-    </script>
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+<div class="login-box">
+<div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
+<h2>Super Admin Login</h2>
+<form onsubmit="handleAdminLogin(event)">
+<div class="input-group"><label>Username</label><input type="text" id="adminUser" placeholder="admin" required></div>
+<div class="input-group"><label>Password</label><input type="password" id="adminPass" placeholder="••••••" required></div>
+<button type="submit" class="btn-login">Masuk Dashboard</button>
+</form>
+<p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">Gunakan: admin / master</p>
+</div>
+</div>
+
+<div class="sidebar hidden" id="mainSidebar">
+<div class="sidebar-header">
+<div class="logo-circle">SA</div>
+<div class="sidebar-title">GMRJ Admin</div>
+</div>
+<ul class="nav-menu">
+<li class="nav-item"><button class="nav-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button></li>
+
+<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Manajemen User</li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('users')">👥 Akun Stokis</button></li>
+
+<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Editor Stokis</li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('profile')">👤 Profil</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('products')">📦 Produk</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('members')">👥 Member</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('transactions')">💰 Transaksi</button></li>
+
+<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Laporan Per Stokis</li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-purchase-member')">🛒 Belanja per Member</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-sales-product')">🏷️ Detil Penjualan</button></li>
+
+<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #f59e0b; font-weight: 700;">🌍 Laporan Global ID</li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-summary')">📈 Ringkasan Gabungan</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-stokis')">🏅 Rank Stokis</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-member-sales')">💎 Top Member (By ID)</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-purchase-member')">🛒 Belanja Global (ID)</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-sales-product')">🏷️ Detil Jual Global</button></li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-tree')">🌳 Pohon Jaringan (By ID)</button></li>
+</ul>
+<div class="sidebar-footer">v1.4.0 Global ID<br>Added Detailed Reports</div>
+</div>
+
+<div class="main-content hidden" id="mainContent">
+<div class="top-bar">
+<div class="current-context">
+Target Stokis:
+<select id="stokisSelector" class="context-selector" onchange="loadSelectedStokis(this.value)">
+<option value="">-- Pilih Stokis --</option>
+</select>
+<span id="stokisStatus" class="badge badge-green hidden">Live Connected</span>
+</div>
+<button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+</div>
+<div class="content-area" id="contentArea"></div>
+</div>
+
+<!-- MODALS -->
+<div id="genericModal" class="modal">
+<div class="modal-box">
+<h3 class="modal-title" id="modalTitle">Judul</h3>
+<div id="modalBody"></div>
+<div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
+<button class="btn" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
+<button class="btn btn-primary" id="modalActionBtn">Simpan</button>
+</div>
+</div>
+</div>
+
+<div id="migrateModal" class="modal">
+<div class="modal-box">
+<h3 class="modal-title">📋 Migrasi / Copy Data</h3>
+<div class="form-group"><label>Sumber Data</label><select id="migrateSource"></select></div>
+<div class="form-group"><label>Tujuan Data</label><select id="migrateDest"></select></div>
+<div class="form-group"><label>Opsi Penimpaan</label><div style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="migrateOverwrite"><span style="font-size:14px;">Timpa data lama</span></div></div>
+<div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+<button class="btn" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
+<button class="btn btn-primary" onclick="executeMigrate()">Mulai Migrasi</button>
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyA7i0bGhjKHZ788Ir7xTDFM0LXAevnWKsI",
+authDomain: "sistem-stokis-gmrj.firebaseapp.com",
+projectId: "sistem-stokis-gmrj",
+storageBucket: "sistem-stokis-gmrj.firebasestorage.app",
+messagingSenderId: "288883517168",
+appId: "1:288883517168:web:d5cdd864aa944205df8435",
+measurementId: "G-12KELDXJ1J"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const COLLECTION_STOKIS = 'stokisDatas';
+const COLLECTION_USERS = 'stokis_users';
+
+let currentStokisId = null;
+let currentDataUnsubscribe = null;
+let stokisCache = {};
+
+window.handleAdminLogin = (e) => {
+e.preventDefault();
+const u = document.getElementById('adminUser').value.trim();
+const p = document.getElementById('adminPass').value.trim();
+if (u === 'admin' && p === 'master') {
+document.getElementById('login-overlay').classList.add('hidden');
+document.getElementById('mainSidebar').classList.remove('hidden');
+document.getElementById('mainContent').classList.remove('hidden');
+initDashboard();
+} else { alert('Akses Ditolak!'); }
+};
+window.logout = () => location.reload();
+
+async function initDashboard() {
+await loadStokisList();
+renderDashboardGlobal();
+}
+
+async function loadStokisList() {
+const selector = document.getElementById('stokisSelector');
+selector.innerHTML = '<option value="">-- Pilih Stokis --</option>';
+try {
+const querySnapshot = await getDocs(collection(db, COLLECTION_STOKIS));
+querySnapshot.forEach((doc) => {
+const data = doc.data();
+const nama = data.profile?.namaStokis || doc.id;
+const option = document.createElement('option');
+option.value = doc.id;
+option.textContent = `${doc.id} (${nama})`;
+selector.appendChild(option);
+});
+} catch (error) { console.error("Error fetching stokis list:", error); }
+}
+
+window.loadSelectedStokis = (username) => {
+if (currentDataUnsubscribe) { currentDataUnsubscribe(); currentDataUnsubscribe = null; }
+if (!username) {
+currentStokisId = null;
+document.getElementById('contentArea').innerHTML = `<div class="empty-state"><span style="font-size:40px;opacity:0.5;">👈</span><h3>Silakan Pilih Stokis</h3></div>`;
+return;
+}
+currentStokisId = username;
+const docRef = doc(db, COLLECTION_STOKIS, username);
+currentDataUnsubscribe = onSnapshot(docRef, (docSnap) => {
+if (docSnap.exists()) {
+stokisCache[currentStokisId] = docSnap.data();
+document.getElementById('stokisStatus').classList.remove('hidden');
+const activeTab = document.querySelector('.nav-btn.active');
+if (activeTab) {
+const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)[1];
+if (!['dashboard', 'users'].includes(tabName) && !tabName.startsWith('report-') && !tabName.startsWith('stokis-')) {
+renderTabContent(tabName);
+} else if (tabName.startsWith('stokis-')) {
+renderStokisSpecificTab(tabName);
+}
+}
+}
+});
+};
+
+window.switchTab = (tabName) => {
+document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+const clickedBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabName));
+if(clickedBtn) clickedBtn.classList.add('active');
+
+if (['dashboard', 'users'].includes(tabName)) {
+renderDashboardGlobal();
+if(tabName === 'users') renderUsersManagement();
+} else if (tabName.startsWith('report-')) {
+handleReportTabs(tabName);
+} else if (tabName.startsWith('stokis-')) {
+if (!currentStokisId) { document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`; return; }
+renderStokisSpecificTab(tabName);
+} else {
+if (!currentStokisId) { document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`; return; }
+renderTabContent(tabName);
+}
+};
+
+function renderDashboardGlobal() {
+document.getElementById('contentArea').innerHTML = `
+<h2>Dashboard Global</h2>
+<div class="grid-dashboard">
+<div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value" id="g-count-stokis">...</div></div>
+<div class="stat-card"><div class="stat-label">Sistem</div><div class="stat-value" style="color:var(--color-success); font-size:20px; margin-top:12px;">Online</div></div>
+</div>
+<div class="card"><div class="card-header"><span class="card-title">Log Sistem</span></div><div style="padding:24px;"><p>Selamat datang Super Admin.</p></div></div>
+`;
+getDocs(collection(db, COLLECTION_STOKIS)).then(snap => {
+const el = document.getElementById('g-count-stokis');
+if(el) el.textContent = snap.size;
+});
+}
+
+// ==========================================
+// STOKIS SPECIFIC REPORT LOGIC (NEW)
+// ==========================================
+
+function renderStokisSpecificTab(tabName) {
+const data = stokisCache[currentStokisId];
+if(!data) return;
+
+if (tabName === 'stokis-purchase-member') {
+renderStokisPurchaseMember(data);
+} else if (tabName === 'stokis-sales-product') {
+renderStokisSalesProduct(data);
+}
+}
+
+function renderStokisPurchaseMember(data) {
+// Group transactions by Member ID
+const memberMap = new Map();
+
+(data.transactions || []).forEach(t => {
+if (!memberMap.has(t.memberId)) {
+memberMap.set(t.memberId, { id: t.memberId, name: t.memberName || 'Unknown', totalQty: 0, totalPoints: 0, count: 0 });
+}
+const entry = memberMap.get(t.memberId);
+entry.totalQty += (t.qty || 0);
+entry.totalPoints += (t.totalPoints || 0);
+entry.count += 1;
+});
+
+// Sort by Qty Descending
+const sorted = Array.from(memberMap.values()).sort((a, b) => b.totalQty - a.totalQty);
+
+const html = `
+<h2>🛒 Laporan Belanja per Member: ${currentStokisId}</h2>
+<div class="card" style="margin-top:20px;">
+<div class="table-container">
+<table>
+<thead><tr><th>Rank</th><th>ID Member</th><th>Nama Member</th><th>Total Transaksi</th><th>Total Qty</th><th>Total Poin</th></tr></thead>
+<tbody>
+ ${sorted.length === 0 ? '<tr><td colspan="6" class="empty-state">Belum ada data transaksi</td></tr>' : sorted.map((m, idx) => {
+return `<tr>
+<td><div class="rank-badge rank-other">${idx+1}</div></td>
+<td><strong>${m.id}</strong></td>
+<td>${m.name}</td>
+<td>${m.count}</td>
+<td style="font-weight:bold;">${m.totalQty.toLocaleString()}</td>
+<td style="color:var(--color-accent); font-weight:bold;">${m.totalPoints.toLocaleString()}</td>
+</tr>`;
+}).join('')}
+</tbody>
+</table>
+</div>
+</div>`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+function renderStokisSalesProduct(data) {
+// Group by Product Code, then list buyers
+const productMap = new Map();
+
+(data.transactions || []).forEach(t => {
+if (!productMap.has(t.productCode)) {
+productMap.set(t.productCode, { code: t.productCode, name: t.productName || t.productCode, totalQty: 0, buyers: {} });
+}
+const p = productMap.get(t.productCode);
+p.totalQty += (t.qty || 0);
+
+if (!p.buyers[t.memberId]) {
+p.buyers[t.memberId] = { id: t.memberId, name: t.memberName || 'Unknown', qty: 0, points: 0 };
+}
+p.buyers[t.memberId].qty += (t.qty || 0);
+p.buyers[t.memberId].points += (t.totalPoints || 0);
+});
+
+const sortedProducts = Array.from(productMap.values()).sort((a, b) => b.totalQty - a.totalQty);
+
+let htmlRows = '';
+sortedProducts.forEach(prod => {
+// Sort buyers for this product
+const sortedBuyers = Object.values(prod.buyers).sort((a, b) => b.qty - a.qty);
+const buyerRows = sortedBuyers.map(b => `
+<tr style="background-color: #f8fafc;">
+<td></td>
+<td style="padding-left:24px;">
+<span style="font-size:12px; color:#64748b;">Buyer:</span> ${b.name} <span style="font-weight:600; color:#64748b;">(${b.id})</span>
+</td>
+<td>-</td>
+<td style="text-align:right;">${b.qty.toLocaleString()}</td>
+<td style="text-align:right;">${b.points.toLocaleString()}</td>
+</tr>
+`).join('');
+
+htmlRows += `
+<tr style="background:#f1f5f9; font-weight:bold;">
+<td rowspan="${sortedBuyers.length + 1}">${prod.code}</td>
+<td>${prod.name}</td>
+<td colspan="3" style="text-align:right;">Total: ${prod.totalQty.toLocaleString()}</td>
+</tr>
+ ${buyerRows}
+`;
+});
+
+const html = `
+<h2>🏷️ Laporan Penjualan per Produk: ${currentStokisId}</h2>
+<div class="card" style="margin-top:20px;">
+<div class="table-container">
+<table>
+<thead><tr><th>Kode Produk</th><th>Nama Produk / Member</th><th>Total Stokis</th><th>Qty</th><th>Poin</th></tr></thead>
+<tbody>
+ ${sortedProducts.length === 0 ? '<tr><td colspan="5" class="empty-state">Belum ada data transaksi</td></tr>' : htmlRows}
+</tbody>
+</table>
+</div>
+</div>`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+
+// ==========================================
+// REPORT LOGIC (UPDATED FOR GLOBAL ID)
+// ==========================================
+
+async function fetchGlobalData() {
+const content = document.getElementById('contentArea');
+content.innerHTML = `<div class="spinner"></div><p style="text-align:center">Menggabungkan data ID Member...</p>`;
+
+try {
+const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+const result = {
+stokisList: [],
+totalStokis: stokisSnap.size,
+totalMembers: 0,
+totalPoints: 0,
+membersMap: new Map(),
+stokisDetails: []
+};
+
+stokisSnap.forEach(doc => {
+const sId = doc.id;
+const sData = doc.data();
+const sName = sData.profile?.namaStokis || sId;
+
+let sPoints = 0;
+let sMemberCount = (sData.members || []).length;
+
+(sData.members || []).forEach(m => {
+const mId = m.id;
+const mPoints = m.totalPoints || 0;
+
+sPoints += mPoints;
+
+if (!result.membersMap.has(mId)) {
+result.membersMap.set(mId, {
+id: mId,
+name: m.name,
+points: 0,
+upline: m.upline,
+stokisSources: []
+});
+result.totalMembers++;
+}
+
+const globalMember = result.membersMap.get(mId);
+globalMember.points += mPoints;
+globalMember.stokisSources.push(sName);
+if(!globalMember.name || globalMember.name === 'N/A') globalMember.name = m.name;
+
+if (m.upline) globalMember.upline = m.upline;
+});
+
+result.stokisDetails.push({
+id: sId,
+name: sName,
+totalPoints: sPoints,
+memberCount: sMemberCount
+});
+});
+
+result.membersMap.forEach(m => result.totalPoints += m.points);
+
+return result;
+} catch (error) {
+console.error(error);
+alert("Error: " + error.message);
+return null;
+}
+}
+
+async function fetchGlobalTransactionData() {
+// New function specifically for transaction reports to avoid slowing down points report
+const content = document.getElementById('contentArea');
+content.innerHTML = `<div class="spinner"></div><p style="text-align:center">Menganalisa Transaksi Global...</p>`;
+try {
+const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+const purchaseMap = new Map(); // MemberID -> {id, name, totalQty, totalPoints, count}
+const productSalesMap = new Map(); // ProductCode -> {code, name, totalQty, buyers: {MemberID: {qty, points}}}
+
+stokisSnap.forEach(doc => {
+const sData = doc.data();
+const sName = sData.profile?.namaStokis || doc.id;
+
+(sData.transactions || []).forEach(t => {
+// 1. Aggregation for Purchase Per Member
+if (!purchaseMap.has(t.memberId)) {
+purchaseMap.set(t.memberId, { id: t.memberId, name: t.memberName, totalQty: 0, totalPoints: 0, count: 0 });
+}
+const memEntry = purchaseMap.get(t.memberId);
+memEntry.totalQty += (t.qty || 0);
+memEntry.totalPoints += (t.totalPoints || 0);
+memEntry.count += 1;
+if(!memEntry.name && t.memberName) memEntry.name = t.memberName;
+
+// 2. Aggregation for Sales per Product per Member
+if (!productSalesMap.has(t.productCode)) {
+productSalesMap.set(t.productCode, { code: t.productCode, name: t.productName, totalQty: 0, buyers: {} });
+}
+const prodEntry = productSalesMap.get(t.productCode);
+prodEntry.totalQty += (t.qty || 0);
+if (!prodEntry.buyers[t.memberId]) {
+prodEntry.buyers[t.memberId] = { id: t.memberId, name: t.memberName, qty: 0, points: 0 };
+}
+prodEntry.buyers[t.memberId].qty += (t.qty || 0);
+prodEntry.buyers[t.memberId].points += (t.totalPoints || 0);
+});
+});
+
+return { purchaseMap, productSalesMap };
+} catch (error) {
+console.error(error);
+alert("Error Transaksi: " + error.message);
+return null;
+}
+}
+
+async function handleReportTabs(tabName) {
+const data = await fetchGlobalData();
+if (!data) return;
+
+if (tabName === 'report-summary') renderReportSummary(data);
+else if (tabName === 'report-stokis') renderReportStokisRanking(data);
+else if (tabName === 'report-member-sales') renderReportMemberSales(data);
+else if (tabName === 'report-tree') renderReportTree(data);
+else if (tabName === 'report-purchase-member') {
+const tData = await fetchGlobalTransactionData();
+if(tData) renderReportGlobalPurchaseMember(tData);
+}
+else if (tabName === 'report-sales-product') {
+const tData = await fetchGlobalTransactionData();
+if(tData) renderReportGlobalSalesProduct(tData);
+}
+}
+
+function renderReportSummary(data) {
+const html = `
+<h2>Laporan Gabungan (By Member ID)</h2>
+<div class="grid-dashboard" style="margin-top:20px;">
+<div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value">${data.totalStokis}</div></div>
+<div class="stat-card"><div class="stat-label">Total Member (Unique ID)</div><div class="stat-value">${data.totalMembers}</div></div>
+<div class="stat-card"><div class="stat-label">Total Poin Global</div><div class="stat-value" style="color:var(--color-accent)">${data.totalPoints.toLocaleString()}</div></div>
+</div>
+<div class="card">
+<div class="card-header"><span class="card-title">Ringkasan Per Stokis</span></div>
+<div class="table-container">
+<table>
+<thead><tr><th>Nama Stokis</th><th>Jml Member</th><th>Total Poin (Internal)</th></tr></thead>
+<tbody>
+ ${data.stokisDetails.map(s => `<tr><td>${s.name}</td><td>${s.memberCount}</td><td>${s.totalPoints.toLocaleString()}</td></tr>`).join('')}
+</tbody>
+</table>
+</div>
+</div>
+`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+function renderReportStokisRanking(data) {
+const sorted = [...data.stokisDetails].sort((a, b) => b.totalPoints - a.totalPoints);
+const html = `
+<h2>🏅 Ranking Stokis</h2>
+<div class="card" style="margin-top:20px;">
+<div class="table-container">
+<table>
+<thead><tr><th>Rank</th><th>Nama Stokis</th><th>Member</th><th>Total Poin</th></tr></thead>
+<tbody>
+ ${sorted.map((s, idx) => {
+let rClass = 'rank-other'; if(idx<3) rClass = `rank-${idx+1}`;
+return `<tr>
+<td><div class="rank-badge ${rClass}">${idx+1}</div></td>
+<td><strong>${s.name}</strong></td>
+<td>${s.memberCount}</td>
+<td style="font-weight:bold;">${s.totalPoints.toLocaleString()}</td>
+</tr>`;
+}).join('')}
+</tbody>
+</table>
+</div>
+</div>
+`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+function renderReportMemberSales(data) {
+const sortedMembers = Array.from(data.membersMap.values()).sort((a, b) => b.points - a.points);
+
+const html = `
+<h2>💎 Ranking Member (By ID Global)</h2>
+<p style="color:#64748b; margin-bottom:16px;">
+Poin dijumlahkan jika ID member sama muncul di beberapa Stokis.
+</p>
+<div class="card">
+<div class="table-container">
+<table>
+<thead><tr><th>Rank</th><th>Nama Member</th><th>ID Member</th><th>Aktif di Stokis</th><th>Total Poin (Gabungan)</th></tr></thead>
+<tbody>
+ ${sortedMembers.slice(0, 50).map((m, idx) => {
+let rClass = 'rank-other'; if(idx<3) rClass = `rank-${idx+1}`;
+const stokisBadge = m.stokisSources.length > 3
+? `${m.stokisSources.slice(0,3).join(', ')}... (+${m.stokisSources.length-3})`
+: m.stokisSources.join(', ');
+
+return `<tr>
+<td><div class="rank-badge ${rClass}">${idx+1}</div></td>
+<td><strong>${m.name}</strong></td>
+<td>${m.id}</td>
+<td><span class="badge badge-green" style="font-weight:400;">${stokisBadge}</span></td>
+<td style="font-weight:bold; color:var(--color-primary);">${m.points.toLocaleString()}</td>
+</tr>`;
+}).join('')}
+</tbody>
+</table>
+</div>
+</div>
+`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+function renderReportTree(data) {
+const nodes = new Map();
+data.membersMap.forEach(m => {
+nodes.set(m.id, {
+id: m.id,
+name: m.name,
+points: m.points,
+children: []
+});
+});
+
+const roots = [];
+const childIds = new Set();
+
+data.membersMap.forEach(m => {
+const node = nodes.get(m.id);
+
+if (m.upline && nodes.has(m.upline)) {
+const parent = nodes.get(m.upline);
+if (parent && !parent.children.includes(node)) {
+parent.children.push(node);
+childIds.add(m.id);
+}
+}
+});
+
+nodes.forEach(node => {
+if (!childIds.has(node.id)) {
+roots.push(node);
+}
+});
+
+const buildTreeHtml = (nodeList) => {
+if (!nodeList || nodeList.length === 0) return '';
+return `<ul>${nodeList.map(node => {
+return `<li>
+<div class="tree-node">
+<strong>${node.name}</strong>
+<small>${node.id}</small>
+<small style="display:block; color:var(--color-accent); font-weight:bold;">${node.points.toLocaleString()} Pts</small>
+</div>
+ ${buildTreeHtml(node.children)}
+</li>`;
+}).join('')}</ul>`;
+};
+
+const html = `
+<h2>🌳 Pohon Jaringan (Global ID)</h2>
+<p style="color:#64748b; margin-bottom:16px;">
+Struktur digabungkan berdasarkan ID Member. Jika ID sama di stokis berbeda, node ini digabungkan.
+</p>
+<div class="card">
+<div class="tree-container tree">
+ ${buildTreeHtml(roots)}
+</div>
+</div>
+`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+// ==========================================
+// NEW GLOBAL REPORT FUNCTIONS
+// ==========================================
+
+function renderReportGlobalPurchaseMember(tData) {
+const sorted = Array.from(tData.purchaseMap.values()).sort((a, b) => b.totalQty - a.totalQty);
+
+const html = `
+<h2>🛒 Laporan Pembelian Produk per Member (Global)</h2>
+<p style="color:#64748b; margin-bottom:16px;">
+Data digabungkan berdasarkan ID Member di seluruh stokis.
+</p>
+<div class="card">
+<div class="table-container">
+<table>
+<thead><tr><th>Rank</th><th>ID Member</th><th>Nama Member</th><th>Jml Transaksi</th><th>Total Qty Beli</th><th>Total Poin Belanja</th></tr></thead>
+<tbody>
+ ${sorted.length === 0 ? '<tr><td colspan="6" class="empty-state">Data kosong</td></tr>' : sorted.slice(0, 100).map((m, idx) => {
+let rClass = 'rank-other'; if(idx<3) rClass = `rank-${idx+1}`;
+return `<tr>
+<td><div class="rank-badge ${rClass}">${idx+1}</div></td>
+<td><strong>${m.id}</strong></td>
+<td>${m.name || '-'}</td>
+<td>${m.count}</td>
+<td style="font-weight:bold;">${m.totalQty.toLocaleString()}</td>
+<td style="color:var(--color-accent); font-weight:bold;">${m.totalPoints.toLocaleString()}</td>
+</tr>`;
+}).join('')}
+</tbody>
+</table>
+</div>
+</div>`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+function renderReportGlobalSalesProduct(tData) {
+const sortedProducts = Array.from(tData.productSalesMap.values()).sort((a, b) => b.totalQty - a.totalQty);
+
+let htmlRows = '';
+sortedProducts.forEach(prod => {
+const sortedBuyers = Object.values(prod.buyers).sort((a, b) => b.qty - a.qty);
+const buyerRows = sortedBuyers.map(b => `
+<tr style="background-color: #f8fafc;">
+<td></td>
+<td style="padding-left:24px;">
+<span class="badge badge-blue">ID: ${b.id}</span> ${b.name || 'Unknown'}
+</td>
+<td>-</td>
+<td style="text-align:right;">${b.qty.toLocaleString()}</td>
+<td style="text-align:right;">${b.points.toLocaleString()}</td>
+</tr>
+`).join('');
+
+htmlRows += `
+<tr style="background:#f1f5f9; font-weight:bold;">
+<td rowspan="${sortedBuyers.length + 1}">${prod.code}</td>
+<td>${prod.name || prod.code}</td>
+<td colspan="3" style="text-align:right;">Total Global: ${prod.totalQty.toLocaleString()}</td>
+</tr>
+ ${buyerRows}
+`;
+});
+
+const html = `
+<h2>🏷️ Laporan Penjualan Member per Produk (Global)</h2>
+<p style="color:#64748b; margin-bottom:16px;">
+Detail pembelian per produk di seluruh stokis, dikelompokkan per member pembeli.
+</p>
+<div class="card">
+<div class="table-container">
+<table>
+<thead><tr><th>Kode Produk</th><th>Nama Produk / Pembeli</th><th>Total Global</th><th>Qty</th><th>Poin</th></tr></thead>
+<tbody>
+ ${sortedProducts.length === 0 ? '<tr><td colspan="5" class="empty-state">Data kosong</td></tr>' : htmlRows}
+</tbody>
+</table>
+</div>
+</div>`;
+document.getElementById('contentArea').innerHTML = html;
+}
+
+// ==========================================
+// EXISTING CRUD LOGIC (Unchanged)
+// ==========================================
+
+async function renderUsersManagement() {
+const content = document.getElementById('contentArea');
+content.innerHTML = `
+<h2 style="margin-bottom: 24px;">Manajemen Akun</h2>
+<div class="card">
+<div class="card-header"><span class="card-title">Daftar Stokis</span><button class="btn btn-primary btn-sm" onclick="openAddUserModal()">+ Buat</button></div>
+<div class="table-container"><table id="usersTable"><thead><tr><th>Username</th><th>Pass</th><th>Nama</th><th>Aksi</th></tr></thead><tbody><tr><td colspan="4">Loading...</td></tr></tbody></table></div>
+</div>`;
+const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+const tbody = document.querySelector('#usersTable tbody');
+tbody.innerHTML = '';
+if (stokisSnap.empty) { tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Data kosong</td></tr>`; return; }
+for (const doc of stokisSnap.docs) {
+const username = doc.id; const data = doc.data();
+const namaStokis = data.profile?.namaStokis || 'N/A';
+let passDisplay = '<span style="color:#cbd5e1;">Belum diset</span>';
+try {
+const userDoc = await getDoc(doc(db, COLLECTION_USERS, username));
+if (userDoc.exists()) passDisplay = `<strong>${userDoc.data().password}</strong>`;
+} catch(e) {}
+const tr = document.createElement('tr');
+tr.innerHTML = `
+<td><strong>${username}</strong></td>
+<td>${passDisplay}</td>
+<td>${namaStokis}</td>
+<td>
+<button class="btn btn-sm btn-primary" onclick="openEditUserModal('${username}')">Edit</button>
+<button class="btn btn-sm btn-primary" style="background:var(--color-success)" onclick="openMigrateModal('${username}')">Copy</button>
+<button class="btn btn-sm btn-danger" onclick="deleteStokisData('${username}')">Hapus</button>
+</td>`;
+tbody.appendChild(tr);
+}
+}
+
+window.openEditUserModal = (u) => {
+document.getElementById('modalTitle').textContent = `Edit Pass: ${u}`;
+document.getElementById('modalBody').innerHTML = `<div class="form-group"><label>New Pass</label><input id="newUserPass"></div>`;
+document.getElementById('modalActionBtn').onclick = async () => {
+const p = document.getElementById('newUserPass').value.trim();
+if(!p) return alert('Kosong');
+await setDoc(doc(db, COLLECTION_USERS, u), { username:u, password:p, updatedAt:new Date() });
+alert('Disimpan'); closeModal(); renderUsersManagement();
+};
+document.getElementById('genericModal').classList.add('active');
+};
+
+window.deleteStokisData = async (u) => {
+if(!confirm(`Hapus data ${u}?`)) return;
+try {
+await deleteDoc(doc(db, COLLECTION_STOKIS, u));
+await deleteDoc(doc(db, COLLECTION_USERS, u));
+alert('Dihapus'); renderUsersManagement(); loadStokisList();
+} catch(e) { alert('Gagal: '+e.message); }
+};
+
+window.openMigrateModal = (d) => {
+document.getElementById('migrateModal').classList.add('active');
+const s = document.getElementById('migrateSource');
+const dest = document.getElementById('migrateDest');
+s.innerHTML = '<option value="">-- Sumber --</option>'; dest.innerHTML = '<option value="">-- Tujuan --</option>';
+document.querySelectorAll('#stokisSelector option').forEach(opt => {
+if (opt.value) {
+s.innerHTML += `<option value="${opt.value}" ${opt.value === d?'selected':''}>${opt.textContent}</option>`;
+dest.innerHTML += `<option value="${opt.value}">${opt.textContent}</option>`;
+}
+});
+};
+window.closeMigrateModal = () => document.getElementById('migrateModal').classList.remove('active');
+window.executeMigrate = async () => {
+const s = document.getElementById('migrateSource').value;
+const d = document.getElementById('migrateDest').value;
+const o = document.getElementById('migrateOverwrite').checked;
+if(!s||!d) return alert("Pilih keduanya!");
+if(s===d) return alert("Sama!");
+try {
+const snap = await getDoc(doc(db, COLLECTION_STOKIS, s));
+if(!snap.exists()) return alert("Sumber kosong");
+const srcData = snap.data();
+const destSnap = await getDoc(doc(db, COLLECTION_STOKIS, d));
+let newData = {};
+if (o || !destSnap.exists()) { newData = srcData; }
+else {
+const destData = destSnap.data();
+newData = {
+profile: { ...destData.profile, ...srcData.profile },
+products: [...(destData.products||[]), ...(srcData.products||[])],
+members: [...(destData.members||[]), ...(srcData.members||[])],
+transactions: [...(destData.transactions||[]), ...(srcData.transactions||[])]
+};
+}
+await setDoc(doc(db, COLLECTION_STOKIS, d), newData, { merge:true });
+alert('Berhasil'); closeMigrateModal();
+if(currentStokisId===d) loadSelectedStokis(d);
+} catch(e) { alert("Gagal: "+e.message); }
+};
+
+function renderTabContent(t) {
+const data = stokisCache[currentStokisId];
+if(!data) return;
+let html = '';
+if(t==='profile') {
+const p = data.profile || {};
+html = `<h2>Profil: ${currentStokisId}</h2><div class="card" style="margin-top:16px;"><div class="card-header"><span>Edit Identitas</span></div><div style="padding:24px;">
+<div class="form-group"><label>Nama Koordinat</label><input id="p_koord" value="${p.namaKoordinat||''}"></div>
+<div class="form-group"><label>Kode</label><input id="p_kode" value="${p.kodeKoordinat||''}"></div>
+<div class="form-group"><label>Nama Stokis</label><input id="p_nama" value="${p.namaStokis||''}"></div>
+<div class="form-group"><label>Alamat</label><textarea id="p_alamat">${p.alamatStokis||''}</textarea></div>
+<div class="form-group"><label>WA</label><input id="p_wa" value="${p.waNumber||''}"></div>
+<button class="btn btn-primary" onclick="saveProfile()">Simpan</button>
+</div></div>`;
+} else if(t==='products') {
+html = `<h2>Produk: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addProductModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>Nama</th><th>Poin</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${(data.products||[]).map((p,i)=>`<tr><td>${p.name}</td><td>${p.point}</td><td>${p.pembelian}</td><td><button class="btn btn-sm btn-primary" onclick="editProduct(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('products',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
+} else if(t==='members') {
+html = `<h2>Member: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addMemberModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Poin</th><th>Aksi</th></tr></thead><tbody>${(data.members||[]).map((m,i)=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.upline||'-'}</td><td>${m.totalPoints||0}</td><td><button class="btn btn-sm btn-primary" onclick="editMember(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('members',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
+} else if(t==='transactions') {
+html = `<h2>Transaksi: ${currentStokisId}</h2><div class="card"><div class="table-container"><table><thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead><tbody>${(data.transactions||[]).map((t,i)=>`<tr><td>${t.date}</td><td>${t.code}</td><td>${t.memberId}</td><td>${t.productCode}</td><td>${t.qty}</td><td>${t.totalPoints}</td><td><button class="btn btn-sm btn-danger" onclick="deleteItem('transactions',${i})">Batal</button></td></tr>`).join('')}</tbody></table></div></div>`;
+}
+document.getElementById('contentArea').innerHTML = html;
+}
+
+window.saveProfile = async () => {
+if(!confirm('Simpan profil?')) return;
+const newData = { ...stokisCache[currentStokisId], profile: { ...stokisCache[currentStokisId].profile, namaKoordinat: document.getElementById('p_koord').value, kodeKoordinat: document.getElementById('p_kode').value, namaStokis: document.getElementById('p_nama').value, alamatStokis: document.getElementById('p_alamat').value, waNumber: document.getElementById('p_wa').value } };
+await saveData(newData);
+};
+window.deleteItem = async (c, i) => { if(!confirm('Hapus?')) return; const d = stokisCache[currentStokisId]; d[c].splice(i, 1); await saveData(d); };
+window.addProductModal = () => {
+showModalForm('Tambah Produk', `<input id="e_n" placeholder="Nama" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" placeholder="Poin" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" placeholder="Stok" style="width:100%">`, async () => {
+const n = document.getElementById('e_n').value, p = parseFloat(document.getElementById('e_p').value), s = parseInt(document.getElementById('e_s').value);
+if(!n||isNaN(p)) return alert('Lengkapi');
+const d = stokisCache[currentStokisId]; d.products.push({ code:'PROD_'+Date.now(), name:n, point:p, pembelian:s }); await saveData(d);
+});
+};
+window.editProduct = (i) => {
+const p = stokisCache[currentStokisId].products[i];
+showModalForm('Edit Produk', `<input id="e_n" value="${p.name}" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" value="${p.point}" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" value="${p.pembelian}" style="width:100%">`, async () => {
+p.name = document.getElementById('e_n').value; p.point = parseFloat(document.getElementById('e_p').value); p.pembelian = parseInt(document.getElementById('e_s').value); await saveData(stokisCache[currentStokisId]);
+});
+};
+window.addMemberModal = () => {
+showModalForm('Tambah Member', `<input id="m_i" placeholder="ID" style="width:100%;margin-bottom:10px"><input id="m_n" placeholder="Nama" style="width:100%;margin-bottom:10px"><input id="m_u" placeholder="Upline ID" style="width:100%">`, async () => {
+const i = document.getElementById('m_i').value, n = document.getElementById('m_n').value, u = document.getElementById('m_u').value||null;
+if(!i||!n) return alert('Lengkapi');
+const d = stokisCache[currentStokisId]; d.members.push({ id:i, name:n, upline:u, status:'aktif', totalPoints:0, waNumber:'', koordinat:'' }); await saveData(d);
+});
+};
+window.editMember = (i) => {
+const m = stokisCache[currentStokisId].members[i];
+showModalForm('Edit Member', `<input id="m_i" value="${m.id}" style="width:100%;margin-bottom:10px"><input id="m_n" value="${m.name}" style="width:100%;margin-bottom:10px"><input id="m_u" value="${m.upline||''}" style="width:100%;margin-bottom:10px"><select id="m_s" style="width:100%"><option value="aktif" ${m.status==='aktif'?'selected':''}>Aktif</option><option value="tidak aktif" ${m.status==='tidak aktif'?'selected':''}>Tidak Aktif</option></select>`, async () => {
+m.id = document.getElementById('m_i').value; m.name = document.getElementById('m_n').value; m.upline = document.getElementById('m_u').value||null; m.status = document.getElementById('m_s').value; await saveData(stokisCache[currentStokisId]);
+});
+}
+async function saveData(nd) { try { await setDoc(doc(db, COLLECTION_STOKIS, currentStokisId), nd, { merge:true }); alert('Tersimpan'); closeModal(); } catch(e) { alert('Gagal: '+e.message); } }
+function showModalForm(t, h, s) { document.getElementById('modalTitle').textContent = t; document.getElementById('modalBody').innerHTML = h; document.getElementById('modalActionBtn').onclick = s; document.getElementById('genericModal').classList.add('active'); }
+window.closeModal = () => document.getElementById('genericModal').classList.remove('active');
+window.openAddUserModal = () => {
+document.getElementById('modalTitle').textContent = "Buat User";
+document.getElementById('modalBody').innerHTML = `<div class="form-group"><label>Username</label><input id="n_u"></div><div class="form-group"><label>Password</label><input id="n_p"></div><div class="form-group"><label>Nama</label><input id="n_n"></div>`;
+document.getElementById('modalActionBtn').onclick = async () => {
+const u = document.getElementById('n_u').value.trim().toLowerCase(), p = document.getElementById('n_p').value.trim(), n = document.getElementById('n_n').value.trim();
+if(!u||!p) return alert('Lengkapi');
+await setDoc(doc(db, COLLECTION_USERS, u), { username:u, password:p, createdAt:new Date() });
+await setDoc(doc(db, COLLECTION_STOKIS, u), { profile:{ namaStokis:n, kodeKoordinat:'NEW' }, products:[], members:[], transactions:[] });
+alert('Dibuat'); closeModal(); renderUsersManagement(); loadStokisList();
+}; document.getElementById('genericModal').classList.add('active');
+}
+</script>
 </body>
 </html>
