@@ -116,14 +116,27 @@ display: flex; align-items: center; justify-content: space-between; padding: 0 2
 .table-container { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th { background: #f1f5f9; text-align: left; padding: 12px 16px; font-weight: 600; color: #475569; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
-td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); color: #334155; }
+td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); color: #33455; }
 tr:hover { background: #f8fafc; }
-.btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
 .btn-primary { background: var(--color-accent); color: white; }
 .btn-primary:hover { background: var(--color-accent-hover); }
 .btn-danger { background: #fee2e2; color: var(--color-error); }
 .btn-danger:hover { background: #fecaca; }
 .btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-print { background: #334155; color: white; }
+
+/* File Download Box */
+.info-file-box {
+display: flex; align-items: center; justify-content: space-between;
+background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px;
+padding: 12px; margin-top: 12px;
+}
+
+/* Pagination & Filter Styles */
+.filter-bar { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+.filter-input { padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 14px; min-width: 120px; }
+.pagination-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid var(--color-border); }
 
 /* Modals */
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
@@ -144,6 +157,19 @@ tr:hover { background: #f8fafc; }
 .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--color-accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+/* PRINT CSS */
+@media print {
+.sidebar, .top-bar, .no-print { display: none !important; }
+.main-content { margin: 0; padding: 0; overflow: visible; height: auto; }
+.content-area { overflow: visible; padding: 0; }
+body { height: auto; overflow: visible; background: white; color: black; }
+.card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+.table-container { overflow: visible; }
+table { font-size: 10px; }
+th, td { border: 1px solid #000; }
+.info-file-box { border: 1px solid #ccc; background: none; }
+}
+
 /* TREE & RANKING */
 .tree-container { padding: 20px; overflow: auto; background: #ffffff; border-radius: 8px; }
 .tree ul { padding-top: 20px; position: relative; transition: all 0.5s; padding-left: 20px; }
@@ -156,10 +182,16 @@ tr:hover { background: #f8fafc; }
 .tree li:last-child::before { border-right: 1px solid #ccc; border-radius: 0 5px 0 0; }
 .tree li:first-child::after { border-radius: 5px 0 0 0; }
 .tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 1px solid #ccc; width: 0; height: 20px; }
-.tree-node { border: 1px solid #cbd5e1; padding: 10px 15px; text-decoration: none; color: #334155; font-family: arial, verdana, tahoma; font-size: 12px; display: inline-block; border-radius: 5px; background: white; transition: all 0.3s; min-width: 120px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.tree-node { 
+border: 1px solid #cbd5e1; padding: 10px 15px; text-decoration: none; color: #33455; 
+font-family: arial, verdana, tahoma; font-size: 12px; display: inline-block; border-radius: 5px; 
+background: white; transition: all 0.3s; min-width: 120px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+cursor: pointer;
+}
 .tree-node:hover { border-color: var(--color-accent); background: #eff6ff; transform: scale(1.05); z-index: 10; position: relative;}
 .tree-node strong { display: block; font-size: 14px; color: #0f172a; margin-bottom: 2px; }
 .tree-node small { color: #64748b; font-size: 11px; }
+.tree-toggle-icon { display:inline-block; margin-right:5px; font-weight:bold; color:var(--color-accent); }
 
 .rank-badge { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; font-size: 12px; margin-right: 8px; }
 .rank-1 { background: #fbbf24; color: white; }
@@ -178,7 +210,7 @@ tr:hover { background: #f8fafc; }
 <h2>Super Admin Login</h2>
 <form onsubmit="handleAdminLogin(event)">
 <div class="input-group"><label>Username</label><input type="text" id="adminUser" placeholder="admin" required></div>
-<div class="input-group"><label>Password</label><input type="password" id="adminPass" placeholder="••••••" required></div>
+<div class="input-group"><label>Password</label><input type="password" id="adminPass" placeholder="•••••" required></div>
 <button type="submit" class="btn-login">Masuk Dashboard</button>
 </form>
 <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">Gunakan: admin / master</p>
@@ -204,17 +236,18 @@ tr:hover { background: #f8fafc; }
 
 <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Laporan Per Stokis</li>
 <li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-purchase-member')">🛒 Belanja per Member</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-sales-product')">🏷️ Detil Penjualan</button></li>
 
 <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #f59e0b; font-weight: 700;">🌍 Laporan Global ID</li>
 <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-summary')">📈 Ringkasan Gabungan</button></li>
 <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-stokis')">🏅 Rank Stokis</button></li>
 <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-member-sales')">💎 Top Member (By ID)</button></li>
 <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-purchase-member')">🛒 Belanja Global (ID)</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-sales-product')">🏷️ Detil Jual Global</button></li>
 <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-tree')">🌳 Pohon Jaringan (By ID)</button></li>
+
+<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #f59e0b; font-weight: 700;">Pengaturan</li>
+<li class="nav-item"><button class="nav-btn" onclick="switchTab('admin-board')">📢 Papan Informasi</button></li>
 </ul>
-<div class="sidebar-footer">v1.4.0 Global ID<br>Added Detailed Reports</div>
+<div class="sidebar-footer">v2.1.0 Global ID<br>Tree Simplified</div>
 </div>
 
 <div class="main-content hidden" id="mainContent">
@@ -226,7 +259,10 @@ Target Stokis:
 </select>
 <span id="stokisStatus" class="badge badge-green hidden">Live Connected</span>
 </div>
-<button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+<div style="display:flex; gap:10px;">
+<button class="btn btn-print btn-sm no-print" onclick="window.print()">🖨️ Cetak PDF</button>
+<button class="btn btn-danger btn-sm no-print" onclick="logout()">Logout</button>
+</div>
 </div>
 <div class="content-area" id="contentArea"></div>
 </div>
@@ -237,8 +273,8 @@ Target Stokis:
 <h3 class="modal-title" id="modalTitle">Judul</h3>
 <div id="modalBody"></div>
 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
-<button class="btn" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
-<button class="btn btn-primary" id="modalActionBtn">Simpan</button>
+<button class="btn no-print" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
+<button class="btn btn-primary no-print" id="modalActionBtn">Simpan</button>
 </div>
 </div>
 </div>
@@ -250,15 +286,15 @@ Target Stokis:
 <div class="form-group"><label>Tujuan Data</label><select id="migrateDest"></select></div>
 <div class="form-group"><label>Opsi Penimpaan</label><div style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="migrateOverwrite"><span style="font-size:14px;">Timpa data lama</span></div></div>
 <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
-<button class="btn" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
-<button class="btn btn-primary" onclick="executeMigrate()">Mulai Migrasi</button>
+<button class="btn no-print" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
+<button class="btn btn-primary no-print" onclick="executeMigrate()">Mulai Migrasi</button>
 </div>
 </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyA7i0bGhjKHZ788Ir7xTDFM0LXAevnWKsI",
@@ -274,10 +310,18 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const COLLECTION_STOKIS = 'stokisDatas';
 const COLLECTION_USERS = 'stokis_users';
+const COLLECTION_ANNOUNCEMENTS = 'adminAnnouncements';
 
 let currentStokisId = null;
 let currentDataUnsubscribe = null;
 let stokisCache = {};
+
+// Pagination & Filter State
+let purchaseReportState = { page: 1, data: [], filtered: [] };
+let globalPurchaseReportState = { page: 1, data: [], filtered: [] };
+let transactionState = { page: 1, data: [] }; // For Stokis Transactions
+let rankingMemberState = { page: 1, data: [], filtered: [] }; // For Global Ranking
+let treeState = { nodes: [] }; // For Global Tree
 
 window.handleAdminLogin = (e) => {
 e.preventDefault();
@@ -352,6 +396,8 @@ handleReportTabs(tabName);
 } else if (tabName.startsWith('stokis-')) {
 if (!currentStokisId) { document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`; return; }
 renderStokisSpecificTab(tabName);
+} else if (tabName === 'admin-board') {
+renderAdminBoard();
 } else {
 if (!currentStokisId) { document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`; return; }
 renderTabContent(tabName);
@@ -374,7 +420,113 @@ if(el) el.textContent = snap.size;
 }
 
 // ==========================================
-// STOKIS SPECIFIC REPORT LOGIC (NEW)
+// ADMIN BOARD
+// ==========================================
+
+function renderAdminBoard() {
+const content = document.getElementById('contentArea');
+content.innerHTML = `
+<h2>📢 Papan Informasi Admin</h2>
+<div class="card" style="margin-top:20px;">
+<div style="padding:40px; text-align:center;">
+<div class="spinner"></div>
+<p>Memuat pengumuman...</p>
+</div>
+</div>`;
+
+const q = query(collection(db, COLLECTION_ANNOUNCEMENTS), orderBy('createdAt', 'desc'));
+
+onSnapshot(q, (snapshot) => {
+const announcements = [];
+snapshot.forEach(doc => announcements.push({ id: doc.id, ...doc.data() }));
+
+let html = `
+<h2>📢 Papan Informasi Admin</h2>
+<div class="card" style="margin-top:20px; background: #fffbeb; border-color: #fcd34d;">
+<div class="card-header">
+<span class="card-title">Kelola Pengumuman & File</span>
+<button class="btn btn-primary btn-sm" onclick="openAddAnnouncementModal()">+ Buat Baru</button>
+</div>
+<div style="padding:20px;">
+<p style="margin-bottom:10px; color: #92400e; font-size:14px;">
+Pengumuman dan file di sini tersedia untuk dilihat dan didownload oleh Stokis.
+</p>
+ ${announcements.length === 0 ? 
+`<div class="empty-state" style="padding:20px; background:white; border-radius:8px; border:1px dashed #e5e7eb;">
+Belum ada pengumuman.
+</div>` : ''}
+<div style="display:grid; gap:20px;">
+ ${announcements.map(a => `
+<div style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:16px;">
+<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+<h3 style="font-size:16px; font-weight:700; color:#1f2937;">${a.title}</h3>
+<div style="font-size:12px; color:#6b7280;">${a.createdAt ? new Date(a.createdAt.toDate()).toLocaleDateString() : '-'}</div>
+</div>
+<div style="color:#374151; font-size:14px; white-space:pre-wrap; margin-bottom:12px; line-height:1.5;">${a.content}</div>
+ ${a.fileUrl ? `
+<div class="info-file-box">
+<div style="display:flex; align-items:center; gap:10px;">
+<span style="font-size:24px;">📎</span>
+<div>
+<div style="font-weight:600; font-size:14px; color:#0369a1;">${a.fileName || 'File'}</div>
+<div style="font-size:12px; color:#64748b;">Klik tombol untuk download</div>
+</div>
+</div>
+<a href="${a.fileUrl}" target="_blank" class="btn btn-primary btn-sm">Download</a>
+</div>
+` : ''}
+<div style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:10px;">
+<button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${a.id}')">Hapus</button>
+</div>
+</div>
+`).join('')}
+</div>
+</div>
+</div>
+`;
+content.innerHTML = html;
+}, (error) => {
+content.innerHTML = `<h2>Error</h2><p>${error.message}</p>`;
+});
+}
+
+window.openAddAnnouncementModal = () => {
+document.getElementById('modalTitle').textContent = "Buat Pengumuman Baru";
+document.getElementById('modalBody').innerHTML = `
+<div class="form-group"><label>Judul</label><input id="ann_title"></div>
+<div class="form-group"><label>Isi Pesan (Teks)</label><textarea id="ann_content" rows="5"></textarea></div>
+<div style="margin: 20px 0 10px 0; border-top: 1px dashed #cbd5e1; padding-top:10px;"><strong style="font-size:12px; color:#6366f1;">LAMPIRAN FILE (Opsional)</strong></div>
+<div class="form-group"><label>Nama File (Contoh: Katalog.pdf)</label><input id="ann_fname" placeholder="Nama File"></div>
+<div class="form-group"><label>Link Download File (URL)</label><input id="ann_url" placeholder="https://drive.google.com/..."></div>
+`;
+document.getElementById('modalActionBtn').onclick = async () => {
+const title = document.getElementById('ann_title').value;
+const content = document.getElementById('ann_content').value;
+const fname = document.getElementById('ann_fname').value;
+const furl = document.getElementById('ann_url').value;
+
+if(!title) return alert('Judul wajib diisi');
+try {
+await addDoc(collection(db, COLLECTION_ANNOUNCEMENTS), {
+title, content, fileName: fname, fileUrl: furl, createdAt: serverTimestamp()
+});
+alert('Terkirim');
+closeModal();
+} catch(e) { alert('Gagal: ' + e.message); }
+};
+document.getElementById('genericModal').classList.add('active');
+};
+
+window.deleteAnnouncement = async (id) => {
+if(!confirm('Hapus pengumuman ini?')) return;
+try {
+await deleteDoc(doc(db, COLLECTION_ANNOUNCEMENTS, id));
+} catch(e) { alert('Gagal: '+e.message); }
+};
+
+
+// ==========================================
+// STOKIS SPECIFIC REPORT LOGIC
 // ==========================================
 
 function renderStokisSpecificTab(tabName) {
@@ -382,109 +534,101 @@ const data = stokisCache[currentStokisId];
 if(!data) return;
 
 if (tabName === 'stokis-purchase-member') {
-renderStokisPurchaseMember(data);
-} else if (tabName === 'stokis-sales-product') {
-renderStokisSalesProduct(data);
+const memberLookup = {};
+(data.members || []).forEach(m => memberLookup[m.id] = m.name);
+
+const list = (data.transactions || []).map(t => ({
+date: t.date,
+id: t.id,
+memberId: t.memberId,
+memberName: memberLookup[t.memberId] || t.memberName || 'Unknown',
+productName: (t.productCode ? `${t.productCode} - ` : '') + (t.productName || t.productCode),
+qty: t.qty,
+points: t.totalPoints
+}));
+
+purchaseReportState.data = list;
+purchaseReportState.page = 1;
+purchaseReportState.filtered = list;
+renderPurchaseReportTable('stokis');
 }
 }
 
-function renderStokisPurchaseMember(data) {
-// Group transactions by Member ID
-const memberMap = new Map();
+// Filter Apply Function
+window.applyFilter = (type) => {
+const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
+const targetName = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
+const targetProd = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
+const targetDateFrom = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
+const targetDateTo = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
 
-(data.transactions || []).forEach(t => {
-if (!memberMap.has(t.memberId)) {
-memberMap.set(t.memberId, { id: t.memberId, name: t.memberName || 'Unknown', totalQty: 0, totalPoints: 0, count: 0 });
-}
-const entry = memberMap.get(t.memberId);
-entry.totalQty += (t.qty || 0);
-entry.totalPoints += (t.totalPoints || 0);
-entry.count += 1;
+const nameInput = document.getElementById(targetName)?.value.toLowerCase() || '';
+const prodInput = document.getElementById(targetProd)?.value.toLowerCase() || '';
+const fromInput = document.getElementById(targetDateFrom)?.value || '';
+const toInput = document.getElementById(targetDateTo)?.value || '';
+
+state.filtered = state.data.filter(t => {
+const matchName = t.memberName.toLowerCase().includes(nameInput);
+const matchProd = t.productName.toLowerCase().includes(prodInput);
+const matchDateFrom = !fromInput || t.date >= fromInput;
+const matchDateTo = !toInput || t.date <= toInput;
+
+return matchName && matchProd && matchDateFrom && matchDateTo;
 });
 
-// Sort by Qty Descending
-const sorted = Array.from(memberMap.values()).sort((a, b) => b.totalQty - a.totalQty);
+state.page = 1;
+renderPurchaseReportTable(type);
+};
+
+function renderPurchaseReportTable(type) {
+const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
+const title = type === 'global' ? '🛒 Laporan Belanja Global (Detail)' : `🛒 Laporan Belanja: ${currentStokisId}`;
+
+// IDs
+const targetNameId = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
+const targetProdId = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
+const targetDateFromId = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
+const targetDateToId = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
+
+const limit = 10;
+const totalPages = Math.ceil(state.filtered.length / limit);
+const start = (state.page - 1) * limit;
+const pagedData = state.filtered.slice(start, start + limit);
 
 const html = `
-<h2>🛒 Laporan Belanja per Member: ${currentStokisId}</h2>
+<h2>${title}</h2>
 <div class="card" style="margin-top:20px;">
+<div class="card-header"><span class="card-title">Filter Transaksi</span></div>
+<div class="filter-bar no-print" style="padding:16px;">
+<input type="text" id="${targetNameId}" class="filter-input" placeholder="Cari Nama Member...">
+<input type="text" id="${targetProdId}" class="filter-input" placeholder="Cari Nama Produk...">
+<input type="date" id="${targetDateFromId}" class="filter-input" title="Dari Tanggal">
+<input type="date" id="${targetDateToId}" class="filter-input" title="Sampai Tanggal">
+<button class="btn btn-primary" onclick="applyFilter('${type}')">Terapkan</button>
+</div>
 <div class="table-container">
 <table>
-<thead><tr><th>Rank</th><th>ID Member</th><th>Nama Member</th><th>Total Transaksi</th><th>Total Qty</th><th>Total Poin</th></tr></thead>
+<thead><tr><th>Tanggal</th><th>ID Member</th><th>Nama Member</th><th>Produk</th><th>Qty</th><th>Poin</th></tr></thead>
 <tbody>
- ${sorted.length === 0 ? '<tr><td colspan="6" class="empty-state">Belum ada data transaksi</td></tr>' : sorted.map((m, idx) => {
-return `<tr>
-<td><div class="rank-badge rank-other">${idx+1}</div></td>
-<td><strong>${m.id}</strong></td>
-<td>${m.name}</td>
-<td>${m.count}</td>
-<td style="font-weight:bold;">${m.totalQty.toLocaleString()}</td>
-<td style="color:var(--color-accent); font-weight:bold;">${m.totalPoints.toLocaleString()}</td>
-</tr>`;
-}).join('')}
+ ${pagedData.length === 0 ? '<tr><td colspan="6" class="empty-state">Data tidak ditemukan</td></tr>' : pagedData.map(t => `
+<tr>
+<td>${t.date}</td>
+<td>${t.memberId}</td>
+<td><strong>${t.memberName}</strong></td>
+<td>${t.productName}</td>
+<td style="font-weight:bold;">${t.qty}</td>
+<td style="color:var(--color-accent); font-weight:bold;">${(parseFloat(t.points)||0).toFixed(2)}</td>
+</tr>
+`).join('')}
 </tbody>
 </table>
 </div>
-</div>`;
-document.getElementById('contentArea').innerHTML = html;
-}
-
-function renderStokisSalesProduct(data) {
-// Group by Product Code, then list buyers
-const productMap = new Map();
-
-(data.transactions || []).forEach(t => {
-if (!productMap.has(t.productCode)) {
-productMap.set(t.productCode, { code: t.productCode, name: t.productName || t.productCode, totalQty: 0, buyers: {} });
-}
-const p = productMap.get(t.productCode);
-p.totalQty += (t.qty || 0);
-
-if (!p.buyers[t.memberId]) {
-p.buyers[t.memberId] = { id: t.memberId, name: t.memberName || 'Unknown', qty: 0, points: 0 };
-}
-p.buyers[t.memberId].qty += (t.qty || 0);
-p.buyers[t.memberId].points += (t.totalPoints || 0);
-});
-
-const sortedProducts = Array.from(productMap.values()).sort((a, b) => b.totalQty - a.totalQty);
-
-let htmlRows = '';
-sortedProducts.forEach(prod => {
-// Sort buyers for this product
-const sortedBuyers = Object.values(prod.buyers).sort((a, b) => b.qty - a.qty);
-const buyerRows = sortedBuyers.map(b => `
-<tr style="background-color: #f8fafc;">
-<td></td>
-<td style="padding-left:24px;">
-<span style="font-size:12px; color:#64748b;">Buyer:</span> ${b.name} <span style="font-weight:600; color:#64748b;">(${b.id})</span>
-</td>
-<td>-</td>
-<td style="text-align:right;">${b.qty.toLocaleString()}</td>
-<td style="text-align:right;">${b.points.toLocaleString()}</td>
-</tr>
-`).join('');
-
-htmlRows += `
-<tr style="background:#f1f5f9; font-weight:bold;">
-<td rowspan="${sortedBuyers.length + 1}">${prod.code}</td>
-<td>${prod.name}</td>
-<td colspan="3" style="text-align:right;">Total: ${prod.totalQty.toLocaleString()}</td>
-</tr>
- ${buyerRows}
-`;
-});
-
-const html = `
-<h2>🏷️ Laporan Penjualan per Produk: ${currentStokisId}</h2>
-<div class="card" style="margin-top:20px;">
-<div class="table-container">
-<table>
-<thead><tr><th>Kode Produk</th><th>Nama Produk / Member</th><th>Total Stokis</th><th>Qty</th><th>Poin</th></tr></thead>
-<tbody>
- ${sortedProducts.length === 0 ? '<tr><td colspan="5" class="empty-state">Belum ada data transaksi</td></tr>' : htmlRows}
-</tbody>
-</table>
+<div class="pagination-bar no-print">
+<span>Hal ${state.page} dari ${totalPages || 1} (${state.filtered.length} total)</span>
+<div style="display:flex; gap:8px;">
+<button class="btn btn-sm" ${state.page <= 1 ? 'disabled' : ''} onclick="if('${type}'==='global') { globalPurchaseReportState.page--; renderPurchaseReportTable('global'); } else { purchaseReportState.page--; renderPurchaseReportTable('stokis'); }">Prev</button>
+<button class="btn btn-sm" ${state.page >= totalPages ? 'disabled' : ''} onclick="if('${type}'==='global') { globalPurchaseReportState.page++; renderPurchaseReportTable('global'); } else { purchaseReportState.page++; renderPurchaseReportTable('stokis'); }">Next</button>
+</div>
 </div>
 </div>`;
 document.getElementById('contentArea').innerHTML = html;
@@ -492,7 +636,7 @@ document.getElementById('contentArea').innerHTML = html;
 
 
 // ==========================================
-// REPORT LOGIC (UPDATED FOR GLOBAL ID)
+// REPORT LOGIC
 // ==========================================
 
 async function fetchGlobalData() {
@@ -561,45 +705,34 @@ return null;
 }
 }
 
-async function fetchGlobalTransactionData() {
-// New function specifically for transaction reports to avoid slowing down points report
+async function fetchGlobalTransactionList() {
 const content = document.getElementById('contentArea');
 content.innerHTML = `<div class="spinner"></div><p style="text-align:center">Menganalisa Transaksi Global...</p>`;
 try {
 const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-const purchaseMap = new Map(); // MemberID -> {id, name, totalQty, totalPoints, count}
-const productSalesMap = new Map(); // ProductCode -> {code, name, totalQty, buyers: {MemberID: {qty, points}}}
+const transactionList = [];
 
 stokisSnap.forEach(doc => {
 const sData = doc.data();
 const sName = sData.profile?.namaStokis || doc.id;
+const memberLookup = {};
+(sData.members || []).forEach(m => memberLookup[m.id] = m.name);
 
 (sData.transactions || []).forEach(t => {
-// 1. Aggregation for Purchase Per Member
-if (!purchaseMap.has(t.memberId)) {
-purchaseMap.set(t.memberId, { id: t.memberId, name: t.memberName, totalQty: 0, totalPoints: 0, count: 0 });
-}
-const memEntry = purchaseMap.get(t.memberId);
-memEntry.totalQty += (t.qty || 0);
-memEntry.totalPoints += (t.totalPoints || 0);
-memEntry.count += 1;
-if(!memEntry.name && t.memberName) memEntry.name = t.memberName;
-
-// 2. Aggregation for Sales per Product per Member
-if (!productSalesMap.has(t.productCode)) {
-productSalesMap.set(t.productCode, { code: t.productCode, name: t.productName, totalQty: 0, buyers: {} });
-}
-const prodEntry = productSalesMap.get(t.productCode);
-prodEntry.totalQty += (t.qty || 0);
-if (!prodEntry.buyers[t.memberId]) {
-prodEntry.buyers[t.memberId] = { id: t.memberId, name: t.memberName, qty: 0, points: 0 };
-}
-prodEntry.buyers[t.memberId].qty += (t.qty || 0);
-prodEntry.buyers[t.memberId].points += (t.totalPoints || 0);
+transactionList.push({
+date: t.date,
+id: t.id,
+memberId: t.memberId,
+memberName: memberLookup[t.memberId] || t.memberName || 'Unknown',
+productName: (t.productCode ? `${t.productCode} - ` : '') + (t.productName || t.productCode),
+qty: t.qty,
+points: t.totalPoints,
+stokisName: sName 
+});
 });
 });
 
-return { purchaseMap, productSalesMap };
+return transactionList;
 } catch (error) {
 console.error(error);
 alert("Error Transaksi: " + error.message);
@@ -616,12 +749,13 @@ else if (tabName === 'report-stokis') renderReportStokisRanking(data);
 else if (tabName === 'report-member-sales') renderReportMemberSales(data);
 else if (tabName === 'report-tree') renderReportTree(data);
 else if (tabName === 'report-purchase-member') {
-const tData = await fetchGlobalTransactionData();
-if(tData) renderReportGlobalPurchaseMember(tData);
+const tList = await fetchGlobalTransactionList();
+if(tList) {
+globalPurchaseReportState.data = tList;
+globalPurchaseReportState.page = 1;
+globalPurchaseReportState.filtered = tList;
+renderPurchaseReportTable('global');
 }
-else if (tabName === 'report-sales-product') {
-const tData = await fetchGlobalTransactionData();
-if(tData) renderReportGlobalSalesProduct(tData);
 }
 }
 
@@ -631,7 +765,7 @@ const html = `
 <div class="grid-dashboard" style="margin-top:20px;">
 <div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value">${data.totalStokis}</div></div>
 <div class="stat-card"><div class="stat-label">Total Member (Unique ID)</div><div class="stat-value">${data.totalMembers}</div></div>
-<div class="stat-card"><div class="stat-label">Total Poin Global</div><div class="stat-value" style="color:var(--color-accent)">${data.totalPoints.toLocaleString()}</div></div>
+<div class="stat-card"><div class="stat-label">Total Poin Global</div><div class="stat-value" style="color:var(--color-accent)">${(parseFloat(data.totalPoints)||0).toFixed(2)}</div></div>
 </div>
 <div class="card">
 <div class="card-header"><span class="card-title">Ringkasan Per Stokis</span></div>
@@ -639,7 +773,7 @@ const html = `
 <table>
 <thead><tr><th>Nama Stokis</th><th>Jml Member</th><th>Total Poin (Internal)</th></tr></thead>
 <tbody>
- ${data.stokisDetails.map(s => `<tr><td>${s.name}</td><td>${s.memberCount}</td><td>${s.totalPoints.toLocaleString()}</td></tr>`).join('')}
+ ${data.stokisDetails.map(s => `<tr><td>${s.name}</td><td>${s.memberCount}</td><td>${(parseFloat(s.totalPoints)||0).toFixed(2)}</td></tr>`).join('')}
 </tbody>
 </table>
 </div>
@@ -663,7 +797,7 @@ return `<tr>
 <td><div class="rank-badge ${rClass}">${idx+1}</div></td>
 <td><strong>${s.name}</strong></td>
 <td>${s.memberCount}</td>
-<td style="font-weight:bold;">${s.totalPoints.toLocaleString()}</td>
+<td style="font-weight:bold;">${(parseFloat(s.totalPoints)||0).toFixed(2)}</td>
 </tr>`;
 }).join('')}
 </tbody>
@@ -676,37 +810,81 @@ document.getElementById('contentArea').innerHTML = html;
 
 function renderReportMemberSales(data) {
 const sortedMembers = Array.from(data.membersMap.values()).sort((a, b) => b.points - a.points);
+rankingMemberState.data = sortedMembers;
+rankingMemberState.filtered = sortedMembers;
+rankingMemberState.page = 1;
 
 const html = `
 <h2>💎 Ranking Member (By ID Global)</h2>
 <p style="color:#64748b; margin-bottom:16px;">
 Poin dijumlahkan jika ID member sama muncul di beberapa Stokis.
 </p>
-<div class="card">
+<div class="card" style="margin-top:20px;">
+<div class="card-header"><span class="card-title">Filter Member</span></div>
+<div class="filter-bar no-print" style="padding:16px;">
+<input type="text" id="rankFilter" class="filter-input" placeholder="Cari Nama / ID Member...">
+<button class="btn btn-primary" onclick="applyRankingFilter()">Terapkan</button>
+</div>
 <div class="table-container">
-<table>
-<thead><tr><th>Rank</th><th>Nama Member</th><th>ID Member</th><th>Aktif di Stokis</th><th>Total Poin (Gabungan)</th></tr></thead>
-<tbody>
- ${sortedMembers.slice(0, 50).map((m, idx) => {
-let rClass = 'rank-other'; if(idx<3) rClass = `rank-${idx+1}`;
+<table id="rankingTableBody">
+<!-- Content rendered by JS -->
+</table>
+</div>
+<div class="pagination-bar no-print">
+<span id="rankPaginationInfo">Hal 1</span>
+<div style="display:flex; gap:8px;">
+<button class="btn btn-sm" id="rankPrev" disabled>Prev</button>
+<button class="btn btn-sm" id="rankNext">Next</button>
+</div>
+</div>
+</div>
+`;
+document.getElementById('contentArea').innerHTML = html;
+renderRankingTable();
+}
+
+window.applyRankingFilter = () => {
+const val = document.getElementById('rankFilter').value.toLowerCase();
+rankingMemberState.filtered = rankingMemberState.data.filter(m => 
+m.name.toLowerCase().includes(val) || m.id.toLowerCase().includes(val)
+);
+rankingMemberState.page = 1;
+renderRankingTable();
+};
+
+function renderRankingTable() {
+const limit = 10;
+const total = rankingMemberState.filtered.length;
+const totalPages = Math.ceil(total / limit);
+const start = (rankingMemberState.page - 1) * limit;
+const pagedData = rankingMemberState.filtered.slice(start, start + limit);
+
+const tbody = document.getElementById('rankingTableBody');
+if(!tbody) return;
+
+let rows = pagedData.map((m, idx) => {
+const absIdx = start + idx;
+let rClass = 'rank-other'; if(absIdx<3) rClass = `rank-${absIdx+1}`;
 const stokisBadge = m.stokisSources.length > 3
 ? `${m.stokisSources.slice(0,3).join(', ')}... (+${m.stokisSources.length-3})`
 : m.stokisSources.join(', ');
 
 return `<tr>
-<td><div class="rank-badge ${rClass}">${idx+1}</div></td>
+<td><div class="rank-badge ${rClass}">${absIdx+1}</div></td>
 <td><strong>${m.name}</strong></td>
 <td>${m.id}</td>
 <td><span class="badge badge-green" style="font-weight:400;">${stokisBadge}</span></td>
-<td style="font-weight:bold; color:var(--color-primary);">${m.points.toLocaleString()}</td>
+<td style="font-weight:bold; color:var(--color-primary);">${(parseFloat(m.points)||0).toFixed(2)}</td>
 </tr>`;
-}).join('')}
-</tbody>
-</table>
-</div>
-</div>
-`;
-document.getElementById('contentArea').innerHTML = html;
+}).join('');
+
+tbody.innerHTML = rows || '<tr><td colspan="5" class="empty-state">Tidak ada data</td></tr>';
+
+document.getElementById('rankPaginationInfo').textContent = `Hal ${rankingMemberState.page} dari ${totalPages || 1} (${total} total)`;
+document.getElementById('rankPrev').disabled = rankingMemberState.page <= 1;
+document.getElementById('rankNext').disabled = rankingMemberState.page >= totalPages;
+document.getElementById('rankPrev').onclick = () => { rankingMemberState.page--; renderRankingTable(); };
+document.getElementById('rankNext').onclick = () => { rankingMemberState.page++; renderRankingTable(); };
 }
 
 function renderReportTree(data) {
@@ -716,7 +894,8 @@ nodes.set(m.id, {
 id: m.id,
 name: m.name,
 points: m.points,
-children: []
+children: [],
+expanded: true
 });
 });
 
@@ -741,117 +920,73 @@ roots.push(node);
 }
 });
 
+treeState.nodes = roots;
+
+let html = `
+<h2>🌳 Pohon Jaringan (Global ID)</h2>
+<p style="color:#64748b; margin-bottom:16px;">
+Struktur digabungkan berdasarkan ID Member. Klik member untuk expand/collapse.
+</p>
+<div class="card" style="margin-top:20px;">
+<!-- Search bar removed -->
+<div class="tree-container tree">
+<div id="treeRoot"></div>
+</div>
+</div>
+`;
+document.getElementById('contentArea').innerHTML = html;
+renderTreeNodes();
+}
+
+// Removed applyTreeFilter function as requested
+
+window.toggleNode = (id) => {
+function traverse(list) {
+list.forEach(n => {
+if(n.id === id) {
+n.expanded = !n.expanded;
+return true;
+}
+if(n.children) traverse(n.children);
+});
+}
+traverse(treeState.nodes);
+renderTreeNodes();
+};
+
+function renderTreeNodes() {
+const container = document.getElementById('treeRoot');
+if(!container) return;
+
 const buildTreeHtml = (nodeList) => {
 if (!nodeList || nodeList.length === 0) return '';
 return `<ul>${nodeList.map(node => {
+const hasChildren = node.children && node.children.length > 0;
+const isExpanded = node.expanded;
+
+let childrenHtml = '';
+if(hasChildren && isExpanded) {
+childrenHtml = buildTreeHtml(node.children);
+}
+
 return `<li>
-<div class="tree-node">
+<div class="tree-node" onclick="toggleNode('${node.id}')">
+ ${hasChildren ? `<span class="tree-toggle-icon">${isExpanded ? '[-]' : '[+]'}</span>` : '<span style="width:20px; display:inline-block;"></span>'}
 <strong>${node.name}</strong>
 <small>${node.id}</small>
-<small style="display:block; color:var(--color-accent); font-weight:bold;">${node.points.toLocaleString()} Pts</small>
+<small style="display:block; color:var(--color-accent); font-weight:bold;">${(parseFloat(node.points)||0).toFixed(2)} Pts</small>
 </div>
- ${buildTreeHtml(node.children)}
+ ${childrenHtml}
 </li>`;
 }).join('')}</ul>`;
 };
 
-const html = `
-<h2>🌳 Pohon Jaringan (Global ID)</h2>
-<p style="color:#64748b; margin-bottom:16px;">
-Struktur digabungkan berdasarkan ID Member. Jika ID sama di stokis berbeda, node ini digabungkan.
-</p>
-<div class="card">
-<div class="tree-container tree">
- ${buildTreeHtml(roots)}
-</div>
-</div>
-`;
-document.getElementById('contentArea').innerHTML = html;
+container.innerHTML = buildTreeHtml(treeState.nodes);
 }
 
-// ==========================================
-// NEW GLOBAL REPORT FUNCTIONS
-// ==========================================
-
-function renderReportGlobalPurchaseMember(tData) {
-const sorted = Array.from(tData.purchaseMap.values()).sort((a, b) => b.totalQty - a.totalQty);
-
-const html = `
-<h2>🛒 Laporan Pembelian Produk per Member (Global)</h2>
-<p style="color:#64748b; margin-bottom:16px;">
-Data digabungkan berdasarkan ID Member di seluruh stokis.
-</p>
-<div class="card">
-<div class="table-container">
-<table>
-<thead><tr><th>Rank</th><th>ID Member</th><th>Nama Member</th><th>Jml Transaksi</th><th>Total Qty Beli</th><th>Total Poin Belanja</th></tr></thead>
-<tbody>
- ${sorted.length === 0 ? '<tr><td colspan="6" class="empty-state">Data kosong</td></tr>' : sorted.slice(0, 100).map((m, idx) => {
-let rClass = 'rank-other'; if(idx<3) rClass = `rank-${idx+1}`;
-return `<tr>
-<td><div class="rank-badge ${rClass}">${idx+1}</div></td>
-<td><strong>${m.id}</strong></td>
-<td>${m.name || '-'}</td>
-<td>${m.count}</td>
-<td style="font-weight:bold;">${m.totalQty.toLocaleString()}</td>
-<td style="color:var(--color-accent); font-weight:bold;">${m.totalPoints.toLocaleString()}</td>
-</tr>`;
-}).join('')}
-</tbody>
-</table>
-</div>
-</div>`;
-document.getElementById('contentArea').innerHTML = html;
-}
-
-function renderReportGlobalSalesProduct(tData) {
-const sortedProducts = Array.from(tData.productSalesMap.values()).sort((a, b) => b.totalQty - a.totalQty);
-
-let htmlRows = '';
-sortedProducts.forEach(prod => {
-const sortedBuyers = Object.values(prod.buyers).sort((a, b) => b.qty - a.qty);
-const buyerRows = sortedBuyers.map(b => `
-<tr style="background-color: #f8fafc;">
-<td></td>
-<td style="padding-left:24px;">
-<span class="badge badge-blue">ID: ${b.id}</span> ${b.name || 'Unknown'}
-</td>
-<td>-</td>
-<td style="text-align:right;">${b.qty.toLocaleString()}</td>
-<td style="text-align:right;">${b.points.toLocaleString()}</td>
-</tr>
-`).join('');
-
-htmlRows += `
-<tr style="background:#f1f5f9; font-weight:bold;">
-<td rowspan="${sortedBuyers.length + 1}">${prod.code}</td>
-<td>${prod.name || prod.code}</td>
-<td colspan="3" style="text-align:right;">Total Global: ${prod.totalQty.toLocaleString()}</td>
-</tr>
- ${buyerRows}
-`;
-});
-
-const html = `
-<h2>🏷️ Laporan Penjualan Member per Produk (Global)</h2>
-<p style="color:#64748b; margin-bottom:16px;">
-Detail pembelian per produk di seluruh stokis, dikelompokkan per member pembeli.
-</p>
-<div class="card">
-<div class="table-container">
-<table>
-<thead><tr><th>Kode Produk</th><th>Nama Produk / Pembeli</th><th>Total Global</th><th>Qty</th><th>Poin</th></tr></thead>
-<tbody>
- ${sortedProducts.length === 0 ? '<tr><td colspan="5" class="empty-state">Data kosong</td></tr>' : htmlRows}
-</tbody>
-</table>
-</div>
-</div>`;
-document.getElementById('contentArea').innerHTML = html;
-}
 
 // ==========================================
-// EXISTING CRUD LOGIC (Unchanged)
+// EXISTING CRUD LOGIC
 // ==========================================
 
 async function renderUsersManagement() {
@@ -953,10 +1088,10 @@ if(currentStokisId===d) loadSelectedStokis(d);
 function renderTabContent(t) {
 const data = stokisCache[currentStokisId];
 if(!data) return;
-let html = '';
+
 if(t==='profile') {
 const p = data.profile || {};
-html = `<h2>Profil: ${currentStokisId}</h2><div class="card" style="margin-top:16px;"><div class="card-header"><span>Edit Identitas</span></div><div style="padding:24px;">
+document.getElementById('contentArea').innerHTML = `<h2>Profil: ${currentStokisId}</h2><div class="card" style="margin-top:16px;"><div class="card-header"><span>Edit Identitas</span></div><div style="padding:24px;">
 <div class="form-group"><label>Nama Koordinat</label><input id="p_koord" value="${p.namaKoordinat||''}"></div>
 <div class="form-group"><label>Kode</label><input id="p_kode" value="${p.kodeKoordinat||''}"></div>
 <div class="form-group"><label>Nama Stokis</label><input id="p_nama" value="${p.namaStokis||''}"></div>
@@ -965,12 +1100,51 @@ html = `<h2>Profil: ${currentStokisId}</h2><div class="card" style="margin-top:1
 <button class="btn btn-primary" onclick="saveProfile()">Simpan</button>
 </div></div>`;
 } else if(t==='products') {
-html = `<h2>Produk: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addProductModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>Nama</th><th>Poin</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${(data.products||[]).map((p,i)=>`<tr><td>${p.name}</td><td>${p.point}</td><td>${p.pembelian}</td><td><button class="btn btn-sm btn-primary" onclick="editProduct(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('products',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
+document.getElementById('contentArea').innerHTML = `<h2>Produk: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addProductModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>Nama</th><th>Poin</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${(data.products||[]).map((p,i)=>`<tr><td>${p.name}</td><td>${(parseFloat(p.point)||0).toFixed(2)}</td><td>${p.pembelian}</td><td><button class="btn btn-sm btn-primary" onclick="editProduct(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('products',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
 } else if(t==='members') {
-html = `<h2>Member: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addMemberModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Poin</th><th>Aksi</th></tr></thead><tbody>${(data.members||[]).map((m,i)=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.upline||'-'}</td><td>${m.totalPoints||0}</td><td><button class="btn btn-sm btn-primary" onclick="editMember(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('members',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
+document.getElementById('contentArea').innerHTML = `<h2>Member: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addMemberModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Poin</th><th>Aksi</th></tr></thead><tbody>${(data.members||[]).map((m,i)=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.upline||'-'}</td><td>${(parseFloat(m.totalPoints)||0).toFixed(2)}</td><td><button class="btn btn-sm btn-primary" onclick="editMember(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('members',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
 } else if(t==='transactions') {
-html = `<h2>Transaksi: ${currentStokisId}</h2><div class="card"><div class="table-container"><table><thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead><tbody>${(data.transactions||[]).map((t,i)=>`<tr><td>${t.date}</td><td>${t.code}</td><td>${t.memberId}</td><td>${t.productCode}</td><td>${t.qty}</td><td>${t.totalPoints}</td><td><button class="btn btn-sm btn-danger" onclick="deleteItem('transactions',${i})">Batal</button></td></tr>`).join('')}</tbody></table></div></div>`;
+transactionState.data = (data.transactions || []);
+transactionState.page = 1;
+renderTransactionTable();
 }
+}
+
+function renderTransactionTable() {
+const limit = 10;
+const totalPages = Math.ceil(transactionState.data.length / limit);
+const start = (transactionState.page - 1) * limit;
+const pagedData = transactionState.data.slice(start, start + limit);
+
+const html = `
+<h2>Transaksi: ${currentStokisId}</h2>
+<div class="card" style="margin-top:20px;">
+<div class="table-container">
+<table>
+<thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead>
+<tbody>
+ ${pagedData.length === 0 ? '<tr><td colspan="7" class="empty-state">Tidak ada transaksi</td></tr>' : pagedData.map((t,i)=>`
+<tr>
+<td>${t.date}</td>
+<td>${t.code || t.id || 'N/A'}</td>
+<td>${t.memberId}</td>
+<td>${t.productCode || t.productName}</td>
+<td>${t.qty}</td>
+<td>${(parseFloat(t.totalPoints)||0).toFixed(2)}</td>
+<td><button class="btn btn-sm btn-danger" onclick="deleteItem('transactions',${start + i})">Batal</button></td>
+</tr>
+`).join('')}
+</tbody>
+</table>
+</div>
+<div class="pagination-bar no-print">
+<span>Hal ${transactionState.page} dari ${totalPages || 1} (${transactionState.data.length} total)</span>
+<div style="display:flex; gap:8px;">
+<button class="btn btn-sm" ${transactionState.page <= 1 ? 'disabled' : ''} onclick="transactionState.page--; renderTransactionTable();">Prev</button>
+<button class="btn btn-sm" ${transactionState.page >= totalPages ? 'disabled' : ''} onclick="transactionState.page++; renderTransactionTable();">Next</button>
+</div>
+</div>
+</div>`;
 document.getElementById('contentArea').innerHTML = html;
 }
 
@@ -981,7 +1155,7 @@ await saveData(newData);
 };
 window.deleteItem = async (c, i) => { if(!confirm('Hapus?')) return; const d = stokisCache[currentStokisId]; d[c].splice(i, 1); await saveData(d); };
 window.addProductModal = () => {
-showModalForm('Tambah Produk', `<input id="e_n" placeholder="Nama" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" placeholder="Poin" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" placeholder="Stok" style="width:100%">`, async () => {
+showModalForm('Tambah Produk', `<input id="e_n" placeholder="Nama" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" step="0.01" placeholder="Poin" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" placeholder="Stok" style="width:100%">`, async () => {
 const n = document.getElementById('e_n').value, p = parseFloat(document.getElementById('e_p').value), s = parseInt(document.getElementById('e_s').value);
 if(!n||isNaN(p)) return alert('Lengkapi');
 const d = stokisCache[currentStokisId]; d.products.push({ code:'PROD_'+Date.now(), name:n, point:p, pembelian:s }); await saveData(d);
@@ -989,7 +1163,7 @@ const d = stokisCache[currentStokisId]; d.products.push({ code:'PROD_'+Date.now(
 };
 window.editProduct = (i) => {
 const p = stokisCache[currentStokisId].products[i];
-showModalForm('Edit Produk', `<input id="e_n" value="${p.name}" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" value="${p.point}" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" value="${p.pembelian}" style="width:100%">`, async () => {
+showModalForm('Edit Produk', `<input id="e_n" value="${p.name}" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" step="0.01" value="${p.point}" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" value="${p.pembelian}" style="width:100%">`, async () => {
 p.name = document.getElementById('e_n').value; p.point = parseFloat(document.getElementById('e_p').value); p.pembelian = parseInt(document.getElementById('e_s').value); await saveData(stokisCache[currentStokisId]);
 });
 };
