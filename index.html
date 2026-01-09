@@ -1,1199 +1,1970 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GMRJ Super Admin System - Global ID Based</title>
-<style>
-/* =========================================
-CORE VARIABLES & RESET
-========================================= */
-:root {
---color-primary: #1e293b;
---color-primary-light: #334155;
---color-accent: #6366f1;
---color-accent-hover: #4f46e5;
---color-bg: #f8fafc;
---color-surface: #ffffff;
---color-text: #0f172a;
---color-text-light: #64748b;
---color-border: #e2e8f0;
---color-success: #10b981;
---color-warning: #f59e0b;
---color-error: #ef4444;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMRJ Super Admin System - Global ID Based</title>
+    <style>
+        /* CORE VARIABLES & RESET */
+        :root {
+            --color-primary: #1e293b;
+            --color-primary-light: #334155;
+            --color-accent: #6366f1;
+            --color-accent-hover: #4f46e5;
+            --color-bg: #f8fafc;
+            --color-surface: #ffffff;
+            --color-text: #0f172a;
+            --color-text-light: #64748b;
+            --color-border: #e2e8f0;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-breakage: #64748b;
+            --spacing-4: 4px;
+            --spacing-8: 8px;
+            --spacing-16: 16px;
+            --spacing-24: 24px;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
 
---spacing-4: 4px;
---spacing-8: 8px;
---spacing-16: 16px;
---spacing-24: 24px;
---radius: 8px;
---shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
 
-body {
-background-color: var(--color-bg);
-color: var(--color-text);
-height: 100vh;
-display: flex;
-overflow: hidden;
-}
+        /* LOGIN SCREEN */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-/* LOGIN SCREEN */
-#login-overlay {
-position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-display: flex; justify-content: center; align-items: center; z-index: 9999;
-}
-.login-box {
-background: white; padding: 40px; border-radius: 12px;
-width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-text-align: center;
-}
-.login-box h2 { color: #1e293b; margin-bottom: 24px; font-size: 24px; font-weight: 800; }
-.input-group { margin-bottom: 16px; text-align: left; }
-.input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #64748b; }
-.input-group input {
-width: 100%; padding: 12px; border: 1px solid #cbd5e1;
-border-radius: 6px; font-size: 14px; transition: border 0.2s;
-}
-.input-group input:focus { outline: none; border-color: var(--color-accent); }
-.btn-login {
-width: 100%; padding: 12px; background: var(--color-accent); color: white;
-border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 10px;
-transition: background 0.2s;
-}
-.btn-login:hover { background: var(--color-accent-hover); }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
-/* LAYOUT */
-.sidebar {
-width: 280px; background: var(--color-primary); color: white;
-display: flex; flex-direction: column; border-right: 1px solid #334155;
-}
-.sidebar-header {
-padding: 24px; border-bottom: 1px solid #334155;
-display: flex; align-items: center; gap: 12px;
-}
-.logo-circle {
-width: 40px; height: 40px; background: var(--color-accent);
-border-radius: 8px; display: flex; align-items: center; justify-content: center;
-font-weight: 800; font-size: 18px;
-}
-.sidebar-title { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
-.nav-menu { list-style: none; padding: 20px 16px; flex: 1; overflow-y: auto; }
-.nav-item { margin-bottom: 4px; }
-.nav-btn {
-width: 100%; text-align: left; padding: 12px 16px;
-background: transparent; border: none; color: #94a3b8;
-cursor: pointer; border-radius: 6px; font-size: 14px; font-weight: 500;
-display: flex; align-items: center; gap: 10px; transition: all 0.2s;
-}
-.nav-btn:hover { background: rgba(255,255,255,0.05); color: white; }
-.nav-btn.active { background: var(--color-accent); color: white; font-weight: 600; }
-.sidebar-footer {
-padding: 16px; border-top: 1px solid #334155; font-size: 12px; color: #64748b; text-align: center;
-}
-.main-content {
-flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--color-bg);
-}
-.top-bar {
-height: 64px; background: white; border-bottom: 1px solid var(--color-border);
-display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
-}
-.current-context { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; color: var(--color-text-light); }
-.context-selector { padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); font-size: 14px; min-width: 200px; }
-.content-area { flex: 1; overflow-y: auto; padding: 24px; }
+        .login-box h2 {
+            color: #1e293b;
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 800;
+        }
 
-/* COMPONENTS */
-.grid-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
-.stat-card { background: white; padding: 24px; border-radius: 8px; border: 1px solid var(--color-border); box-shadow: var(--shadow); }
-.stat-label { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-.stat-value { font-size: 28px; font-weight: 800; color: var(--color-primary); margin-top: 8px; }
-.card { background: white; border-radius: 8px; border: 1px solid var(--color-border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px; }
-.card-header { padding: 16px 24px; border-bottom: 1px solid var(--color-border); background: #f8fafc; display: flex; justify-content: space-between; align-items: center; }
-.card-title { font-size: 16px; font-weight: 700; color: var(--color-primary); }
-.table-container { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-th { background: #f1f5f9; text-align: left; padding: 12px 16px; font-weight: 600; color: #475569; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
-td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); color: #33455; }
-tr:hover { background: #f8fafc; }
-.btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
-.btn-primary { background: var(--color-accent); color: white; }
-.btn-primary:hover { background: var(--color-accent-hover); }
-.btn-danger { background: #fee2e2; color: var(--color-error); }
-.btn-danger:hover { background: #fecaca; }
-.btn-sm { padding: 4px 10px; font-size: 12px; }
-.btn-print { background: #334155; color: white; }
+        .input-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
 
-/* File Download Box */
-.info-file-box {
-display: flex; align-items: center; justify-content: space-between;
-background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px;
-padding: 12px; margin-top: 12px;
-}
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #64748b;
+        }
 
-/* Pagination & Filter Styles */
-.filter-bar { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
-.filter-input { padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 14px; min-width: 120px; }
-.pagination-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid var(--color-border); }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border 0.2s;
+        }
 
-/* Modals */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
-.modal.active { display: flex; }
-.modal-box { background: white; width: 90%; max-width: 500px; border-radius: 8px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--color-primary); }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #475569; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
 
-/* Utilities */
-.hidden { display: none !important; }
-.badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-.badge-green { background: #dcfce7; color: #166534; }
-.badge-red { background: #fee2e2; color: #991b1b; }
-.badge-blue { background: #dbeafe; color: #1e40af; }
-.empty-state { text-align: center; padding: 48px; color: #94a3b8; }
-.spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--color-accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
 
-/* PRINT CSS */
-@media print {
-.sidebar, .top-bar, .no-print { display: none !important; }
-.main-content { margin: 0; padding: 0; overflow: visible; height: auto; }
-.content-area { overflow: visible; padding: 0; }
-body { height: auto; overflow: visible; background: white; color: black; }
-.card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
-.table-container { overflow: visible; }
-table { font-size: 10px; }
-th, td { border: 1px solid #000; }
-.info-file-box { border: 1px solid #ccc; background: none; }
-}
+        .btn-login:hover {
+            background: var(--color-accent-hover);
+        }
 
-/* TREE & RANKING */
-.tree-container { padding: 20px; overflow: auto; background: #ffffff; border-radius: 8px; }
-.tree ul { padding-top: 20px; position: relative; transition: all 0.5s; padding-left: 20px; }
-.tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 20px 5px 0 5px; transition: all 0.5s; }
-.tree li::before, .tree li::after { content: ''; position: absolute; top: 0; right: 50%; border-top: 1px solid #ccc; width: 50%; height: 20px; }
-.tree li::after { right: auto; left: 50%; border-left: 1px solid #ccc; }
-.tree li:only-child::after, .tree li:only-child::before { display: none; }
-.tree li:only-child { padding-top: 0; }
-.tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
-.tree li:last-child::before { border-right: 1px solid #ccc; border-radius: 0 5px 0 0; }
-.tree li:first-child::after { border-radius: 5px 0 0 0; }
-.tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 1px solid #ccc; width: 0; height: 20px; }
-.tree-node { 
-border: 1px solid #cbd5e1; padding: 10px 15px; text-decoration: none; color: #33455; 
-font-family: arial, verdana, tahoma; font-size: 12px; display: inline-block; border-radius: 5px; 
-background: white; transition: all 0.3s; min-width: 120px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-cursor: pointer;
-}
-.tree-node:hover { border-color: var(--color-accent); background: #eff6ff; transform: scale(1.05); z-index: 10; position: relative;}
-.tree-node strong { display: block; font-size: 14px; color: #0f172a; margin-bottom: 2px; }
-.tree-node small { color: #64748b; font-size: 11px; }
-.tree-toggle-icon { display:inline-block; margin-right:5px; font-weight:bold; color:var(--color-accent); }
+        /* LAYOUT */
+        .sidebar {
+            width: 280px;
+            background: var(--color-primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #334155;
+        }
 
-.rank-badge { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; font-size: 12px; margin-right: 8px; }
-.rank-1 { background: #fbbf24; color: white; }
-.rank-2 { background: #94a3b8; color: white; }
-.rank-3 { background: #b45309; color: white; }
-.rank-other { background: #e2e8f0; color: #475569; }
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-</style>
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--color-accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 20px 16px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background: var(--color-accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid #334155;
+            font-size: 12px;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--color-bg);
+        }
+
+        .top-bar {
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .current-context {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-light);
+        }
+
+        .context-selector {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        /* COMPONENTS */
+        .grid-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-top: 8px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--color-border);
+            background: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid var(--color-border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border);
+            color: #334155;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-hover);
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: var(--color-error);
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+
+        .btn-print {
+            background: #334155;
+            color: white;
+        }
+
+        .info-file-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--color-primary);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-orange {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            color: #94a3b8;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--color-accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media print {
+            .sidebar, .top-bar, .no-print {
+                display: none !important;
+            }
+            .main-content {
+                margin: 0;
+                padding: 0;
+                overflow: visible;
+                height: auto;
+            }
+            .content-area {
+                overflow: visible;
+                padding: 0;
+            }
+            body {
+                height: auto;
+                overflow: visible;
+                background: white;
+                color: black;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                break-inside: avoid;
+            }
+            .table-container {
+                overflow: visible;
+            }
+            table {
+                font-size: 10px;
+            }
+            th, td {
+                border: 1px solid #000;
+            }
+            .info-file-box {
+                border: 1px solid #ccc;
+                background: none;
+            }
+        }
+
+        .tree-container {
+            padding: 20px;
+            overflow: auto;
+            background: #ffffff;
+            border-radius: 8px;
+        }
+
+        .tree ul {
+            padding-top: 20px;
+            position: relative;
+            transition: all 0.5s;
+            padding-left: 20px;
+        }
+
+        .tree li {
+            float: left;
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 5px 0 5px;
+            transition: all 0.5s;
+        }
+
+        .tree li::before, .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 1px solid #ccc;
+            width: 50%;
+            height: 20px;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
+            border-left: 1px solid #ccc;
+        }
+
+        .tree li:only-child::after, .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before, .tree li:last-child::after {
+            border: 0 none;
+        }
+
+        .tree li:last-child::before {
+            border-right: 1px solid #ccc;
+            border-radius: 0 5px 0 0;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 5px 0 0 0;
+        }
+
+        .tree ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 1px solid #ccc;
+            width: 0;
+            height: 20px;
+        }
+
+        .tree-node {
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #334155;
+            font-family: arial, verdana, tahoma;
+            font-size: 12px;
+            display: inline-block;
+            border-radius: 5px;
+            background: white;
+            transition: all 0.3s;
+            min-width: 120px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+
+        .tree-node:hover {
+            border-color: var(--color-accent);
+            background: #eff6ff;
+            transform: scale(1.05);
+            z-index: 10;
+            position: relative;
+        }
+
+        .tree-node strong {
+            display: block;
+            font-size: 14px;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .tree-node small {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .tree-toggle-icon{display:inline-block; margin-right:5px; font-weight:bold; color:var(--color-accent);}
+
+        .rank-badge {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .rank-1 {
+            background: #fbbf24;
+            color: white;
+        }
+
+        .rank-2 {
+            background: #94a3b8;
+            color: white;
+        }
+
+        .rank-3 {
+            background: #b45309;
+            color: white;
+        }
+
+        .rank-other {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .recap-table th {
+            background-color: #f1f5f9;
+        }
+
+        .val-reward {
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .val-mgt {
+            color: var(--color-warning);
+            font-weight: bold;
+        }
+
+        .val-total {
+            color: var(--color-accent);
+            font-weight: bold;
+        }
+
+        .val-breakage {
+            color: var(--color-breakage);
+            font-weight: bold;
+        }
+
+        .row-breakage {
+            background-color: #f8fafc;
+            border-top: 2px dashed #cbd5e1;
+        }
+    </style>
 </head>
 <body>
 
 <!-- LOGIN OVERLAY -->
 <div id="login-overlay">
-<div class="login-box">
-<div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
-<h2>Super Admin Login</h2>
-<form onsubmit="handleAdminLogin(event)">
-<div class="input-group"><label>Username</label><input type="text" id="adminUser" placeholder="admin" required></div>
-<div class="input-group"><label>Password</label><input type="password" id="adminPass" placeholder="•••••" required></div>
-<button type="submit" class="btn-login">Masuk Dashboard</button>
-</form>
-<p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">Gunakan: admin / master</p>
-</div>
+    <div class="login-box">
+        <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
+        <h2>Super Admin Login</h2>
+        <form onsubmit="handleAdminLogin(event)">
+            <div class="input-group"><label>Username</label><input type="text" id="adminUser" placeholder="admin" required></div>
+            <div class="input-group"><label>Password</label><input type="password" id="adminPass" placeholder="••••" required></div>
+            <button type="submit" class="btn-login">Masuk Dashboard</button>
+        </form>
+        <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">Gunakan: admin / master</p>
+    </div>
 </div>
 
 <div class="sidebar hidden" id="mainSidebar">
-<div class="sidebar-header">
-<div class="logo-circle">SA</div>
-<div class="sidebar-title">GMRJ Admin</div>
-</div>
-<ul class="nav-menu">
-<li class="nav-item"><button class="nav-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button></li>
-
-<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Manajemen User</li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('users')">👥 Akun Stokis</button></li>
-
-<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Editor Stokis</li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('profile')">👤 Profil</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('products')">📦 Produk</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('members')">👥 Member</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('transactions')">💰 Transaksi</button></li>
-
-<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Laporan Per Stokis</li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-purchase-member')">🛒 Belanja per Member</button></li>
-
-<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #f59e0b; font-weight: 700;">🌍 Laporan Global ID</li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-summary')">📈 Ringkasan Gabungan</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-stokis')">🏅 Rank Stokis</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-member-sales')">💎 Top Member (By ID)</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-purchase-member')">🛒 Belanja Global (ID)</button></li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('report-tree')">🌳 Pohon Jaringan (By ID)</button></li>
-
-<li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #f59e0b; font-weight: 700;">Pengaturan</li>
-<li class="nav-item"><button class="nav-btn" onclick="switchTab('admin-board')">📢 Papan Informasi</button></li>
-</ul>
-<div class="sidebar-footer">v2.1.0 Global ID<br>Tree Simplified</div>
+    <div class="sidebar-header">
+        <div class="logo-circle">SA</div>
+        <div class="sidebar-title">GMRJ Admin</div>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item"><button class="nav-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button></li>
+        <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Manajemen User</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('users')">👥 Akun Stokis</button></li>
+        <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Editor Stokis</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('profile')">👤 Profil</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('products')">📦 Produk</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('members')">👥 Member</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('transactions')">💰 Transaksi</button></li>
+        <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Laporan Per Stokis</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-purchase-member')">🛒 Belanja per Member</button></li>
+        <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #f59e0b; font-weight: 700;">🌍 Laporan Global ID</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-summary')">📈 Ringkasan Gabungan</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-stokis')">🏅 Rank Stokis</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-member-sales')">💎 Top Member (By ID)</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-purchase-member')">🛒 Belanja Global (ID)</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-tree')">🌳 Pohon Jaringan (By ID)</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-recapitulasi')">📊 Rekapitulasi (Reward/Mgt)</button></li>
+        <li style="margin: 16px 0 8px 16px; font-size: 11px; text-transform: uppercase; color: #f59e0b; font-weight: 700;">Pengaturan</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('admin-board')">📢 Papan Informasi</button></li>
+    </ul>
+    <div class="sidebar-footer">v2.1.0 Global ID<br>Tree Simplified</div>
 </div>
 
 <div class="main-content hidden" id="mainContent">
-<div class="top-bar">
-<div class="current-context">
-Target Stokis:
-<select id="stokisSelector" class="context-selector" onchange="loadSelectedStokis(this.value)">
-<option value="">-- Pilih Stokis --</option>
-</select>
-<span id="stokisStatus" class="badge badge-green hidden">Live Connected</span>
-</div>
-<div style="display:flex; gap:10px;">
-<button class="btn btn-print btn-sm no-print" onclick="window.print()">🖨️ Cetak PDF</button>
-<button class="btn btn-danger btn-sm no-print" onclick="logout()">Logout</button>
-</div>
-</div>
-<div class="content-area" id="contentArea"></div>
+    <div class="top-bar">
+        <div class="current-context">
+            Target Stokis:
+            <select id="stokisSelector" class="context-selector" onchange="loadSelectedStokis(this.value)">
+                <option value="">-- Pilih Stokis --</option>
+            </select>
+            <span id="stokisStatus" class="badge badge-green hidden">Live Connected</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-print btn-sm no-print" onclick="window.print()">🖨️ Cetak PDF</button>
+            <button class="btn btn-danger btn-sm no-print" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    <div class="content-area" id="contentArea"></div>
 </div>
 
 <!-- MODALS -->
 <div id="genericModal" class="modal">
-<div class="modal-box">
-<h3 class="modal-title" id="modalTitle">Judul</h3>
-<div id="modalBody"></div>
-<div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
-<button class="btn no-print" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
-<button class="btn btn-primary no-print" id="modalActionBtn">Simpan</button>
-</div>
-</div>
+    <div class="modal-box">
+        <h3 class="modal-title" id="modalTitle">Judul</h3>
+        <div id="modalBody"></div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
+            <button class="btn no-print" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
+            <button class="btn btn-primary no-print" id="modalActionBtn">Simpan</button>
+        </div>
+    </div>
 </div>
 
 <div id="migrateModal" class="modal">
-<div class="modal-box">
-<h3 class="modal-title">📋 Migrasi / Copy Data</h3>
-<div class="form-group"><label>Sumber Data</label><select id="migrateSource"></select></div>
-<div class="form-group"><label>Tujuan Data</label><select id="migrateDest"></select></div>
-<div class="form-group"><label>Opsi Penimpaan</label><div style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="migrateOverwrite"><span style="font-size:14px;">Timpa data lama</span></div></div>
-<div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
-<button class="btn no-print" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
-<button class="btn btn-primary no-print" onclick="executeMigrate()">Mulai Migrasi</button>
-</div>
-</div>
+    <div class="modal-box">
+        <h3 class="modal-title">📋 Migrasi / Copy Data</h3>
+        <div class="form-group"><label>Sumber Data</label><select id="migrateSource"></select></div>
+        <div class="form-group"><label>Tujuan Data</label><select id="migrateDest"></select></div>
+        <div class="form-group"><label>Opsi Penimpaan</label><div style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="migrateOverwrite"><span style="font-size:14px;">Timpa data lama</span></div></div>
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+            <button class="btn no-print" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
+            <button class="btn btn-primary no-print" onclick="executeMigrate()">Mulai Migrasi</button>
+        </div>
+    </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyA7i0bGhjKHZ788Ir7xTDFM0LXAevnWKsI",
-authDomain: "sistem-stokis-gmrj.firebaseapp.com",
-projectId: "sistem-stokis-gmrj",
-storageBucket: "sistem-stokis-gmrj.firebasestorage.app",
-messagingSenderId: "288883517168",
-appId: "1:288883517168:web:d5cdd864aa944205df8435",
-measurementId: "G-12KELDXJ1J"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const COLLECTION_STOKIS = 'stokisDatas';
-const COLLECTION_USERS = 'stokis_users';
-const COLLECTION_ANNOUNCEMENTS = 'adminAnnouncements';
-
-let currentStokisId = null;
-let currentDataUnsubscribe = null;
-let stokisCache = {};
-
-// Pagination & Filter State
-let purchaseReportState = { page: 1, data: [], filtered: [] };
-let globalPurchaseReportState = { page: 1, data: [], filtered: [] };
-let transactionState = { page: 1, data: [] }; // For Stokis Transactions
-let rankingMemberState = { page: 1, data: [], filtered: [] }; // For Global Ranking
-let treeState = { nodes: [] }; // For Global Tree
-
-window.handleAdminLogin = (e) => {
-e.preventDefault();
-const u = document.getElementById('adminUser').value.trim();
-const p = document.getElementById('adminPass').value.trim();
-if (u === 'admin' && p === 'master') {
-document.getElementById('login-overlay').classList.add('hidden');
-document.getElementById('mainSidebar').classList.remove('hidden');
-document.getElementById('mainContent').classList.remove('hidden');
-initDashboard();
-} else { alert('Akses Ditolak!'); }
-};
-window.logout = () => location.reload();
-
-async function initDashboard() {
-await loadStokisList();
-renderDashboardGlobal();
-}
-
-async function loadStokisList() {
-const selector = document.getElementById('stokisSelector');
-selector.innerHTML = '<option value="">-- Pilih Stokis --</option>';
-try {
-const querySnapshot = await getDocs(collection(db, COLLECTION_STOKIS));
-querySnapshot.forEach((doc) => {
-const data = doc.data();
-const nama = data.profile?.namaStokis || doc.id;
-const option = document.createElement('option');
-option.value = doc.id;
-option.textContent = `${doc.id} (${nama})`;
-selector.appendChild(option);
-});
-} catch (error) { console.error("Error fetching stokis list:", error); }
-}
-
-window.loadSelectedStokis = (username) => {
-if (currentDataUnsubscribe) { currentDataUnsubscribe(); currentDataUnsubscribe = null; }
-if (!username) {
-currentStokisId = null;
-document.getElementById('contentArea').innerHTML = `<div class="empty-state"><span style="font-size:40px;opacity:0.5;">👈</span><h3>Silakan Pilih Stokis</h3></div>`;
-return;
-}
-currentStokisId = username;
-const docRef = doc(db, COLLECTION_STOKIS, username);
-currentDataUnsubscribe = onSnapshot(docRef, (docSnap) => {
-if (docSnap.exists()) {
-stokisCache[currentStokisId] = docSnap.data();
-document.getElementById('stokisStatus').classList.remove('hidden');
-const activeTab = document.querySelector('.nav-btn.active');
-if (activeTab) {
-const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)[1];
-if (!['dashboard', 'users'].includes(tabName) && !tabName.startsWith('report-') && !tabName.startsWith('stokis-')) {
-renderTabContent(tabName);
-} else if (tabName.startsWith('stokis-')) {
-renderStokisSpecificTab(tabName);
-}
-}
-}
-});
-};
-
-window.switchTab = (tabName) => {
-document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-const clickedBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabName));
-if(clickedBtn) clickedBtn.classList.add('active');
-
-if (['dashboard', 'users'].includes(tabName)) {
-renderDashboardGlobal();
-if(tabName === 'users') renderUsersManagement();
-} else if (tabName.startsWith('report-')) {
-handleReportTabs(tabName);
-} else if (tabName.startsWith('stokis-')) {
-if (!currentStokisId) { document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`; return; }
-renderStokisSpecificTab(tabName);
-} else if (tabName === 'admin-board') {
-renderAdminBoard();
-} else {
-if (!currentStokisId) { document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`; return; }
-renderTabContent(tabName);
-}
-};
-
-function renderDashboardGlobal() {
-document.getElementById('contentArea').innerHTML = `
-<h2>Dashboard Global</h2>
-<div class="grid-dashboard">
-<div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value" id="g-count-stokis">...</div></div>
-<div class="stat-card"><div class="stat-label">Sistem</div><div class="stat-value" style="color:var(--color-success); font-size:20px; margin-top:12px;">Online</div></div>
-</div>
-<div class="card"><div class="card-header"><span class="card-title">Log Sistem</span></div><div style="padding:24px;"><p>Selamat datang Super Admin.</p></div></div>
-`;
-getDocs(collection(db, COLLECTION_STOKIS)).then(snap => {
-const el = document.getElementById('g-count-stokis');
-if(el) el.textContent = snap.size;
-});
-}
-
-// ==========================================
-// ADMIN BOARD
-// ==========================================
-
-function renderAdminBoard() {
-const content = document.getElementById('contentArea');
-content.innerHTML = `
-<h2>📢 Papan Informasi Admin</h2>
-<div class="card" style="margin-top:20px;">
-<div style="padding:40px; text-align:center;">
-<div class="spinner"></div>
-<p>Memuat pengumuman...</p>
-</div>
-</div>`;
-
-const q = query(collection(db, COLLECTION_ANNOUNCEMENTS), orderBy('createdAt', 'desc'));
-
-onSnapshot(q, (snapshot) => {
-const announcements = [];
-snapshot.forEach(doc => announcements.push({ id: doc.id, ...doc.data() }));
-
-let html = `
-<h2>📢 Papan Informasi Admin</h2>
-<div class="card" style="margin-top:20px; background: #fffbeb; border-color: #fcd34d;">
-<div class="card-header">
-<span class="card-title">Kelola Pengumuman & File</span>
-<button class="btn btn-primary btn-sm" onclick="openAddAnnouncementModal()">+ Buat Baru</button>
-</div>
-<div style="padding:20px;">
-<p style="margin-bottom:10px; color: #92400e; font-size:14px;">
-Pengumuman dan file di sini tersedia untuk dilihat dan didownload oleh Stokis.
-</p>
- ${announcements.length === 0 ? 
-`<div class="empty-state" style="padding:20px; background:white; border-radius:8px; border:1px dashed #e5e7eb;">
-Belum ada pengumuman.
-</div>` : ''}
-<div style="display:grid; gap:20px;">
- ${announcements.map(a => `
-<div style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:16px;">
-<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-<h3 style="font-size:16px; font-weight:700; color:#1f2937;">${a.title}</h3>
-<div style="font-size:12px; color:#6b7280;">${a.createdAt ? new Date(a.createdAt.toDate()).toLocaleDateString() : '-'}</div>
-</div>
-<div style="color:#374151; font-size:14px; white-space:pre-wrap; margin-bottom:12px; line-height:1.5;">${a.content}</div>
- ${a.fileUrl ? `
-<div class="info-file-box">
-<div style="display:flex; align-items:center; gap:10px;">
-<span style="font-size:24px;">📎</span>
-<div>
-<div style="font-weight:600; font-size:14px; color:#0369a1;">${a.fileName || 'File'}</div>
-<div style="font-size:12px; color:#64748b;">Klik tombol untuk download</div>
-</div>
-</div>
-<a href="${a.fileUrl}" target="_blank" class="btn btn-primary btn-sm">Download</a>
-</div>
-` : ''}
-<div style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:10px;">
-<button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${a.id}')">Hapus</button>
-</div>
-</div>
-`).join('')}
-</div>
-</div>
-</div>
-`;
-content.innerHTML = html;
-}, (error) => {
-content.innerHTML = `<h2>Error</h2><p>${error.message}</p>`;
-});
-}
-
-window.openAddAnnouncementModal = () => {
-document.getElementById('modalTitle').textContent = "Buat Pengumuman Baru";
-document.getElementById('modalBody').innerHTML = `
-<div class="form-group"><label>Judul</label><input id="ann_title"></div>
-<div class="form-group"><label>Isi Pesan (Teks)</label><textarea id="ann_content" rows="5"></textarea></div>
-<div style="margin: 20px 0 10px 0; border-top: 1px dashed #cbd5e1; padding-top:10px;"><strong style="font-size:12px; color:#6366f1;">LAMPIRAN FILE (Opsional)</strong></div>
-<div class="form-group"><label>Nama File (Contoh: Katalog.pdf)</label><input id="ann_fname" placeholder="Nama File"></div>
-<div class="form-group"><label>Link Download File (URL)</label><input id="ann_url" placeholder="https://drive.google.com/..."></div>
-`;
-document.getElementById('modalActionBtn').onclick = async () => {
-const title = document.getElementById('ann_title').value;
-const content = document.getElementById('ann_content').value;
-const fname = document.getElementById('ann_fname').value;
-const furl = document.getElementById('ann_url').value;
-
-if(!title) return alert('Judul wajib diisi');
-try {
-await addDoc(collection(db, COLLECTION_ANNOUNCEMENTS), {
-title, content, fileName: fname, fileUrl: furl, createdAt: serverTimestamp()
-});
-alert('Terkirim');
-closeModal();
-} catch(e) { alert('Gagal: ' + e.message); }
-};
-document.getElementById('genericModal').classList.add('active');
-};
-
-window.deleteAnnouncement = async (id) => {
-if(!confirm('Hapus pengumuman ini?')) return;
-try {
-await deleteDoc(doc(db, COLLECTION_ANNOUNCEMENTS, id));
-} catch(e) { alert('Gagal: '+e.message); }
-};
-
-
-// ==========================================
-// STOKIS SPECIFIC REPORT LOGIC
-// ==========================================
-
-function renderStokisSpecificTab(tabName) {
-const data = stokisCache[currentStokisId];
-if(!data) return;
-
-if (tabName === 'stokis-purchase-member') {
-const memberLookup = {};
-(data.members || []).forEach(m => memberLookup[m.id] = m.name);
-
-const list = (data.transactions || []).map(t => ({
-date: t.date,
-id: t.id,
-memberId: t.memberId,
-memberName: memberLookup[t.memberId] || t.memberName || 'Unknown',
-productName: (t.productCode ? `${t.productCode} - ` : '') + (t.productName || t.productCode),
-qty: t.qty,
-points: t.totalPoints
-}));
-
-purchaseReportState.data = list;
-purchaseReportState.page = 1;
-purchaseReportState.filtered = list;
-renderPurchaseReportTable('stokis');
-}
-}
-
-// Filter Apply Function
-window.applyFilter = (type) => {
-const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
-const targetName = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
-const targetProd = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
-const targetDateFrom = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
-const targetDateTo = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
-
-const nameInput = document.getElementById(targetName)?.value.toLowerCase() || '';
-const prodInput = document.getElementById(targetProd)?.value.toLowerCase() || '';
-const fromInput = document.getElementById(targetDateFrom)?.value || '';
-const toInput = document.getElementById(targetDateTo)?.value || '';
-
-state.filtered = state.data.filter(t => {
-const matchName = t.memberName.toLowerCase().includes(nameInput);
-const matchProd = t.productName.toLowerCase().includes(prodInput);
-const matchDateFrom = !fromInput || t.date >= fromInput;
-const matchDateTo = !toInput || t.date <= toInput;
-
-return matchName && matchProd && matchDateFrom && matchDateTo;
-});
-
-state.page = 1;
-renderPurchaseReportTable(type);
-};
-
-function renderPurchaseReportTable(type) {
-const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
-const title = type === 'global' ? '🛒 Laporan Belanja Global (Detail)' : `🛒 Laporan Belanja: ${currentStokisId}`;
-
-// IDs
-const targetNameId = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
-const targetProdId = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
-const targetDateFromId = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
-const targetDateToId = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
-
-const limit = 10;
-const totalPages = Math.ceil(state.filtered.length / limit);
-const start = (state.page - 1) * limit;
-const pagedData = state.filtered.slice(start, start + limit);
-
-const html = `
-<h2>${title}</h2>
-<div class="card" style="margin-top:20px;">
-<div class="card-header"><span class="card-title">Filter Transaksi</span></div>
-<div class="filter-bar no-print" style="padding:16px;">
-<input type="text" id="${targetNameId}" class="filter-input" placeholder="Cari Nama Member...">
-<input type="text" id="${targetProdId}" class="filter-input" placeholder="Cari Nama Produk...">
-<input type="date" id="${targetDateFromId}" class="filter-input" title="Dari Tanggal">
-<input type="date" id="${targetDateToId}" class="filter-input" title="Sampai Tanggal">
-<button class="btn btn-primary" onclick="applyFilter('${type}')">Terapkan</button>
-</div>
-<div class="table-container">
-<table>
-<thead><tr><th>Tanggal</th><th>ID Member</th><th>Nama Member</th><th>Produk</th><th>Qty</th><th>Poin</th></tr></thead>
-<tbody>
- ${pagedData.length === 0 ? '<tr><td colspan="6" class="empty-state">Data tidak ditemukan</td></tr>' : pagedData.map(t => `
-<tr>
-<td>${t.date}</td>
-<td>${t.memberId}</td>
-<td><strong>${t.memberName}</strong></td>
-<td>${t.productName}</td>
-<td style="font-weight:bold;">${t.qty}</td>
-<td style="color:var(--color-accent); font-weight:bold;">${(parseFloat(t.points)||0).toFixed(2)}</td>
-</tr>
-`).join('')}
-</tbody>
-</table>
-</div>
-<div class="pagination-bar no-print">
-<span>Hal ${state.page} dari ${totalPages || 1} (${state.filtered.length} total)</span>
-<div style="display:flex; gap:8px;">
-<button class="btn btn-sm" ${state.page <= 1 ? 'disabled' : ''} onclick="if('${type}'==='global') { globalPurchaseReportState.page--; renderPurchaseReportTable('global'); } else { purchaseReportState.page--; renderPurchaseReportTable('stokis'); }">Prev</button>
-<button class="btn btn-sm" ${state.page >= totalPages ? 'disabled' : ''} onclick="if('${type}'==='global') { globalPurchaseReportState.page++; renderPurchaseReportTable('global'); } else { purchaseReportState.page++; renderPurchaseReportTable('stokis'); }">Next</button>
-</div>
-</div>
-</div>`;
-document.getElementById('contentArea').innerHTML = html;
-}
-
-
-// ==========================================
-// REPORT LOGIC
-// ==========================================
-
-async function fetchGlobalData() {
-const content = document.getElementById('contentArea');
-content.innerHTML = `<div class="spinner"></div><p style="text-align:center">Menggabungkan data ID Member...</p>`;
-
-try {
-const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-const result = {
-stokisList: [],
-totalStokis: stokisSnap.size,
-totalMembers: 0,
-totalPoints: 0,
-membersMap: new Map(),
-stokisDetails: []
-};
-
-stokisSnap.forEach(doc => {
-const sId = doc.id;
-const sData = doc.data();
-const sName = sData.profile?.namaStokis || sId;
-
-let sPoints = 0;
-let sMemberCount = (sData.members || []).length;
-
-(sData.members || []).forEach(m => {
-const mId = m.id;
-const mPoints = m.totalPoints || 0;
-
-sPoints += mPoints;
-
-if (!result.membersMap.has(mId)) {
-result.membersMap.set(mId, {
-id: mId,
-name: m.name,
-points: 0,
-upline: m.upline,
-stokisSources: []
-});
-result.totalMembers++;
-}
-
-const globalMember = result.membersMap.get(mId);
-globalMember.points += mPoints;
-globalMember.stokisSources.push(sName);
-if(!globalMember.name || globalMember.name === 'N/A') globalMember.name = m.name;
-
-if (m.upline) globalMember.upline = m.upline;
-});
-
-result.stokisDetails.push({
-id: sId,
-name: sName,
-totalPoints: sPoints,
-memberCount: sMemberCount
-});
-});
-
-result.membersMap.forEach(m => result.totalPoints += m.points);
-
-return result;
-} catch (error) {
-console.error(error);
-alert("Error: " + error.message);
-return null;
-}
-}
-
-async function fetchGlobalTransactionList() {
-const content = document.getElementById('contentArea');
-content.innerHTML = `<div class="spinner"></div><p style="text-align:center">Menganalisa Transaksi Global...</p>`;
-try {
-const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-const transactionList = [];
-
-stokisSnap.forEach(doc => {
-const sData = doc.data();
-const sName = sData.profile?.namaStokis || doc.id;
-const memberLookup = {};
-(sData.members || []).forEach(m => memberLookup[m.id] = m.name);
-
-(sData.transactions || []).forEach(t => {
-transactionList.push({
-date: t.date,
-id: t.id,
-memberId: t.memberId,
-memberName: memberLookup[t.memberId] || t.memberName || 'Unknown',
-productName: (t.productCode ? `${t.productCode} - ` : '') + (t.productName || t.productCode),
-qty: t.qty,
-points: t.totalPoints,
-stokisName: sName 
-});
-});
-});
-
-return transactionList;
-} catch (error) {
-console.error(error);
-alert("Error Transaksi: " + error.message);
-return null;
-}
-}
-
-async function handleReportTabs(tabName) {
-const data = await fetchGlobalData();
-if (!data) return;
-
-if (tabName === 'report-summary') renderReportSummary(data);
-else if (tabName === 'report-stokis') renderReportStokisRanking(data);
-else if (tabName === 'report-member-sales') renderReportMemberSales(data);
-else if (tabName === 'report-tree') renderReportTree(data);
-else if (tabName === 'report-purchase-member') {
-const tList = await fetchGlobalTransactionList();
-if(tList) {
-globalPurchaseReportState.data = tList;
-globalPurchaseReportState.page = 1;
-globalPurchaseReportState.filtered = tList;
-renderPurchaseReportTable('global');
-}
-}
-}
-
-function renderReportSummary(data) {
-const html = `
-<h2>Laporan Gabungan (By Member ID)</h2>
-<div class="grid-dashboard" style="margin-top:20px;">
-<div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value">${data.totalStokis}</div></div>
-<div class="stat-card"><div class="stat-label">Total Member (Unique ID)</div><div class="stat-value">${data.totalMembers}</div></div>
-<div class="stat-card"><div class="stat-label">Total Poin Global</div><div class="stat-value" style="color:var(--color-accent)">${(parseFloat(data.totalPoints)||0).toFixed(2)}</div></div>
-</div>
-<div class="card">
-<div class="card-header"><span class="card-title">Ringkasan Per Stokis</span></div>
-<div class="table-container">
-<table>
-<thead><tr><th>Nama Stokis</th><th>Jml Member</th><th>Total Poin (Internal)</th></tr></thead>
-<tbody>
- ${data.stokisDetails.map(s => `<tr><td>${s.name}</td><td>${s.memberCount}</td><td>${(parseFloat(s.totalPoints)||0).toFixed(2)}</td></tr>`).join('')}
-</tbody>
-</table>
-</div>
-</div>
-`;
-document.getElementById('contentArea').innerHTML = html;
-}
-
-function renderReportStokisRanking(data) {
-const sorted = [...data.stokisDetails].sort((a, b) => b.totalPoints - a.totalPoints);
-const html = `
-<h2>🏅 Ranking Stokis</h2>
-<div class="card" style="margin-top:20px;">
-<div class="table-container">
-<table>
-<thead><tr><th>Rank</th><th>Nama Stokis</th><th>Member</th><th>Total Poin</th></tr></thead>
-<tbody>
- ${sorted.map((s, idx) => {
-let rClass = 'rank-other'; if(idx<3) rClass = `rank-${idx+1}`;
-return `<tr>
-<td><div class="rank-badge ${rClass}">${idx+1}</div></td>
-<td><strong>${s.name}</strong></td>
-<td>${s.memberCount}</td>
-<td style="font-weight:bold;">${(parseFloat(s.totalPoints)||0).toFixed(2)}</td>
-</tr>`;
-}).join('')}
-</tbody>
-</table>
-</div>
-</div>
-`;
-document.getElementById('contentArea').innerHTML = html;
-}
-
-function renderReportMemberSales(data) {
-const sortedMembers = Array.from(data.membersMap.values()).sort((a, b) => b.points - a.points);
-rankingMemberState.data = sortedMembers;
-rankingMemberState.filtered = sortedMembers;
-rankingMemberState.page = 1;
-
-const html = `
-<h2>💎 Ranking Member (By ID Global)</h2>
-<p style="color:#64748b; margin-bottom:16px;">
-Poin dijumlahkan jika ID member sama muncul di beberapa Stokis.
-</p>
-<div class="card" style="margin-top:20px;">
-<div class="card-header"><span class="card-title">Filter Member</span></div>
-<div class="filter-bar no-print" style="padding:16px;">
-<input type="text" id="rankFilter" class="filter-input" placeholder="Cari Nama / ID Member...">
-<button class="btn btn-primary" onclick="applyRankingFilter()">Terapkan</button>
-</div>
-<div class="table-container">
-<table id="rankingTableBody">
-<!-- Content rendered by JS -->
-</table>
-</div>
-<div class="pagination-bar no-print">
-<span id="rankPaginationInfo">Hal 1</span>
-<div style="display:flex; gap:8px;">
-<button class="btn btn-sm" id="rankPrev" disabled>Prev</button>
-<button class="btn btn-sm" id="rankNext">Next</button>
-</div>
-</div>
-</div>
-`;
-document.getElementById('contentArea').innerHTML = html;
-renderRankingTable();
-}
-
-window.applyRankingFilter = () => {
-const val = document.getElementById('rankFilter').value.toLowerCase();
-rankingMemberState.filtered = rankingMemberState.data.filter(m => 
-m.name.toLowerCase().includes(val) || m.id.toLowerCase().includes(val)
-);
-rankingMemberState.page = 1;
-renderRankingTable();
-};
-
-function renderRankingTable() {
-const limit = 10;
-const total = rankingMemberState.filtered.length;
-const totalPages = Math.ceil(total / limit);
-const start = (rankingMemberState.page - 1) * limit;
-const pagedData = rankingMemberState.filtered.slice(start, start + limit);
-
-const tbody = document.getElementById('rankingTableBody');
-if(!tbody) return;
-
-let rows = pagedData.map((m, idx) => {
-const absIdx = start + idx;
-let rClass = 'rank-other'; if(absIdx<3) rClass = `rank-${absIdx+1}`;
-const stokisBadge = m.stokisSources.length > 3
-? `${m.stokisSources.slice(0,3).join(', ')}... (+${m.stokisSources.length-3})`
-: m.stokisSources.join(', ');
-
-return `<tr>
-<td><div class="rank-badge ${rClass}">${absIdx+1}</div></td>
-<td><strong>${m.name}</strong></td>
-<td>${m.id}</td>
-<td><span class="badge badge-green" style="font-weight:400;">${stokisBadge}</span></td>
-<td style="font-weight:bold; color:var(--color-primary);">${(parseFloat(m.points)||0).toFixed(2)}</td>
-</tr>`;
-}).join('');
-
-tbody.innerHTML = rows || '<tr><td colspan="5" class="empty-state">Tidak ada data</td></tr>';
-
-document.getElementById('rankPaginationInfo').textContent = `Hal ${rankingMemberState.page} dari ${totalPages || 1} (${total} total)`;
-document.getElementById('rankPrev').disabled = rankingMemberState.page <= 1;
-document.getElementById('rankNext').disabled = rankingMemberState.page >= totalPages;
-document.getElementById('rankPrev').onclick = () => { rankingMemberState.page--; renderRankingTable(); };
-document.getElementById('rankNext').onclick = () => { rankingMemberState.page++; renderRankingTable(); };
-}
-
-function renderReportTree(data) {
-const nodes = new Map();
-data.membersMap.forEach(m => {
-nodes.set(m.id, {
-id: m.id,
-name: m.name,
-points: m.points,
-children: [],
-expanded: true
-});
-});
-
-const roots = [];
-const childIds = new Set();
-
-data.membersMap.forEach(m => {
-const node = nodes.get(m.id);
-
-if (m.upline && nodes.has(m.upline)) {
-const parent = nodes.get(m.upline);
-if (parent && !parent.children.includes(node)) {
-parent.children.push(node);
-childIds.add(m.id);
-}
-}
-});
-
-nodes.forEach(node => {
-if (!childIds.has(node.id)) {
-roots.push(node);
-}
-});
-
-treeState.nodes = roots;
-
-let html = `
-<h2>🌳 Pohon Jaringan (Global ID)</h2>
-<p style="color:#64748b; margin-bottom:16px;">
-Struktur digabungkan berdasarkan ID Member. Klik member untuk expand/collapse.
-</p>
-<div class="card" style="margin-top:20px;">
-<!-- Search bar removed -->
-<div class="tree-container tree">
-<div id="treeRoot"></div>
-</div>
-</div>
-`;
-document.getElementById('contentArea').innerHTML = html;
-renderTreeNodes();
-}
-
-// Removed applyTreeFilter function as requested
-
-window.toggleNode = (id) => {
-function traverse(list) {
-list.forEach(n => {
-if(n.id === id) {
-n.expanded = !n.expanded;
-return true;
-}
-if(n.children) traverse(n.children);
-});
-}
-traverse(treeState.nodes);
-renderTreeNodes();
-};
-
-function renderTreeNodes() {
-const container = document.getElementById('treeRoot');
-if(!container) return;
-
-const buildTreeHtml = (nodeList) => {
-if (!nodeList || nodeList.length === 0) return '';
-return `<ul>${nodeList.map(node => {
-const hasChildren = node.children && node.children.length > 0;
-const isExpanded = node.expanded;
-
-let childrenHtml = '';
-if(hasChildren && isExpanded) {
-childrenHtml = buildTreeHtml(node.children);
-}
-
-return `<li>
-<div class="tree-node" onclick="toggleNode('${node.id}')">
- ${hasChildren ? `<span class="tree-toggle-icon">${isExpanded ? '[-]' : '[+]'}</span>` : '<span style="width:20px; display:inline-block;"></span>'}
-<strong>${node.name}</strong>
-<small>${node.id}</small>
-<small style="display:block; color:var(--color-accent); font-weight:bold;">${(parseFloat(node.points)||0).toFixed(2)} Pts</small>
-</div>
- ${childrenHtml}
-</li>`;
-}).join('')}</ul>`;
-};
-
-container.innerHTML = buildTreeHtml(treeState.nodes);
-}
-
-
-// ==========================================
-// EXISTING CRUD LOGIC
-// ==========================================
-
-async function renderUsersManagement() {
-const content = document.getElementById('contentArea');
-content.innerHTML = `
-<h2 style="margin-bottom: 24px;">Manajemen Akun</h2>
-<div class="card">
-<div class="card-header"><span class="card-title">Daftar Stokis</span><button class="btn btn-primary btn-sm" onclick="openAddUserModal()">+ Buat</button></div>
-<div class="table-container"><table id="usersTable"><thead><tr><th>Username</th><th>Pass</th><th>Nama</th><th>Aksi</th></tr></thead><tbody><tr><td colspan="4">Loading...</td></tr></tbody></table></div>
-</div>`;
-const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-const tbody = document.querySelector('#usersTable tbody');
-tbody.innerHTML = '';
-if (stokisSnap.empty) { tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Data kosong</td></tr>`; return; }
-for (const doc of stokisSnap.docs) {
-const username = doc.id; const data = doc.data();
-const namaStokis = data.profile?.namaStokis || 'N/A';
-let passDisplay = '<span style="color:#cbd5e1;">Belum diset</span>';
-try {
-const userDoc = await getDoc(doc(db, COLLECTION_USERS, username));
-if (userDoc.exists()) passDisplay = `<strong>${userDoc.data().password}</strong>`;
-} catch(e) {}
-const tr = document.createElement('tr');
-tr.innerHTML = `
-<td><strong>${username}</strong></td>
-<td>${passDisplay}</td>
-<td>${namaStokis}</td>
-<td>
-<button class="btn btn-sm btn-primary" onclick="openEditUserModal('${username}')">Edit</button>
-<button class="btn btn-sm btn-primary" style="background:var(--color-success)" onclick="openMigrateModal('${username}')">Copy</button>
-<button class="btn btn-sm btn-danger" onclick="deleteStokisData('${username}')">Hapus</button>
-</td>`;
-tbody.appendChild(tr);
-}
-}
-
-window.openEditUserModal = (u) => {
-document.getElementById('modalTitle').textContent = `Edit Pass: ${u}`;
-document.getElementById('modalBody').innerHTML = `<div class="form-group"><label>New Pass</label><input id="newUserPass"></div>`;
-document.getElementById('modalActionBtn').onclick = async () => {
-const p = document.getElementById('newUserPass').value.trim();
-if(!p) return alert('Kosong');
-await setDoc(doc(db, COLLECTION_USERS, u), { username:u, password:p, updatedAt:new Date() });
-alert('Disimpan'); closeModal(); renderUsersManagement();
-};
-document.getElementById('genericModal').classList.add('active');
-};
-
-window.deleteStokisData = async (u) => {
-if(!confirm(`Hapus data ${u}?`)) return;
-try {
-await deleteDoc(doc(db, COLLECTION_STOKIS, u));
-await deleteDoc(doc(db, COLLECTION_USERS, u));
-alert('Dihapus'); renderUsersManagement(); loadStokisList();
-} catch(e) { alert('Gagal: '+e.message); }
-};
-
-window.openMigrateModal = (d) => {
-document.getElementById('migrateModal').classList.add('active');
-const s = document.getElementById('migrateSource');
-const dest = document.getElementById('migrateDest');
-s.innerHTML = '<option value="">-- Sumber --</option>'; dest.innerHTML = '<option value="">-- Tujuan --</option>';
-document.querySelectorAll('#stokisSelector option').forEach(opt => {
-if (opt.value) {
-s.innerHTML += `<option value="${opt.value}" ${opt.value === d?'selected':''}>${opt.textContent}</option>`;
-dest.innerHTML += `<option value="${opt.value}">${opt.textContent}</option>`;
-}
-});
-};
-window.closeMigrateModal = () => document.getElementById('migrateModal').classList.remove('active');
-window.executeMigrate = async () => {
-const s = document.getElementById('migrateSource').value;
-const d = document.getElementById('migrateDest').value;
-const o = document.getElementById('migrateOverwrite').checked;
-if(!s||!d) return alert("Pilih keduanya!");
-if(s===d) return alert("Sama!");
-try {
-const snap = await getDoc(doc(db, COLLECTION_STOKIS, s));
-if(!snap.exists()) return alert("Sumber kosong");
-const srcData = snap.data();
-const destSnap = await getDoc(doc(db, COLLECTION_STOKIS, d));
-let newData = {};
-if (o || !destSnap.exists()) { newData = srcData; }
-else {
-const destData = destSnap.data();
-newData = {
-profile: { ...destData.profile, ...srcData.profile },
-products: [...(destData.products||[]), ...(srcData.products||[])],
-members: [...(destData.members||[]), ...(srcData.members||[])],
-transactions: [...(destData.transactions||[]), ...(srcData.transactions||[])]
-};
-}
-await setDoc(doc(db, COLLECTION_STOKIS, d), newData, { merge:true });
-alert('Berhasil'); closeMigrateModal();
-if(currentStokisId===d) loadSelectedStokis(d);
-} catch(e) { alert("Gagal: "+e.message); }
-};
-
-function renderTabContent(t) {
-const data = stokisCache[currentStokisId];
-if(!data) return;
-
-if(t==='profile') {
-const p = data.profile || {};
-document.getElementById('contentArea').innerHTML = `<h2>Profil: ${currentStokisId}</h2><div class="card" style="margin-top:16px;"><div class="card-header"><span>Edit Identitas</span></div><div style="padding:24px;">
-<div class="form-group"><label>Nama Koordinat</label><input id="p_koord" value="${p.namaKoordinat||''}"></div>
-<div class="form-group"><label>Kode</label><input id="p_kode" value="${p.kodeKoordinat||''}"></div>
-<div class="form-group"><label>Nama Stokis</label><input id="p_nama" value="${p.namaStokis||''}"></div>
-<div class="form-group"><label>Alamat</label><textarea id="p_alamat">${p.alamatStokis||''}</textarea></div>
-<div class="form-group"><label>WA</label><input id="p_wa" value="${p.waNumber||''}"></div>
-<button class="btn btn-primary" onclick="saveProfile()">Simpan</button>
-</div></div>`;
-} else if(t==='products') {
-document.getElementById('contentArea').innerHTML = `<h2>Produk: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addProductModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>Nama</th><th>Poin</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${(data.products||[]).map((p,i)=>`<tr><td>${p.name}</td><td>${(parseFloat(p.point)||0).toFixed(2)}</td><td>${p.pembelian}</td><td><button class="btn btn-sm btn-primary" onclick="editProduct(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('products',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
-} else if(t==='members') {
-document.getElementById('contentArea').innerHTML = `<h2>Member: ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0" onclick="addMemberModal()">+ Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Poin</th><th>Aksi</th></tr></thead><tbody>${(data.members||[]).map((m,i)=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.upline||'-'}</td><td>${(parseFloat(m.totalPoints)||0).toFixed(2)}</td><td><button class="btn btn-sm btn-primary" onclick="editMember(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('members',${i})">Hapus</button></td></tr>`).join('')}</tbody></table></div></div>`;
-} else if(t==='transactions') {
-transactionState.data = (data.transactions || []);
-transactionState.page = 1;
-renderTransactionTable();
-}
-}
-
-function renderTransactionTable() {
-const limit = 10;
-const totalPages = Math.ceil(transactionState.data.length / limit);
-const start = (transactionState.page - 1) * limit;
-const pagedData = transactionState.data.slice(start, start + limit);
-
-const html = `
-<h2>Transaksi: ${currentStokisId}</h2>
-<div class="card" style="margin-top:20px;">
-<div class="table-container">
-<table>
-<thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead>
-<tbody>
- ${pagedData.length === 0 ? '<tr><td colspan="7" class="empty-state">Tidak ada transaksi</td></tr>' : pagedData.map((t,i)=>`
-<tr>
-<td>${t.date}</td>
-<td>${t.code || t.id || 'N/A'}</td>
-<td>${t.memberId}</td>
-<td>${t.productCode || t.productName}</td>
-<td>${t.qty}</td>
-<td>${(parseFloat(t.totalPoints)||0).toFixed(2)}</td>
-<td><button class="btn btn-sm btn-danger" onclick="deleteItem('transactions',${start + i})">Batal</button></td>
-</tr>
-`).join('')}
-</tbody>
-</table>
-</div>
-<div class="pagination-bar no-print">
-<span>Hal ${transactionState.page} dari ${totalPages || 1} (${transactionState.data.length} total)</span>
-<div style="display:flex; gap:8px;">
-<button class="btn btn-sm" ${transactionState.page <= 1 ? 'disabled' : ''} onclick="transactionState.page--; renderTransactionTable();">Prev</button>
-<button class="btn btn-sm" ${transactionState.page >= totalPages ? 'disabled' : ''} onclick="transactionState.page++; renderTransactionTable();">Next</button>
-</div>
-</div>
-</div>`;
-document.getElementById('contentArea').innerHTML = html;
-}
-
-window.saveProfile = async () => {
-if(!confirm('Simpan profil?')) return;
-const newData = { ...stokisCache[currentStokisId], profile: { ...stokisCache[currentStokisId].profile, namaKoordinat: document.getElementById('p_koord').value, kodeKoordinat: document.getElementById('p_kode').value, namaStokis: document.getElementById('p_nama').value, alamatStokis: document.getElementById('p_alamat').value, waNumber: document.getElementById('p_wa').value } };
-await saveData(newData);
-};
-window.deleteItem = async (c, i) => { if(!confirm('Hapus?')) return; const d = stokisCache[currentStokisId]; d[c].splice(i, 1); await saveData(d); };
-window.addProductModal = () => {
-showModalForm('Tambah Produk', `<input id="e_n" placeholder="Nama" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" step="0.01" placeholder="Poin" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" placeholder="Stok" style="width:100%">`, async () => {
-const n = document.getElementById('e_n').value, p = parseFloat(document.getElementById('e_p').value), s = parseInt(document.getElementById('e_s').value);
-if(!n||isNaN(p)) return alert('Lengkapi');
-const d = stokisCache[currentStokisId]; d.products.push({ code:'PROD_'+Date.now(), name:n, point:p, pembelian:s }); await saveData(d);
-});
-};
-window.editProduct = (i) => {
-const p = stokisCache[currentStokisId].products[i];
-showModalForm('Edit Produk', `<input id="e_n" value="${p.name}" style="width:100%;margin-bottom:10px"><input id="e_p" type="number" step="0.01" value="${p.point}" style="width:100%;margin-bottom:10px"><input id="e_s" type="number" value="${p.pembelian}" style="width:100%">`, async () => {
-p.name = document.getElementById('e_n').value; p.point = parseFloat(document.getElementById('e_p').value); p.pembelian = parseInt(document.getElementById('e_s').value); await saveData(stokisCache[currentStokisId]);
-});
-};
-window.addMemberModal = () => {
-showModalForm('Tambah Member', `<input id="m_i" placeholder="ID" style="width:100%;margin-bottom:10px"><input id="m_n" placeholder="Nama" style="width:100%;margin-bottom:10px"><input id="m_u" placeholder="Upline ID" style="width:100%">`, async () => {
-const i = document.getElementById('m_i').value, n = document.getElementById('m_n').value, u = document.getElementById('m_u').value||null;
-if(!i||!n) return alert('Lengkapi');
-const d = stokisCache[currentStokisId]; d.members.push({ id:i, name:n, upline:u, status:'aktif', totalPoints:0, waNumber:'', koordinat:'' }); await saveData(d);
-});
-};
-window.editMember = (i) => {
-const m = stokisCache[currentStokisId].members[i];
-showModalForm('Edit Member', `<input id="m_i" value="${m.id}" style="width:100%;margin-bottom:10px"><input id="m_n" value="${m.name}" style="width:100%;margin-bottom:10px"><input id="m_u" value="${m.upline||''}" style="width:100%;margin-bottom:10px"><select id="m_s" style="width:100%"><option value="aktif" ${m.status==='aktif'?'selected':''}>Aktif</option><option value="tidak aktif" ${m.status==='tidak aktif'?'selected':''}>Tidak Aktif</option></select>`, async () => {
-m.id = document.getElementById('m_i').value; m.name = document.getElementById('m_n').value; m.upline = document.getElementById('m_u').value||null; m.status = document.getElementById('m_s').value; await saveData(stokisCache[currentStokisId]);
-});
-}
-async function saveData(nd) { try { await setDoc(doc(db, COLLECTION_STOKIS, currentStokisId), nd, { merge:true }); alert('Tersimpan'); closeModal(); } catch(e) { alert('Gagal: '+e.message); } }
-function showModalForm(t, h, s) { document.getElementById('modalTitle').textContent = t; document.getElementById('modalBody').innerHTML = h; document.getElementById('modalActionBtn').onclick = s; document.getElementById('genericModal').classList.add('active'); }
-window.closeModal = () => document.getElementById('genericModal').classList.remove('active');
-window.openAddUserModal = () => {
-document.getElementById('modalTitle').textContent = "Buat User";
-document.getElementById('modalBody').innerHTML = `<div class="form-group"><label>Username</label><input id="n_u"></div><div class="form-group"><label>Password</label><input id="n_p"></div><div class="form-group"><label>Nama</label><input id="n_n"></div>`;
-document.getElementById('modalActionBtn').onclick = async () => {
-const u = document.getElementById('n_u').value.trim().toLowerCase(), p = document.getElementById('n_p').value.trim(), n = document.getElementById('n_n').value.trim();
-if(!u||!p) return alert('Lengkapi');
-await setDoc(doc(db, COLLECTION_USERS, u), { username:u, password:p, createdAt:new Date() });
-await setDoc(doc(db, COLLECTION_STOKIS, u), { profile:{ namaStokis:n, kodeKoordinat:'NEW' }, products:[], members:[], transactions:[] });
-alert('Dibuat'); closeModal(); renderUsersManagement(); loadStokisList();
-}; document.getElementById('genericModal').classList.add('active');
-}
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA7i0bGhjKHZ788Ir7xTDFM0LXAevnWKsI",
+        authDomain: "sistem-stokis-gmrj.firebaseapp.com",
+        projectId: "sistem-stokis-gmrj",
+        storageBucket: "sistem-stokis-gmrj.firebasestorage.app",
+        messagingSenderId: "288883517168",
+        appId: "1:288883517168:web:d5cdd864aa944205df8435",
+        measurementId: "G-12KELDXJ1J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const COLLECTION_STOKIS = "stokisDatas";
+    const COLLECTION_USERS = "stokisusers";
+    const COLLECTION_ANNOUNCEMENTS = "adminAnnouncements";
+
+    let currentStokisId = null;
+    let currentDataUnsubscribe = null;
+    let stokisCache = {};
+
+    let purchaseReportState = { page: 1, data: [], filtered: [] };
+    let globalPurchaseReportState = { page: 1, data: [], filtered: [] };
+    let transactionState = { page: 1, data: [] };
+    let rankingMemberState = { page: 1, data: [], filtered: [] };
+    let treeState = { nodes: [] };
+
+    // ========== PERBAIKAN FUNGSI cleanProductName ==========
+    function cleanProductName(code, name) {
+        // Jika name ada dan tidak mengandung "PROD", kembalikan name
+        if (name && !name.toUpperCase().includes("PROD")) {
+            return name;
+        }
+        
+        // Jika tidak ada code, return name atau default
+        if (!code) {
+            return name || "Unknown Product";
+        }
+        
+        let result = code;
+        
+        // Handle format: PROD_1767541816296_PendanWulung
+        if (result.includes("_")) {
+            const parts = result.split("_");
+            // Ambil bagian terakhir setelah underscore terakhir
+            if (parts.length >= 3) {
+                result = parts[parts.length - 1];
+            }
+        }
+        
+        // Handle format: PROD-xxx-ProductName
+        if (result.includes("-")) {
+            const parts = result.split("-");
+            if (parts.length >= 3 && parts[0].toUpperCase().includes("PROD")) {
+                result = parts.slice(2).join("-");
+            }
+        }
+        
+        // Hapus prefix PROD jika masih ada
+        result = result.replace(/^PROD[-_]/gi, "");
+        
+        // Tambahkan spasi sebelum huruf kapital (PendanWulung -> Pendan Wulung)
+        result = result.replace(/([a-z])([A-Z])/g, "$1 $2");
+        
+        // Kapitalisasi setiap kata
+        result = result.split(" ").map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join(" ");
+        
+        return result || name || "Unknown Product";
+    }
+
+    const COMMISSION_RULES = {
+        "PENDAN WULUNG": { price: 1500000, rewardPool: 70000, mgtPool: 30000, levels: { 0: 49000, 1: 7000, 2: 5600, 3: 4200, 4: 2800, 5: 1400 } },
+        "PHEROMONE": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
+        "A POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
+        "B POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
+        "C POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
+        "A KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
+        "B KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
+        "C KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
+        "GM MAX": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
+        "MADU GM": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
+        "TEH BMT": { price: 20000, rewardPool: 200, mgtPool: 200, levels: { 0: 140, 1: 40, 2: 20 } },
+        "TEH CELUP GM": { price: 75000, rewardPool: 750, mgtPool: 750, levels: { 0: 525, 1: 150, 2: 75 } },
+        "GODOGAN": { price: 80000, rewardPool: 800, mgtPool: 800, levels: { 0: 560, 1: 160, 2: 80 } },
+        "HB CORE": { price: 57000, rewardPool: 570, mgtPool: 570, levels: { 0: 399, 1: 114, 2: 57 } },
+        "HXA GM": { price: 130000, rewardPool: 1300, mgtPool: 1300, levels: { 0: 910, 1: 260, 2: 130 } },
+        "MAGIC RING": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
+        "GM OIL": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
+        "GMS2": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
+        "RPGM": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
+        "SPRAY": { price: 20000, rewardPool: 200, mgtPool: 200, levels: { 0: 140, 1: 40, 2: 20 } },
+        "GURAH THT": { price: 40000, rewardPool: 400, mgtPool: 400, levels: { 0: 280, 1: 80, 2: 40 } },
+        "GM MUSTIKA": { price: 75000, rewardPool: 750, mgtPool: 750, levels: { 0: 525, 1: 150, 2: 75 } },
+        "GM FRESH": { price: 18000, rewardPool: 180, mgtPool: 180, levels: { 0: 126, 1: 36, 2: 18 } },
+        "PENDAN HITAM 3D": { price: 500000, rewardPool: 5000, mgtPool: 5000, levels: { 0: 3500, 1: 1000, 2: 500 } },
+        "NEW GM PELING": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
+        "GM PACE": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
+        "SPOON KUNINGAN": { price: 75000, rewardPool: 750, mgtPool: 750, levels: { 0: 525, 1: 150, 2: 75 } },
+        "VITAMAX": { price: 20000, rewardPool: 200, mgtPool: 200, levels: { 0: 140, 1: 40, 2: 20 } },
+        "GM SKINCARE": { price: 300000, rewardPool: 3000, mgtPool: 3000, levels: { 0: 2100, 1: 600, 2: 300 } },
+        "PHEROMONE BS": { price: 60000, rewardPool: 600, mgtPool: 600, levels: { 0: 420, 1: 120, 2: 60 } }
+    };
+
+    window.handleAdminLogin = (e) => {
+        e.preventDefault();
+        const u = document.getElementById("adminUser").value.trim();
+        const p = document.getElementById("adminPass").value.trim();
+        if (u === "admin" && p === "master") {
+            document.getElementById("login-overlay").classList.add("hidden");
+            document.getElementById("mainSidebar").classList.remove("hidden");
+            document.getElementById("mainContent").classList.remove("hidden");
+            initDashboard();
+        } else {
+            alert("Akses Ditolak!");
+        }
+    };
+
+    window.logout = () => location.reload();
+
+    async function initDashboard() {
+        await loadStokisList();
+        renderDashboardGlobal();
+    }
+
+    async function loadStokisList() {
+        const selector = document.getElementById("stokisSelector");
+        selector.innerHTML = `<option value="">-- Pilih Stokis --</option>`;
+        try {
+            const querySnapshot = await getDocs(collection(db, COLLECTION_STOKIS));
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const nama = data.profile?.namaStokis || doc.id;
+                const option = document.createElement("option");
+                option.value = doc.id;
+                option.textContent = `${doc.id} (${nama})`;
+                selector.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Error fetching stokis list:", error);
+        }
+    }
+
+    window.loadSelectedStokis = (username) => {
+        if (currentDataUnsubscribe) {
+            currentDataUnsubscribe();
+            currentDataUnsubscribe = null;
+        }
+
+        if (!username) {
+            currentStokisId = null;
+            document.getElementById("contentArea").innerHTML = `<div class="empty-state"><span style="font-size:40px;opacity:0.5;">🏢</span><h3>Silakan Pilih Stokis</h3></div>`;
+            return;
+        }
+
+        currentStokisId = username;
+        const docRef = doc(db, COLLECTION_STOKIS, username);
+        currentDataUnsubscribe = onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                stokisCache[currentStokisId] = docSnap.data();
+                document.getElementById("stokisStatus").classList.remove("hidden");
+                const activeTab = document.querySelector(".nav-btn.active");
+                if (activeTab) {
+                    const tabName = activeTab.getAttribute("onclick").match(/'(.+?)'/)[1];
+                    if (!["dashboard", "users"].includes(tabName) && !tabName.startsWith("report-") && !tabName.startsWith("stokis-")) {
+                        renderTabContent(tabName);
+                    } else if (tabName.startsWith("stokis-")) {
+                        renderStokisSpecificTab(tabName);
+                    }
+                }
+            }
+        });
+    };
+
+    window.switchTab = (tabName) => {
+        document.querySelectorAll(".nav-btn").forEach((btn) => btn.classList.remove("active"));
+        const clickedBtn = Array.from(document.querySelectorAll(".nav-btn")).find((b) => b.getAttribute("onclick").includes(tabName));
+        if(clickedBtn) clickedBtn.classList.add("active");
+
+        if (["dashboard", "users"].includes(tabName)) {
+            renderDashboardGlobal();
+            if(tabName === "users") renderUsersManagement();
+        } else if (tabName.startsWith("report-")) {
+            handleReportTabs(tabName);
+        } else if (tabName.startsWith("stokis-")) {
+            if (!currentStokisId) {
+                document.getElementById("contentArea").innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`;
+                return;
+            }
+            renderStokisSpecificTab(tabName);
+        } else if (tabName === "admin-board") {
+            renderAdminBoard();
+        } else {
+            if (!currentStokisId) {
+                document.getElementById("contentArea").innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`;
+                return;
+            }
+            renderTabContent(tabName);
+        }
+    };
+
+    function renderDashboardGlobal() {
+        document.getElementById("contentArea").innerHTML = `
+            <h2>Dashboard Global</h2>
+            <div class="grid-dashboard">
+                <div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value" id="g-count-stokis">...</div></div>
+                <div class="stat-card"><div class="stat-label">Sistem</div><div class="stat-value" style="color:var(--color-success); font-size:20px; margin-top:12px;">Online</div></div>
+            </div>
+            <div class="card"><div class="card-header"><span class="card-title">Log Sistem</span></div><div style="padding:24px;"><p>Selamat datang Super Admin.</p></div></div>
+        `;
+        getDocs(collection(db, COLLECTION_STOKIS)).then((snap) => {
+            const el = document.getElementById("g-count-stokis");
+            if(el) el.textContent = snap.size;
+        });
+    }
+
+    function renderAdminBoard() {
+        const content = document.getElementById("contentArea");
+        content.innerHTML = `
+            <h2>📢 Papan Informasi Admin</h2>
+            <div class="card" style="margin-top:20px;">
+                <div style="padding:40px; text-align:center;">
+                    <div class="spinner"></div>
+                    <p>Memuat pengumuman...</p>
+                </div>
+            </div>
+        `;
+
+        const q = query(collection(db, COLLECTION_ANNOUNCEMENTS), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const announcements = [];
+            snapshot.forEach((doc) => {
+                announcements.push({ id: doc.id, ...doc.data() });
+            });
+
+            let html = `<h2>📢 Papan Informasi Admin</h2>
+            <div class="card" style="margin-top:20px; background: #fffbeb; border-color: #fcd34d;">
+                <div class="card-header">
+                    <span class="card-title">Kelola Pengumuman & File</span>
+                    <button class="btn btn-primary btn-sm" onclick="openAddAnnouncementModal()">✉ Buat Baru</button>
+                </div>
+                <div style="padding:20px;">
+                    <p style="margin-bottom:10px; color: #92400e; font-size:14px;">
+                        📣 Pengumuman dan file di sini tersedia untuk dilihat dan didownload oleh <strong>Semua Stokis</strong>.
+                    </p>
+                    ${
+                        announcements.length === 0
+                        ? `<div class="empty-state" style="padding:20px; background:white; border-radius:8px; border:1px dashed #e5e7eb;">Belum ada pengumuman.</div>`
+                        : `<div style="display:grid; gap:20px;">
+                            ${announcements.map((a) => `
+                                <div style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:16px;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                        <h3 style="font-size:16px; font-weight:700; color:#1f2937;">${a.title}</h3>
+                                        <div style="display:flex; gap:10px; align-items:center;">
+                                            <span class="badge badge-blue">Semua Stokis</span>
+                                        </div>
+                                        <div style="font-size:12px; color:#6b7280;">${a.createdAt ? new Date(a.createdAt.toDate()).toLocaleDateString() : "-"}</div>
+                                    </div>
+                                    <div style="color:#374151; font-size:14px; white-space:pre-wrap; margin-bottom:12px; line-height:1.5;">${a.content}</div>
+                                    ${
+                                        a.fileUrl
+                                        ? `<div class="info-file-box">
+                                            <div style="display:flex; align-items:center; gap:10px;">
+                                                <span style="font-size:24px;">📎</span>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:14px; color:#0369a1;">${a.fileName || "File"} <span style="font-size:11px; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-left:8px;">${a.fileType ? a.fileType.toUpperCase() : "FILE"}</span></div>
+                                                    <div style="font-size:12px; color:#64748b;">Klik tombol untuk download</div>
+                                                </div>
+                                            </div>
+                                            <a href="${a.fileUrl}" target="_blank" class="btn btn-primary btn-sm">⬇ Download</a>
+                                        </div>`
+                                        : ""
+                                    }
+                                    <div style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:10px;">
+                                        <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${a.id}')">🗑 Hapus</button>
+                                    </div>
+                                </div>
+                            `).join("")}
+                        </div>`
+                    }
+                </div>
+            </div>`;
+            content.innerHTML = html;
+        }, (error) => {
+            content.innerHTML = `<h2>Error</h2><p>${error.message}</p>`;
+        });
+    }
+
+    window.openAddAnnouncementModal = () => {
+        document.getElementById("modalTitle").textContent = "✉ Buat Pengumuman Baru";
+        document.getElementById("modalBody").innerHTML = `
+            <div class="form-group"><label>Judul</label><input id="anntitle"></div>
+            <div class="form-group"><label>Isi Pesan (Teks)</label><textarea id="anncontent" rows="5"></textarea></div>
+            <div style="margin: 20px 0 10px 0; border-top: 1px dashed #cbd5e1; padding-top:10px;"><strong style="font-size:12px; color:#6366f1;">📎 LAMPIRAN FILE (Opsional)</strong></div>
+            <div class="form-group"><label>Nama File (Contoh: Katalog.pdf)</label><input id="annfname" placeholder="Nama File"></div>
+            <div class="form-group"><label>Format File</label>
+                <select id="annfiletype">
+                    <option value="pdf">PDF</option>
+                    <option value="docx">Word (DOCX)</option>
+                    <option value="xlsx">Excel (XLSX)</option>
+                    <option value="pptx">PowerPoint (PPTX)</option>
+                    <option value="jpg">Gambar (JPG)</option>
+                    <option value="png">Gambar (PNG)</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Link Download File (URL)</label><input id="annurl" placeholder="https://drive.google.com/..."></div>
+        `;
+
+        document.getElementById("modalActionBtn").onclick = async () => {
+            const title = document.getElementById("anntitle").value;
+            const content = document.getElementById("anncontent").value;
+            const fname = document.getElementById("annfname").value;
+            const furl = document.getElementById("annurl").value;
+            const ftype = document.getElementById("annfiletype").value;
+
+            if(!title) return alert("Judul wajib diisi");
+
+            try {
+                await addDoc(collection(db, COLLECTION_ANNOUNCEMENTS), {
+                    title,
+                    content,
+                    fileName: fname,
+                    fileUrl: furl,
+                    fileType: ftype,
+                    target: "all",
+                    createdAt: serverTimestamp()
+                });
+                alert("✅ Terkirim");
+                closeModal();
+            } catch(e) {
+                alert("Gagal: " + e.message);
+            }
+        };
+
+        document.getElementById("genericModal").classList.add("active");
+    };
+
+    window.deleteAnnouncement = async (id) => {
+        if(!confirm("Hapus pengumuman ini?")) return;
+        try {
+            await deleteDoc(doc(db, COLLECTION_ANNOUNCEMENTS, id));
+        } catch(e) {
+            alert("Gagal: " + e.message);
+        }
+    };
+
+    function renderStokisSpecificTab(tabName) {
+        const data = stokisCache[currentStokisId];
+        if(!data) return;
+
+        if (tabName === "stokis-purchase-member") {
+            const memberLookup = {};
+            data.members?.forEach((m) => { memberLookup[m.id] = m.name; });
+            const list = data.transactions?.map((t) => ({
+                date: t.date,
+                id: t.id,
+                memberId: t.memberId,
+                memberName: memberLookup[t.memberId] || t.memberName || "Unknown",
+                productName: cleanProductName(t.productCode, t.productName),
+                qty: t.qty,
+                points: t.totalPoints
+            })) || [];
+            purchaseReportState.data = list;
+            purchaseReportState.page = 1;
+            purchaseReportState.filtered = list;
+            renderPurchaseReportTable("stokis");
+        }
+    }
+
+    window.applyFilter = (type) => {
+        const state = (type === "global") ? globalPurchaseReportState : purchaseReportState;
+        const targetName = (type === "global") ? "filterNameGlobal" : "filterNameStokis";
+        const targetProd = (type === "global") ? "filterProdGlobal" : "filterProdStokis";
+        const targetDateFrom = (type === "global") ? "filterDateFromGlobal" : "filterDateFromStokis";
+        const targetDateTo = (type === "global") ? "filterDateToGlobal" : "filterDateToStokis";
+
+        const nameInput = document.getElementById(targetName)?.value.toLowerCase() || "";
+        const prodInput = document.getElementById(targetProd)?.value.toLowerCase() || "";
+        const fromInput = document.getElementById(targetDateFrom)?.value || "";
+        const toInput = document.getElementById(targetDateTo)?.value || "";
+
+        state.filtered = state.data.filter((t) => {
+            const matchName = t.memberName.toLowerCase().includes(nameInput);
+            const matchProd = t.productName.toLowerCase().includes(prodInput);
+            const matchDateFrom = !fromInput || t.date >= fromInput;
+            const matchDateTo = !toInput || t.date <= toInput;
+            return matchName && matchProd && matchDateFrom && matchDateTo;
+        });
+        state.page = 1;
+        renderPurchaseReportTable(type);
+    };
+
+    function renderPurchaseReportTable(type) {
+        const state = (type === "global") ? globalPurchaseReportState : purchaseReportState;
+        const title = (type === "global") ? "Laporan Belanja Global (Detail)" : `Laporan Belanja ${currentStokisId} (IDs)`;
+        const targetNameId = (type === "global") ? "filterNameGlobal" : "filterNameStokis";
+        const targetProdId = (type === "global") ? "filterProdGlobal" : "filterProdStokis";
+        const targetDateFromId = (type === "global") ? "filterDateFromGlobal" : "filterDateFromStokis";
+        const targetDateToId = (type === "global") ? "filterDateToGlobal" : "filterDateToStokis";
+
+        const limit = 10;
+        const totalPages = Math.ceil(state.filtered.length / limit) || 1;
+        const start = (state.page - 1) * limit;
+        const pagedData = state.filtered.slice(start, start + limit);
+
+        const html = `<h2>${title}</h2>
+        <div class="card" style="margin-top:20px;">
+            <div class="card-header"><span class="card-title">Filter Transaksi</span></div>
+            <div class="filter-bar no-print" style="padding:16px;">
+                <input type="text" id="${targetNameId}" class="filter-input" placeholder="Cari Nama Member...">
+                <input type="text" id="${targetProdId}" class="filter-input" placeholder="Cari Nama Produk...">
+                <input type="date" id="${targetDateFromId}" class="filter-input" title="Dari Tanggal">
+                <input type="date" id="${targetDateToId}" class="filter-input" title="Sampai Tanggal">
+                <button class="btn btn-primary" onclick="applyFilter('${type}')">Terapkan</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Tanggal</th><th>ID Member</th><th>Nama Member</th><th>Produk</th><th>Qty</th><th>Point</th></tr></thead>
+                    <tbody>
+                        ${
+                            pagedData.length === 0
+                            ? `<tr><td colspan="6" class="empty-state">Data tidak ditemukan</td></tr>`
+                            : pagedData.map((t) => `
+                                <tr>
+                                    <td>${t.date}</td>
+                                    <td>${t.memberId}</td>
+                                    <td><strong>${t.memberName}</strong></td>
+                                    <td>${t.productName}</td>
+                                    <td style="font-weight:bold;">${t.qty}</td>
+                                    <td style="color:var(--color-accent); font-weight:bold;">${parseFloat(t.points||0).toFixed(2)}</td>
+                                </tr>
+                            `).join("")
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pagination-bar no-print">
+            <span>Hal ${state.page} dari ${totalPages} (${state.filtered.length} total)</span>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-sm" ${state.page === 1 ? "disabled" : ""} onclick="if('${type}'==='global'){ globalPurchaseReportState.page--; renderPurchaseReportTable('global'); } else { purchaseReportState.page--; renderPurchaseReportTable('stokis'); }">Prev</button>
+                <button class="btn btn-sm" ${state.page === totalPages ? "disabled" : ""} onclick="if('${type}'==='global'){ globalPurchaseReportState.page++; renderPurchaseReportTable('global'); } else { purchaseReportState.page++; renderPurchaseReportTable('stokis'); }">Next</button>
+            </div>
+        </div>`;
+
+        document.getElementById("contentArea").innerHTML = html;
+    }
+
+    async function fetchGlobalData() {
+        const content = document.getElementById("contentArea");
+        content.innerHTML = `<div class="spinner"></div><p style="text-align:center;">Menggabungkan data ID Member...</p>`;
+        try {
+            const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+            const result = { stokisList: [], totalStokis: stokisSnap.size, totalMembers: 0, totalPoints: 0, membersMap: new Map(), stokisDetails: [] };
+            stokisSnap.forEach((doc) => {
+                const sId = doc.id;
+                const sData = doc.data();
+                const sName = sData.profile?.namaStokis || sId;
+                let sPoints = 0;
+                let sMemberCount = sData.members?.length || 0;
+                sData.members?.forEach((m) => {
+                    const mId = m.id;
+                    const mPoints = m.totalPoints || 0;
+                    sPoints += mPoints;
+                    if (!result.membersMap.has(mId)) {
+                        result.membersMap.set(mId, { id: mId, name: m.name, points: 0, upline: m.upline, stokisSources: [] });
+                        result.totalMembers++;
+                    }
+                    const globalMember = result.membersMap.get(mId);
+                    globalMember.points += mPoints;
+                    globalMember.stokisSources.push(sName);
+                    if(!globalMember.name || globalMember.name === "NA") globalMember.name = m.name;
+                    if (m.upline) globalMember.upline = m.upline;
+                });
+                result.stokisDetails.push({ id: sId, name: sName, totalPoints: sPoints, memberCount: sMemberCount });
+            });
+            result.membersMap.forEach((m) => { result.totalPoints += m.points; });
+            return result;
+        } catch (error) {
+            console.error(error);
+            alert("Error: " + error.message);
+            return null;
+        }
+    }
+
+    async function fetchGlobalTransactionList() {
+        const content = document.getElementById("contentArea");
+        content.innerHTML = `<div class="spinner"></div><p style="text-align:center;">Menganalisa Transaksi Global...</p>`;
+        try {
+            const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+            const transactionList = [];
+            stokisSnap.forEach((doc) => {
+                const sData = doc.data();
+                const sName = sData.profile?.namaStokis || doc.id;
+                const memberLookup = {};
+                sData.members?.forEach((m) => { memberLookup[m.id] = m.name; });
+                sData.transactions?.forEach((t) => {
+                    const cleanProd = cleanProductName(t.productCode, t.productName);
+                    transactionList.push({
+                        date: t.date,
+                        id: t.id,
+                        memberId: t.memberId,
+                        memberName: memberLookup[t.memberId] || t.memberName || "Unknown",
+                        productName: cleanProd,
+                        rawProductName: cleanProd,
+                        qty: t.qty,
+                        points: t.totalPoints,
+                        stokisName: sName
+                    });
+                });
+            });
+            return transactionList;
+        } catch (error) {
+            console.error(error);
+            alert("Error Transaksi: " + error.message);
+            return null;
+        }
+    }
+
+    async function handleReportTabs(tabName) {
+        const tList = await fetchGlobalTransactionList();
+        if (!tList) return;
+
+        if (tabName === "report-summary") {
+            const data = await fetchGlobalData();
+            if(data) renderReportSummary(data);
+        } else if (tabName === "report-stokis") {
+            const data = await fetchGlobalData();
+            if(data) renderReportStokisRanking(data);
+        } else if (tabName === "report-member-sales") {
+            const data = await fetchGlobalData();
+            if(data) renderReportMemberSales(data);
+        } else if (tabName === "report-tree") {
+            const data = await fetchGlobalData();
+            if(data) renderReportTree(data);
+        } else if (tabName === "report-purchase-member") {
+            globalPurchaseReportState.data = tList;
+            globalPurchaseReportState.page = 1;
+            globalPurchaseReportState.filtered = tList;
+            renderPurchaseReportTable("global");
+        } else if (tabName === "report-recapitulasi") {
+            const data = await fetchGlobalData();
+            if(data) renderReportRecapitulasi(tList, data.membersMap);
+        }
+    }
+
+    function renderReportSummary(data) {
+        const html = `<h2>Laporan Gabungan (By Member ID)</h2>
+        <div class="grid-dashboard" style="margin-top:20px;">
+            <div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value">${data.totalStokis}</div></div>
+            <div class="stat-card"><div class="stat-label">Total Member (Unique ID)</div><div class="stat-value">${data.totalMembers}</div></div>
+            <div class="stat-card"><div class="stat-label">Total Poin Global</div><div class="stat-value" style="color:var(--color-accent);">${parseFloat(data.totalPoints||0).toFixed(2)}</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Ringkasan Per Stokis</span></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Nama Stokis</th><th>Jml Member</th><th>Total Poin Internal</th></tr></thead>
+                    <tbody>
+                        ${data.stokisDetails.map((s) => `<tr><td>${s.name}</td><td>${s.memberCount}</td><td>${parseFloat(s.totalPoints||0).toFixed(2)}</td></tr>`).join("")}
+                    </tbody>
+                </table>
+            </div>
+        </div>`;
+        document.getElementById("contentArea").innerHTML = html;
+    }
+
+    function renderReportStokisRanking(data) {
+        const sorted = [...data.stokisDetails].sort((a, b) => b.totalPoints - a.totalPoints);
+        const html = `<h2>🏅 Ranking Stokis</h2>
+        <div class="card" style="margin-top:20px;">
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Rank</th><th>Nama Stokis</th><th>Member</th><th>Total Point</th></tr></thead>
+                    <tbody>
+                        ${sorted.map((s, idx) => {
+                            let rClass = "rank-other";
+                            if(idx<3) rClass = `rank-${idx+1}`;
+                            return `<tr>
+                                <td><div class="rank-badge ${rClass}">${idx+1}</div></td>
+                                <td><strong>${s.name}</strong></td>
+                                <td>${s.memberCount}</td>
+                                <td style="font-weight:bold;">${parseFloat(s.totalPoints||0).toFixed(2)}</td>
+                            </tr>`;
+                        }).join("")}
+                    </tbody>
+                </table>
+            </div>
+        </div>`;
+        document.getElementById("contentArea").innerHTML = html;
+    }
+
+    function renderReportMemberSales(data) {
+        const sortedMembers = Array.from(data.membersMap.values()).sort((a, b) => b.points - a.points);
+        rankingMemberState.data = sortedMembers;
+        rankingMemberState.filtered = sortedMembers;
+        rankingMemberState.page = 1;
+
+        const html = `<h2>💎 Ranking Member (By ID Global)</h2>
+        <p style="color:#64748b; margin-bottom:16px;">Poin dijumlahkan jika ID member sama muncul di beberapa Stokis.</p>
+        <div class="card" style="margin-top:20px;">
+            <div class="card-header"><span class="card-title">Filter Member</span></div>
+            <div class="filter-bar no-print" style="padding:16px;">
+                <input type="text" id="rankFilter" class="filter-input" placeholder="Cari Nama / ID Member...">
+                <button class="btn btn-primary" onclick="applyRankingFilter()">Terapkan</button>
+            </div>
+            <div class="table-container">
+                <table id="rankingTableBody"><!-- Content rendered by JS --></table>
+            </div>
+        </div>
+        <div class="pagination-bar no-print">
+            <span id="rankPaginationInfo">Hal 1</span>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-sm" id="rankPrev" disabled>Prev</button>
+                <button class="btn btn-sm" id="rankNext">Next</button>
+            </div>
+        </div>`;
+        document.getElementById("contentArea").innerHTML = html;
+        renderRankingTable();
+    }
+
+    window.applyRankingFilter = () => {
+        const val = document.getElementById("rankFilter").value.toLowerCase();
+        rankingMemberState.filtered = rankingMemberState.data.filter((m) =>
+            m.name.toLowerCase().includes(val) || m.id.toLowerCase().includes(val)
+        );
+        rankingMemberState.page = 1;
+        renderRankingTable();
+    };
+
+    function renderRankingTable() {
+        const limit = 10;
+        const total = rankingMemberState.filtered.length;
+        const totalPages = Math.ceil(total / limit) || 1;
+        const start = (rankingMemberState.page - 1) * limit;
+        const pagedData = rankingMemberState.filtered.slice(start, start + limit);
+
+        const tbody = document.getElementById("rankingTableBody");
+        if(!tbody) return;
+
+        let rows = `<thead><tr><th>Rank</th><th>Nama</th><th>ID</th><th>Stokis</th><th>Point</th></tr></thead><tbody>` + pagedData.map((m, idx) => {
+            const absIdx = start + idx;
+            let rClass = "rank-other";
+            if(absIdx<3) rClass = `rank-${absIdx+1}`;
+            const stokisBadge = m.stokisSources.length > 3 ? m.stokisSources.slice(0,3).join(", ") + ` ...+${m.stokisSources.length-3}` : m.stokisSources.join(", ");
+            return `<tr>
+                <td><div class="rank-badge ${rClass}">${absIdx+1}</div></td>
+                <td><strong>${m.name}</strong></td>
+                <td>${m.id}</td>
+                <td><span class="badge badge-green" style="font-weight:400;">${stokisBadge}</span></td>
+                <td style="font-weight:bold; color:var(--color-primary);">${parseFloat(m.points||0).toFixed(2)}</td>
+            </tr>`;
+        }).join("") + `</tbody>`;
+
+        tbody.innerHTML = rows || `<tr><td colspan="5" class="empty-state">Tidak ada data</td></tr>`;
+        document.getElementById("rankPaginationInfo").textContent = `Hal ${rankingMemberState.page} dari ${totalPages} (${total} total)`;
+        document.getElementById("rankPrev").disabled = (rankingMemberState.page === 1);
+        document.getElementById("rankNext").disabled = (rankingMemberState.page === totalPages);
+        document.getElementById("rankPrev").onclick = () => { rankingMemberState.page--; renderRankingTable(); };
+        document.getElementById("rankNext").onclick = () => { rankingMemberState.page++; renderRankingTable(); };
+    }
+
+    function renderReportTree(data) {
+        const nodes = new Map();
+        data.membersMap.forEach((m) => {
+            nodes.set(m.id, { id: m.id, name: m.name, points: m.points, children: [], expanded: true });
+        });
+
+        const roots = [];
+        const childIds = new Set();
+
+        data.membersMap.forEach((m) => {
+            const node = nodes.get(m.id);
+            if (m.upline && nodes.has(m.upline)) {
+                const parent = nodes.get(m.upline);
+                if (parent && !parent.children.includes(node)) {
+                    parent.children.push(node);
+                    childIds.add(m.id);
+                }
+            }
+        });
+
+        nodes.forEach((node) => {
+            if (!childIds.has(node.id)) {
+                roots.push(node);
+            }
+        });
+
+        treeState.nodes = roots;
+
+        let html = `<h2>🌳 Pohon Jaringan Global (ID)</h2>
+        <p style="color:#64748b; margin-bottom:16px;">Struktur digabungkan berdasarkan ID Member. Klik member untuk expand/collapse.</p>
+        <div class="card" style="margin-top:20px;">
+            <div class="tree-container tree"><div id="treeRoot"></div></div>
+        </div>`;
+        document.getElementById("contentArea").innerHTML = html;
+        renderTreeNodes();
+    }
+
+    window.toggleNode = (id) => {
+        function traverse(list) {
+            for (const n of list) {
+                if (n.id === id) {
+                    n.expanded = !n.expanded;
+                    return true;
+                }
+                if (n.children && traverse(n.children)) return true;
+            }
+        }
+        traverse(treeState.nodes);
+        renderTreeNodes();
+    };
+
+    function renderTreeNodes() {
+        const container = document.getElementById("treeRoot");
+        if(!container) return;
+
+        const buildTreeHtml = (nodeList) => {
+            if (!nodeList || nodeList.length === 0) return "";
+            return `<ul>${nodeList.map((node) => {
+                const hasChildren = node.children && node.children.length > 0;
+                const isExpanded = node.expanded;
+                let childrenHtml = "";
+                if(hasChildren && isExpanded) {
+                    childrenHtml = buildTreeHtml(node.children);
+                }
+                return `<li>
+                    <div class="tree-node" onclick="toggleNode('${node.id}')">
+                        ${hasChildren ? `<span class="tree-toggle-icon">${isExpanded ? "−" : "+"}</span>` : `<span style="width:20px; display:inline-block;"></span>`}
+                        <strong>${node.name}</strong> <small>${node.id}</small>
+                        <small style="display:block; color:var(--color-accent); font-weight:bold;">${parseFloat(node.points||0).toFixed(2)} Pts</small>
+                    </div>
+                    ${childrenHtml}
+                </li>`;
+            }).join("")}</ul>`;
+        };
+
+        container.innerHTML = buildTreeHtml(treeState.nodes);
+    }
+
+    function renderReportRecapitulasi(transactions, membersMap) {
+        const recapData = { totalOmset: 0, totalReward: 0, totalMgt: 0, totalBreakage: 0, details: new Map() };
+
+        const getMember = (mid) => {
+            if (!recapData.details.has(mid)) {
+                const m = membersMap.get(mid) || { name: "Unknown Member" };
+                recapData.details.set(mid, { id: mid, name: m.name, reward: 0, mgt: 0, total: 0, levelDetails: {} });
+            }
+            return recapData.details.get(mid);
+        };
+
+        transactions.forEach((t) => {
+            const qty = parseInt(t.qty) || 0;
+            const cleanProdName = t.rawProductName;
+
+            const normalize = (str) => str.toUpperCase().replace(/\s+/g, "");
+            const normalizedInput = normalize(cleanProdName);
+            let matchedKey = Object.keys(COMMISSION_RULES).find((k) => {
+                const normalizedKey = normalize(k);
+                return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
+            });
+
+            if (!matchedKey) return;
+            const rule = COMMISSION_RULES[matchedKey];
+
+            const transOmset = rule.price * qty;
+            const transRewardPool = rule.rewardPool * qty;
+            const transMgtPool = rule.mgtPool * qty;
+
+            recapData.totalOmset += transOmset;
+            recapData.totalReward += transRewardPool;
+            recapData.totalMgt += transMgtPool;
+
+            const sellerId = t.memberId;
+            const seller = getMember(sellerId);
+
+            const lvl0Reward = (rule.levels[0] || 0) * qty;
+            const lvl0Mgt = transMgtPool;
+            seller.reward += lvl0Reward;
+            seller.mgt += lvl0Mgt;
+            seller.total += lvl0Reward + lvl0Mgt;
+            seller.levelDetails[0] = (seller.levelDetails[0] || 0) + lvl0Reward + lvl0Mgt;
+
+            const isPendan = (matchedKey === "PENDAN WULUNG");
+            const maxDepth = isPendan ? 5 : 2;
+            let currentUplineId = membersMap.get(sellerId)?.upline;
+
+            for (let lvl = 1; lvl <= maxDepth; lvl++) {
+                const amount = (rule.levels[lvl] || 0) * qty;
+
+                if (currentUplineId) {
+                    const upline = getMember(currentUplineId);
+                    upline.reward += amount;
+                    upline.total += amount;
+                    upline.levelDetails[lvl] = (upline.levelDetails[lvl] || 0) + amount;
+
+                    const nextMember = membersMap.get(currentUplineId);
+                    currentUplineId = nextMember ? nextMember.upline : null;
+                } else {
+                    recapData.totalBreakage += amount;
+                }
+            }
+        });
+
+        recapData.details.set("BREAKAGE_COMPANY", { id: "PERUSAHAAN", name: "PERUSAHAAN (Sisa Alokasi)", reward: 0, mgt: 0, total: recapData.totalBreakage, isBreakage: true });
+
+        const sortedMembers = Array.from(recapData.details.values()).sort((a, b) => {
+            if (a.isBreakage) return 1;
+            if (b.isBreakage) return -1;
+            return b.total - a.total;
+        });
+
+        const grandTotalValue = recapData.totalReward + recapData.totalMgt;
+
+        const html = `<h2>📊 Rekapitulasi Global (Reward vs Management)</h2>
+        <div class="grid-dashboard" style="margin-top:20px;">
+            <div class="stat-card" style="border-left: 4px solid var(--color-primary);">
+                <div class="stat-label">Total Omset</div>
+                <div class="stat-value">${recapData.totalOmset.toLocaleString("id-ID")}</div>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--color-success);">
+                <div class="stat-label">Total Reward Jaringan</div>
+                <div class="stat-value" style="color:var(--color-success);">${recapData.totalReward.toLocaleString("id-ID")}</div>
+                <small style="color:#64748b;">Terbagi ke Members</small>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--color-warning);">
+                <div class="stat-label">Total Management Pool</div>
+                <div class="stat-value" style="color:var(--color-warning);">${recapData.totalMgt.toLocaleString("id-ID")}</div>
+                <small style="color:#64748b;">Alokasi Khusus</small>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--color-breakage);">
+                <div class="stat-label">Sisa Alokasi</div>
+                <div class="stat-value" style="color:var(--color-breakage);">${recapData.totalBreakage.toLocaleString("id-ID")}</div>
+                <small style="color:#64748b;">Upline Tidak Ada</small>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+            <div class="card-header">
+                <span class="card-title">Detail Per Member & Perusahaan</span>
+                <button class="btn btn-print btn-sm" onclick="window.print()">Cetak</button>
+            </div>
+            <div class="table-container">
+                <table class="recap-table">
+                    <thead>
+                        <tr>
+                            <th style="min-width:150px;">Nama Member</th>
+                            <th>ID</th>
+                            <th style="text-align:right;">Total Reward</th>
+                            <th style="text-align:right;">Total Management</th>
+                            <th style="text-align:right;">Total Terima</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedMembers.map((m) => `
+                            <tr class="${m.isBreakage ? "row-breakage" : ""}">
+                                <td><strong>${m.name}</strong></td>
+                                <td>${m.id}</td>
+                                <td style="text-align:right;" class="${m.isBreakage ? "val-breakage" : "val-reward"}">${m.reward.toLocaleString("id-ID")}</td>
+                                <td style="text-align:right;" class="${m.isBreakage ? "val-breakage" : "val-mgt"}">${m.mgt.toLocaleString("id-ID")}</td>
+                                <td style="text-align:right;" class="${m.isBreakage ? "val-breakage" : "val-total"}">${m.total.toLocaleString("id-ID")}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                    <tfoot style="background:#f1f5f9; font-weight:bold;">
+                        <tr>
+                            <td colspan="2" style="text-align:right;">GRAND TOTAL</td>
+                            <td style="text-align:right;" class="val-reward">${recapData.totalReward.toLocaleString("id-ID")}</td>
+                            <td style="text-align:right;" class="val-mgt">${recapData.totalMgt.toLocaleString("id-ID")}</td>
+                            <td style="text-align:right;" class="val-total">${grandTotalValue.toLocaleString("id-ID")}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div style="padding:16px; font-size:12px; color:#64748b;">
+                📌 Grand Total = Total Reward Pool + Total Management Pool.<br>
+                ⚠️ Sisa Alokasi (Breakage) adalah bagian dari Reward Pool yang tidak terdistribusi ke upline karena tidak ada upline.
+            </div>
+        </div>`;
+        document.getElementById("contentArea").innerHTML = html;
+    }
+
+    async function renderUsersManagement() {
+        const content = document.getElementById("contentArea");
+        content.innerHTML = `<h2 style="margin-bottom: 24px;">Manajemen Akun</h2>
+        <div class="card"><div class="card-header"><span class="card-title">Daftar Stokis</span><button class="btn btn-primary btn-sm" onclick="openAddUserModal()">➕ Buat</button></div>
+        <div class="table-container"><table id="usersTable"><thead><tr><th>Username</th><th>Pass</th><th>Nama</th><th>Aksi</th></tr></thead><tbody><tr><td colspan="4">Loading...</td></tr></tbody></table></div></div>`;
+
+        const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+        const tbody = document.querySelector("#usersTable tbody");
+        tbody.innerHTML = "";
+
+        if (stokisSnap.empty) {
+            tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Data kosong</td></tr>`;
+            return;
+        }
+
+        for (const doc of stokisSnap.docs) {
+            const username = doc.id;
+            const data = doc.data();
+            const namaStokis = data.profile?.namaStokis || "NA";
+
+            let passDisplay = `<span style="color:#cbd5e1;">Belum diset</span>`;
+            try {
+                const userDoc = await getDoc(doc(db, COLLECTION_USERS, username));
+                if (userDoc.exists()) {
+                    passDisplay = `<strong>${userDoc.data().password}</strong>`;
+                }
+            } catch(e) {}
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${username}</strong></td>
+                <td>${passDisplay}</td>
+                <td>${namaStokis}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="openEditUserModal('${username}')">Edit</button>
+                    <button class="btn btn-sm btn-primary" style="background:var(--color-success);" onclick="openMigrateModal('${username}')">Copy</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteStokisData('${username}')">Hapus</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    window.openEditUserModal = (u) => {
+        document.getElementById("modalTitle").textContent = `Edit Pass ${u}`;
+        document.getElementById("modalBody").innerHTML = `<div class="form-group"><label>New Pass</label><input id="newUserPass"></div>`;
+        document.getElementById("modalActionBtn").onclick = async () => {
+            const p = document.getElementById("newUserPass").value.trim();
+            if(!p) return alert("Kosong");
+            await setDoc(doc(db, COLLECTION_USERS, u), { username:u, password:p, updatedAt:new Date() });
+            alert("Disimpan");
+            closeModal();
+            renderUsersManagement();
+        };
+        document.getElementById("genericModal").classList.add("active");
+    };
+
+    window.deleteStokisData = async (u) => {
+        if(!confirm(`Hapus data ${u}?`)) return;
+        try {
+            await deleteDoc(doc(db, COLLECTION_STOKIS, u));
+            await deleteDoc(doc(db, COLLECTION_USERS, u));
+            alert("Dihapus");
+            renderUsersManagement();
+            loadStokisList();
+        } catch(e) {
+            alert("Gagal: " + e.message);
+        }
+    };
+
+    window.openMigrateModal = (d) => {
+        document.getElementById("migrateModal").classList.add("active");
+        const s = document.getElementById("migrateSource");
+        const dest = document.getElementById("migrateDest");
+        s.innerHTML = `<option value="">-- Sumber --</option>`;
+        dest.innerHTML = `<option value="">-- Tujuan --</option>`;
+
+        document.querySelectorAll("#stokisSelector option").forEach((opt) => {
+            if (opt.value) {
+                s.innerHTML += `<option value="${opt.value}"${opt.value===d?" selected":""}>${opt.textContent}</option>`;
+                dest.innerHTML += `<option value="${opt.value}">${opt.textContent}</option>`;
+            }
+        });
+    };
+
+    window.closeMigrateModal = () => {
+        document.getElementById("migrateModal").classList.remove("active");
+    };
+
+    window.executeMigrate = async () => {
+        const s = document.getElementById("migrateSource").value;
+        const d = document.getElementById("migrateDest").value;
+        const o = document.getElementById("migrateOverwrite").checked;
+        if(!s||!d) return alert("Pilih keduanya!");
+        if(s===d) return alert("Sama!");
+
+        try {
+            const snap = await getDoc(doc(db, COLLECTION_STOKIS, s));
+            if(!snap.exists()) return alert("Sumber kosong");
+            const srcData = snap.data();
+
+            const destSnap = await getDoc(doc(db, COLLECTION_STOKIS, d));
+            let newData;
+            if (o || !destSnap.exists()) {
+                newData = srcData;
+            } else {
+                const destData = destSnap.data();
+                newData = {
+                    profile: { ...destData.profile, ...srcData.profile },
+                    products: [...(destData.products||[]), ...(srcData.products||[])],
+                    members: [...(destData.members||[]), ...(srcData.members||[])],
+                    transactions: [...(destData.transactions||[]), ...(srcData.transactions||[])]
+                };
+            }
+            await setDoc(doc(db, COLLECTION_STOKIS, d), newData, {merge:true});
+            alert("Berhasil");
+            closeMigrateModal();
+            if(currentStokisId===d) loadSelectedStokis(d);
+        } catch(e) {
+            alert("Gagal: " + e.message);
+        }
+    };
+
+    function renderTabContent(t) {
+        const data = stokisCache[currentStokisId];
+        if(!data) return;
+
+        if(t==="profile") {
+            const p = data.profile || {};
+            document.getElementById("contentArea").innerHTML = `<h2>Profil ${currentStokisId}</h2><div class="card" style="margin-top:16px;"><div class="card-header"><span>Edit Identitas</span></div><div style="padding:24px;">
+            <div class="form-group"><label>Nama Koordinat</label><input id="pkoord" value="${p.namaKoordinat||""}"></div>
+            <div class="form-group"><label>Kode</label><input id="pkode" value="${p.kodeKoordinat||""}"></div>
+            <div class="form-group"><label>Nama Stokis</label><input id="pnama" value="${p.namaStokis||""}"></div>
+            <div class="form-group"><label>Alamat</label><textarea id="palamat">${p.alamatStokis||""}</textarea></div>
+            <div class="form-group"><label>WA</label><input id="pwa" value="${p.waNumber||""}"></div>
+            <button class="btn btn-primary" onclick="saveProfile()">Simpan</button>
+            </div></div>`;
+        } else if(t==="products") {
+            document.getElementById("contentArea").innerHTML = `<h2>Produk ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0;" onclick="addProductModal()">Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>Nama</th><th>Poin</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${(data.products||[]).map((p,i)=>`<tr><td>${p.name}</td><td>${parseFloat(p.point||0).toFixed(2)}</td><td>${p.pembelian}</td><td><button class="btn btn-sm btn-primary" onclick="editProduct(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('products',${i})">Hapus</button></td></tr>`).join("")}</tbody></table></div></div>`;
+        } else if(t==="members") {
+            document.getElementById("contentArea").innerHTML = `<h2>Member ${currentStokisId}</h2><button class="btn btn-primary" style="margin:10px 0;" onclick="addMemberModal()">Tambah</button><div class="card"><div class="table-container"><table><thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Poin</th><th>Aksi</th></tr></thead><tbody>${(data.members||[]).map((m,i)=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.upline||"-"}</td><td>${parseFloat(m.totalPoints||0).toFixed(2)}</td><td><button class="btn btn-sm btn-primary" onclick="editMember(${i})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteItem('members',${i})">Hapus</button></td></tr>`).join("")}</tbody></table></div></div>`;
+        } else if(t==="transactions") {
+            transactionState.data = data.transactions || [];
+            transactionState.page = 1;
+            renderTransactionTable();
+        }
+    }
+
+    function renderTransactionTable() {
+        const limit = 10;
+        const totalPages = Math.ceil(transactionState.data.length / limit) || 1;
+        const start = (transactionState.page - 1) * limit;
+        const pagedData = transactionState.data.slice(start, start + limit);
+
+        const html = `<h2>Transaksi ${currentStokisId}</h2>
+        <div class="card" style="margin-top:20px;">
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead>
+                    <tbody>
+                        ${pagedData.length === 0 ? `<tr><td colspan="7" class="empty-state">Tidak ada transaksi</td></tr>` : pagedData.map((t,i) => `
+                            <tr>
+                                <td>${t.date}</td>
+                                <td>${t.code || t.id || "NA"}</td>
+                                <td>${t.memberId}</td>
+                                <td>${cleanProductName(t.productCode, t.productName)}</td>
+                                <td>${t.qty}</td>
+                                <td>${parseFloat(t.totalPoints||0).toFixed(2)}</td>
+                                <td><button class="btn btn-sm btn-danger" onclick="deleteItem('transactions',${start + i})">Batal</button></td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pagination-bar no-print">
+            <span>Hal ${transactionState.page} dari ${totalPages} (${transactionState.data.length} total)</span>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-sm" ${transactionState.page === 1 ? "disabled" : ""} onclick="transactionState.page--; renderTransactionTable();">Prev</button>
+                <button class="btn btn-sm" ${transactionState.page === totalPages ? "disabled" : ""} onclick="transactionState.page++; renderTransactionTable();">Next</button>
+            </div>
+        </div>`;
+        document.getElementById("contentArea").innerHTML = html;
+    }
+
+    window.saveProfile = async () => {
+        if(!confirm("Simpan profil?")) return;
+        const newData = { ...stokisCache[currentStokisId], profile: { ...(stokisCache[currentStokisId].profile||{}),
+            namaKoordinat: document.getElementById("pkoord").value,
+            kodeKoordinat: document.getElementById("pkode").value,
+            namaStokis: document.getElementById("pnama").value,
+            alamatStokis: document.getElementById("palamat").value,
+            waNumber: document.getElementById("pwa").value
+        }};
+        await saveData(newData);
+    };
+
+    window.deleteItem = async (c, i) => {
+        if(!confirm("Hapus?")) return;
+        const d = stokisCache[currentStokisId];
+        d[c].splice(i, 1);
+        await saveData(d);
+    };
+
+    window.addProductModal = () => {
+        showModalForm("Tambah Produk", `<input id="en" placeholder="Nama" style="width:100%;margin-bottom:10px;"><input id="ep" type="number" step="0.01" placeholder="Poin" style="width:100%;margin-bottom:10px;"><input id="es" type="number" placeholder="Stok" style="width:100%;">`, async () => {
+            const n = document.getElementById("en").value, p = parseFloat(document.getElementById("ep").value), s = parseInt(document.getElementById("es").value);
+            if(!n||isNaN(p)) return alert("Lengkapi");
+            const d = stokisCache[currentStokisId];
+            if(!d.products) d.products = [];
+            d.products.push({code:`PROD-${Date.now()}`,name:n,point:p,pembelian:s});
+            await saveData(d);
+        });
+    };
+
+    window.addMemberModal = () => {
+        showModalForm("Tambah Member", `<input id="mid" placeholder="ID" style="width:100%;margin-bottom:10px;"><input id="mn" placeholder="Nama" style="width:100%;margin-bottom:10px;"><input id="mu" placeholder="Upline ID" style="width:100%;">`, async () => {
+            const i = document.getElementById("mid").value, n = document.getElementById("mn").value, u = document.getElementById("mu").value;
+            if(!i) return alert("ID Wajib");
+            const d = stokisCache[currentStokisId];
+            if(!d.members) d.members = [];
+            d.members.push({id:i,name:n,upline:u,totalPoints:0});
+            await saveData(d);
+        });
+    };
+
+    function showModalForm(title, body, onConfirm) {
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalBody").innerHTML = body;
+        document.getElementById("modalActionBtn").onclick = onConfirm;
+        document.getElementById("genericModal").classList.add("active");
+    }
+
+    window.closeModal = () => {
+        document.getElementById("genericModal").classList.remove("active");
+    };
+
+    async function saveData(data) {
+        try {
+            await setDoc(doc(db, COLLECTION_STOKIS, currentStokisId), data, {merge:true});
+            alert("Tersimpan");
+        } catch(e) {
+            alert("Gagal: " + e.message);
+        }
+    }
+
+    window.editProduct = (i) => {
+        const p = stokisCache[currentStokisId].products[i];
+        showModalForm("Edit Produk", `<input id="en" value="${p.name}" style="width:100%;margin-bottom:10px;"><input id="ep" type="number" step="0.01" value="${p.point}" style="width:100%;margin-bottom:10px;"><input id="es" type="number" value="${p.pembelian}" style="width:100%;">`, async () => {
+            const n = document.getElementById("en").value, p = parseFloat(document.getElementById("ep").value), s = parseInt(document.getElementById("es").value);
+            if(!n||isNaN(p)) return alert("Lengkapi");
+            const d = stokisCache[currentStokisId];
+            d.products[i] = {...d.products[i],name:n,point:p,pembelian:s};
+            await saveData(d);
+        });
+    };
+
+    window.editMember = (i) => {
+        const m = stokisCache[currentStokisId].members[i];
+        showModalForm("Edit Member", `<input id="mid" value="${m.id}" readonly style="width:100%;margin-bottom:10px;background:#f1f5f9;"><input id="mn" value="${m.name}" style="width:100%;margin-bottom:10px;"><input id="mu" value="${m.upline||""}" placeholder="Upline ID" style="width:100%;">`, async () => {
+            const n = document.getElementById("mn").value, u = document.getElementById("mu").value;
+            const d = stokisCache[currentStokisId];
+            d.members[i] = {...d.members[i],name:n,upline:u};
+            await saveData(d);
+        });
+    };
+
 </script>
+
 </body>
 </html>
