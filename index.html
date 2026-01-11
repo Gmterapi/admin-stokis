@@ -35,22 +35,26 @@
             font-family: 'Inter', system-ui, sans-serif;
         }
 
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
         body {
             background-color: var(--color-bg);
             color: var(--color-text);
-            height: 100vh;
             display: flex;
             overflow: hidden;
         }
 
-        /* LOGIN SCREEN */
-        #login-overlay {
+        /* LOGIN SCREEN - CENTERED (FIXED) */
+        .login-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -59,23 +63,28 @@
 
         .login-box {
             background: white;
-            padding: 40px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 48px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.3);
             text-align: center;
+        }
+
+        .login-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
         }
 
         .login-box h2 {
             color: #1e293b;
-            margin-bottom: 24px;
-            font-size: 24px;
+            margin-bottom: 32px;
+            font-size: 26px;
             font-weight: 800;
         }
 
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
@@ -83,39 +92,52 @@
             display: block;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             color: #64748b;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border 0.2s;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
         }
 
         .input-group input:focus {
             outline: none;
             border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .btn-login {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: var(--color-accent);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
+            font-size: 15px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
+            margin-top: 12px;
+            transition: all 0.2s;
         }
 
         .btn-login:hover {
             background: var(--color-accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .login-hint {
+            margin-top: 24px;
+            font-size: 13px;
+            color: #94a3b8;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
         }
 
         /* LAYOUT */
@@ -126,6 +148,9 @@
             display: flex;
             flex-direction: column;
             border-right: 1px solid #334155;
+            flex-shrink: 0;
+            height: 100vh;
+            overflow-y: auto;
         }
 
         .sidebar-header {
@@ -205,6 +230,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            height: 100vh;
             overflow: hidden;
             background: var(--color-bg);
         }
@@ -217,6 +243,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
+            flex-shrink: 0;
         }
 
         .current-context {
@@ -239,7 +266,9 @@
         .content-area {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 24px;
+            width: 100%;
         }
 
         /* COMPONENTS */
@@ -401,6 +430,7 @@
             align-items: center;
             padding: 16px 24px;
             border-top: 1px solid var(--color-border);
+            background: white;
         }
 
         .modal {
@@ -423,7 +453,7 @@
         .modal-box {
             background: white;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             border-radius: 8px;
             padding: 24px;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
@@ -517,62 +547,63 @@
             .sidebar, .top-bar, .no-print {
                 display: none !important;
             }
-
             .main-content {
                 margin: 0;
                 padding: 0;
                 overflow: visible;
                 height: auto;
             }
-
             .content-area {
                 overflow: visible;
                 padding: 0;
             }
-
             body {
                 height: auto;
                 overflow: visible;
                 background: white;
                 color: black;
             }
-
             .card {
                 box-shadow: none;
                 border: 1px solid #ccc;
                 break-inside: avoid;
             }
-
             .table-container {
                 overflow: visible;
             }
-
             table {
                 font-size: 10px;
             }
-
             th, td {
                 border: 1px solid #000;
             }
-
             .info-file-box {
                 border: 1px solid #ccc;
                 background: none;
             }
         }
 
+        /* TREE STYLES WITH COLLAPSE/EXPAND */
         .tree-container {
             padding: 20px;
             overflow: auto;
             background: #ffffff;
             border-radius: 8px;
+            min-height: 400px;
+        }
+
+        .tree {
+            margin: 0;
+            padding: 0;
         }
 
         .tree ul {
             padding-top: 20px;
             position: relative;
             transition: all 0.5s;
-            padding-left: 20px;
+            padding-left: 0;
+            display: flex;
+            justify-content: center;
         }
 
         .tree li {
@@ -589,7 +620,7 @@
             position: absolute;
             top: 0;
             right: 50%;
-            border-top: 1px solid #ccc;
+            border-top: 2px solid #cbd5e1;
             width: 50%;
             height: 20px;
         }
@@ -597,7 +628,7 @@
         .tree li::after {
             right: auto;
             left: 50%;
-            border-left: 1px solid #ccc;
+            border-left: 2px solid #cbd5e1;
         }
 
         .tree li:only-child::after, .tree li:only-child::before {
@@ -613,7 +644,7 @@
         }
 
         .tree li:last-child::before {
-            border-right: 1px solid #ccc;
+            border-right: 2px solid #cbd5e1;
             border-radius: 0 5px 0 0;
         }
 
@@ -626,25 +657,26 @@
             position: absolute;
             top: 0;
             left: 50%;
-            border-left: 1px solid #ccc;
+            border-left: 2px solid #cbd5e1;
             width: 0;
             height: 20px;
         }
 
         .tree-node {
-            border: 1px solid #cbd5e1;
-            padding: 10px 15px;
+            border: 2px solid #cbd5e1;
+            padding: 12px 16px;
             text-decoration: none;
             color: #334155;
             font-family: arial, verdana, tahoma;
-            font-size: 12px;
+            font-size: 13px;
             display: inline-block;
-            border-radius: 5px;
+            border-radius: 8px;
             background: white;
             transition: all 0.3s;
-            min-width: 120px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-width: 140px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
             cursor: pointer;
+            position: relative;
         }
 
         .tree-node:hover {
@@ -653,13 +685,29 @@
             transform: scale(1.05);
             z-index: 10;
             position: relative;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.2);
         }
 
         .tree-node strong {
             display: block;
-            font-size: 14px;
+            font-size: 15px;
             color: #0f172a;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .tree-node .node-id {
+            color: #6366f1;
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
             margin-bottom: 2px;
+        }
+
+        .tree-node .node-points {
+            color: #10b981;
+            font-size: 12px;
+            font-weight: 700;
         }
 
         .tree-node small {
@@ -667,11 +715,44 @@
             font-size: 11px;
         }
 
-        .tree-toggle-icon {
-            display: inline-block;
-            margin-right: 5px;
+        /* COLLAPSE/EXPAND TOGGLE */
+        .toggle-btn {
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--color-accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
             font-weight: bold;
-            color: var(--color-accent);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        .toggle-btn:hover {
+            background: var(--color-accent-hover);
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        /* Hide children when collapsed */
+        .tree li.collapsed > ul {
+            display: none;
+        }
+
+        .tree li.collapsed .toggle-btn::before {
+            content: '+';
+        }
+
+        .tree li:not(.collapsed) .toggle-btn::before {
+            content: '−';
         }
 
         .rank-badge {
@@ -734,1555 +815,2201 @@
             background-color: #f8fafc;
             border-top: 2px dashed #cbd5e1;
         }
+
+        .editable-price {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 100px;
+            text-align: right;
+        }
+
+        .editable-price:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .omset-stokis-table {
+            margin-top: 24px;
+        }
+
+        .omset-stokis-table th {
+            position: sticky;
+            top: 0;
+            background: #f1f5f9;
+            z-index: 10;
+        }
+
+        .total-row {
+            background: #f8fafc;
+            font-weight: 700;
+            border-top: 2px solid var(--color-primary);
+        }
+
+        .product-name-col {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .btn-add-product {
+            margin: 16px 0;
+        }
+
+        .omset-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .omset-card .stat-label {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .omset-card .stat-value {
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <!-- LOGIN OVERLAY -->
-    <div id="login-overlay">
-        <div class="login-box">
-            <div style="font-size:40px; margin-bottom:10px;">🛡️</div>
-            <h2>Super Admin Login</h2>
-            <form onsubmit="handleAdminLogin(event)">
-                <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" id="adminUser" placeholder="admin" required>
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="adminPass" placeholder="****" required>
-                </div>
-                <button type="submit" class="btn-login">Masuk Dashboard</button>
-            </form>
-            <p style="margin-top:20px; font-size:12px; color:#94a3b8;">Gunakan: admin / master</p>
-        </div>
-    </div>
 
-    <div class="sidebar hidden" id="mainSidebar">
-        <div class="sidebar-header">
-            <div class="logo-circle">SA</div>
-            <div class="sidebar-title">GMRJ Admin</div>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item"><button class="nav-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button></li>
-            <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#64748b; font-weight:700;">Manajemen User</li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('users')">👥 Akun Stokis</button></li>
-            <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#64748b; font-weight:700;">Editor Stokis</li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('profile')">👤 Profil</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('products')">📦 Produk</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('members')">👥 Member</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('transactions')">💰 Transaksi</button></li>
-            <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#64748b; font-weight:700;">Laporan Per Stokis</li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-purchase-member')">🛒 Belanja per Member</button></li>
-            <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#f59e0b; font-weight:700;">📊 Laporan Global ID</li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-summary')">📈 Ringkasan Gabungan</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-stokis')">🏅 Rank Stokis</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-member-sales')">💎 Top Member (By ID)</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-purchase-member')">🛒 Belanja Global (ID)</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-tree')">🌳 Pohon Jaringan (By ID)</button></li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-recapitulasi')">📊 Rekapitulasi (Reward/Mgt)</button></li>
-            <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#f59e0b; font-weight:700;">Pengaturan</li>
-            <li class="nav-item"><button class="nav-btn" onclick="switchTab('admin-board')">📢 Papan Informasi</button></li>
-        </ul>
-        <div class="sidebar-footer">v2.2.0 Global ID<br>Enhanced Analytics</div>
-    </div>
-
-    <div class="main-content hidden" id="mainContent">
-        <div class="top-bar">
-            <div class="current-context">
-                Target Stokis:
-                <select id="stokisSelector" class="context-selector" onchange="loadSelectedStokis(this.value)">
-                    <option value="">-- Pilih Stokis --</option>
-                </select>
-                <span id="stokisStatus" class="badge badge-green hidden">Live Connected</span>
+<!-- LOGIN OVERLAY - CENTERED (FIXED) -->
+<div id="login-overlay" class="login-overlay">
+    <div class="login-box">
+        <div class="login-icon">🛡️</div>
+        <h2>Super Admin Login</h2>
+        <form onsubmit="handleAdminLogin(event)">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="adminUser" placeholder="admin" required>
             </div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-print btn-sm no-print" onclick="window.print()">🖨️ Cetak PDF</button>
-                <button class="btn btn-danger btn-sm no-print" onclick="logout()">Logout</button>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="adminPass" placeholder="•••••" required>
             </div>
-        </div>
-        <div class="content-area" id="contentArea"></div>
+            <button type="submit" class="btn-login">Masuk Dashboard</button>
+        </form>
+        <p class="login-hint">Gunakan: <strong>admin / master</strong></p>
     </div>
+</div>
 
-    <!-- MODALS -->
-    <div id="genericModal" class="modal">
-        <div class="modal-box">
-            <h3 class="modal-title" id="modalTitle">Judul</h3>
-            <div id="modalBody"></div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
-                <button class="btn no-print" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
-                <button class="btn btn-primary no-print" id="modalActionBtn">Simpan</button>
-            </div>
-        </div>
+<!-- SIDEBAR -->
+<div class="sidebar hidden" id="mainSidebar">
+    <div class="sidebar-header">
+        <div class="logo-circle">SA</div>
+        <div class="sidebar-title">GMRJ Admin</div>
     </div>
-
-    <div id="migrateModal" class="modal">
-        <div class="modal-box">
-            <h3 class="modal-title">📋 Migrasi / Copy Data</h3>
-            <div class="form-group"><label>Sumber Data</label><select id="migrateSource"></select></div>
-            <div class="form-group"><label>Tujuan Data</label><select id="migrateDest"></select></div>
-            <div class="form-group"><label>Opsi Penimpaan</label><div style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="migrateOverwrite"><span style="font-size:14px;">Timpa data lama</span></div></div>
-            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
-                <button class="btn no-print" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
-                <button class="btn btn-primary no-print" onclick="executeMigrate()">Mulai Migrasi</button>
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import {
-            getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc,
-            onSnapshot, addDoc, serverTimestamp, query, orderBy
-        } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA7i0bGhjKHZ788Ir7xTDFM0LXAevnWKsI",
-            authDomain: "sistem-stokis-gmrj.firebaseapp.com",
-            projectId: "sistem-stokis-gmrj",
-            storageBucket: "sistem-stokis-gmrj.firebasestorage.app",
-            messagingSenderId: "288883517168",
-            appId: "1:288883517168:web:d5cdd864aa944205df8435",
-            measurementId: "G-12KELDXJ1J"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const COLLECTION_STOKIS = 'stokisDatas';
-        const COLLECTION_USERS = 'stokisusers';
-        const COLLECTION_ANNOUNCEMENTS = 'adminAnnouncements';
-
-        let currentStokisId = null;
-        let currentDataUnsubscribe = null;
-        let stokisCache = {};
-        let purchaseReportState = { page: 1, data: [], filtered: [] };
-        let globalPurchaseReportState = { page: 1, data: [], filtered: [] };
-        let transactionState = { page: 1, data: [] };
-        let rankingMemberState = { page: 1, data: [], filtered: [] };
-        let treeState = { nodes: [] };
+    <ul class="nav-menu">
+        <li class="nav-item"><button class="nav-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button></li>
         
-        // State untuk filter ranking stokis
-        let rankingStokisState = { 
-            rawData: [], 
-            dateFrom: '', 
-            dateTo: '' 
-        };
+        <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#64748b; font-weight:700;">Manajemen User</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('users')">👥 Akun Stokis</button></li>
+        
+        <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#64748b; font-weight:700;">Editor Stokis</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('profile')">👤 Profil</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('products')">📦 Produk</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('members')">👥 Member</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('transactions')">💰 Transaksi</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('omset')">💵 Omset Stokis</button></li>
+        
+        <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#64748b; font-weight:700;">Laporan Per Stokis</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-purchase-member')">🛒 Belanja per Member</button></li>
+        
+        <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#f59e0b; font-weight:700;">📊 Laporan Global ID</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-summary')">📈 Ringkasan Gabungan</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-stokis')">🏅 Rank Stokis</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-member-sales')">💎 Top Member (By ID)</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-purchase-member')">🛒 Belanja Global (ID)</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-tree')">🌳 Pohon Jaringan (By ID)</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('report-recapitulasi')">📊 Rekapitulasi (Reward/Mgt)</button></li>
+        
+        <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#f59e0b; font-weight:700;">Pengaturan</li>
+        <li class="nav-item"><button class="nav-btn" onclick="switchTab('admin-board')">📢 Papan Informasi</button></li>
+    </ul>
+    <div class="sidebar-footer">v2.6.0 Global ID<br/>Tree Collapse + Filter</div>
+</div>
 
-        /* PERBAIKAN FUNGSI cleanProductName */
-        function cleanProductName(code, name) {
-            if (name && !name.toUpperCase().includes("PROD")) {
-                return name;
-            }
-            if (!code) return name || "Unknown Product";
+<!-- MAIN CONTENT -->
+<div class="main-content hidden" id="mainContent">
+    <div class="top-bar">
+        <div class="current-context">
+            Target Stokis:
+            <select id="stokisSelector" class="context-selector" onchange="loadSelectedStokis(this.value)">
+                <option value="">-- Pilih Stokis --</option>
+            </select>
+            <span id="stokisStatus" class="badge badge-green hidden">Live Connected</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-print btn-sm no-print" onclick="window.print()">🖨️ Cetak PDF</button>
+            <button class="btn btn-danger btn-sm no-print" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    <div class="content-area" id="contentArea"></div>
+</div>
 
-            let result = code;
-            if (result.includes("_")) {
-                const parts = result.split("_");
-                if (parts.length >= 3) {
-                    result = parts[parts.length - 1];
-                }
-            }
-            if (result.includes("-")) {
-                const parts = result.split("-");
-                if (parts.length >= 3 && parts[0].toUpperCase().includes("PROD")) {
-                    result = parts.slice(2).join("-");
-                }
-            }
-            result = result.replace(/PROD-?/gi, "");
-            result = result.replace(/([a-z])([A-Z])/g, "$1 $2");
-            result = result.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(" ");
+<!-- MODALS -->
+<div id="genericModal" class="modal">
+    <div class="modal-box">
+        <h3 class="modal-title" id="modalTitle">Judul</h3>
+        <div id="modalBody"></div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
+            <button class="btn no-print" style="background: #e2e8f0;" onclick="closeModal()">Batal</button>
+            <button class="btn btn-primary no-print" id="modalActionBtn">Simpan</button>
+        </div>
+    </div>
+</div>
 
-            return result || name || "Unknown Product";
-        }
+<div id="migrateModal" class="modal">
+    <div class="modal-box">
+        <h3 class="modal-title">📋 Migrasi / Copy Data</h3>
+        <div class="form-group"><label>Sumber Data</label><select id="migrateSource"></select></div>
+        <div class="form-group"><label>Tujuan Data</label><select id="migrateDest"></select></div>
+        <div class="form-group"><label>Opsi Penimpaan</label><div style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="migrateOverwrite"><span style="font-size:14px;">Timpa data lama</span></div></div>
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+            <button class="btn no-print" style="background: #e2e8f0;" onclick="closeMigrateModal()">Batal</button>
+            <button class="btn btn-primary no-print" onclick="executeMigrate()">Mulai Migrasi</button>
+        </div>
+    </div>
+</div>
 
-        const COMMISSION_RULES = {
-            "PENDAN WULUNG": { price: 1500000, rewardPool: 70000, mgtPool: 30000, levels: { 0: 49000, 1: 7000, 2: 5600, 3: 4200, 4: 2800, 5: 1400 } },
-            "PHEROMONE": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
-            "A POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
-            "B POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
-            "C POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
-            "A KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
-            "B KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
-            "C KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
-            "GM MAX": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
-            "MADU GM": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
-            "TEH BMT": { price: 20000, rewardPool: 200, mgtPool: 200, levels: { 0: 140, 1: 40, 2: 20 } },
-            "TEH CELUP GM": { price: 75000, rewardPool: 750, mgtPool: 750, levels: { 0: 525, 1: 150, 2: 75 } },
-            "GODOGAN": { price: 80000, rewardPool: 800, mgtPool: 800, levels: { 0: 560, 1: 160, 2: 80 } },
-            "HB CORE": { price: 57000, rewardPool: 570, mgtPool: 570, levels: { 0: 399, 1: 114, 2: 57 } },
-            "HXA GM": { price: 130000, rewardPool: 1300, mgtPool: 1300, levels: { 0: 910, 1: 260, 2: 130 } },
-            "MAGIC RING": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
-            "GM OIL": { price: 70000, rewardPool: 700, mgtPool: 700, levels: { 0: 490, 1: 140, 2: 70 } },
-            "GMS2": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
-            "RPGM": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
-            "SPRAY": { price: 20000, rewardPool: 200, mgtPool: 200, levels: { 0: 140, 1: 40, 2: 20 } },
-            "GURAH THT": { price: 40000, rewardPool: 400, mgtPool: 400, levels: { 0: 280, 1: 80, 2: 40 } },
-            "GM MUSTIKA": { price: 75000, rewardPool: 750, mgtPool: 750, levels: { 0: 525, 1: 150, 2: 75 } },
-            "GM FRESH": { price: 18000, rewardPool: 180, mgtPool: 180, levels: { 0: 126, 1: 36, 2: 18 } },
-            "PENDAN HITAM 3D": { price: 500000, rewardPool: 5000, mgtPool: 5000, levels: { 0: 3500, 1: 1000, 2: 500 } },
-            "NEW GM PELING": { price: 50000, rewardPool: 500, mgtPool: 500, levels: { 0: 350, 1: 100, 2: 50 } },
-            "GM PACE": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: { 0: 700, 1: 200, 2: 100 } },
-            "SPOON KUNINGAN": { price: 75000, rewardPool: 750, mgtPool: 750, levels: { 0: 525, 1: 150, 2: 75 } },
-            "VITAMAX": { price: 20000, rewardPool: 200, mgtPool: 200, levels: { 0: 140, 1: 40, 2: 20 } },
-            "GM SKINCARE": { price: 300000, rewardPool: 3000, mgtPool: 3000, levels: { 0: 2100, 1: 600, 2: 300 } },
-            "PHEROMONE BS": { price: 60000, rewardPool: 600, mgtPool: 600, levels: { 0: 420, 1: 120, 2: 60 } }
-        };
+<!-- MODAL UNTUK EDIT HARGA PRODUK -->
+<div id="productPriceModal" class="modal">
+    <div class="modal-box">
+        <h3 class="modal-title" id="productPriceModalTitle">Edit Harga Produk</h3>
+        <div id="productPriceModalBody"></div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
+            <button class="btn no-print" style="background: #e2e8f0;" onclick="closeProductPriceModal()">Batal</button>
+            <button class="btn btn-primary no-print" id="saveProductPriceBtn">Simpan Perubahan</button>
+        </div>
+    </div>
+</div>
 
-        window.handleAdminLogin = (e) => {
-            e.preventDefault();
-            const u = document.getElementById('adminUser').value.trim();
-            const p = document.getElementById('adminPass').value.trim();
-            if (u === 'admin' && p === 'master') {
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('mainSidebar').classList.remove('hidden');
-                document.getElementById('mainContent').classList.remove('hidden');
-                initDashboard();
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA7i0bGhjKHZ788Ir7xTDFM0LXAevnWKsI",
+        authDomain: "sistem-stokis-gmrj.firebaseapp.com",
+        projectId: "sistem-stokis-gmrj",
+        storageBucket: "sistem-stokis-gmrj.firebasestorage.app",
+        messagingSenderId: "288883517168",
+        appId: "1:288883517168:web:d5cdd864aa944205df8435",
+        measurementId: "G-12KELDXJ1J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const COLLECTION_STOKIS = "stokisDatas";
+    const COLLECTION_USERS = "stokisusers";
+    const COLLECTION_ANNOUNCEMENTS = "adminAnnouncements";
+    const COLLECTION_PRODUCT_PRICES = "productPrices";
+
+    let currentStokisId = null;
+    let currentDataUnsubscribe = null;
+    let stokisCache = {};
+    let purchaseReportState = { page: 1, data: [], filtered: [] };
+    let globalPurchaseReportState = { page: 1, data: [], filtered: [] };
+    let transactionState = { page: 1, data: [] };
+    let rankingMemberState = { page: 1, data: [], filtered: [] };
+    let rankingStokisState = { rawData: {}, dateFrom: '', dateTo: '' };
+    let recapFilterState = { dateFrom: '', dateTo: '', allTransactions: [] };
+    let omsetFilterState = { dateFrom: '', dateTo: '' };
+    
+    let masterProductPrices = {};
+
+    async function loadMasterProductPrices() {
+        try {
+            const docRef = doc(db, COLLECTION_PRODUCT_PRICES, "masterPrices");
+            const docSnap = await getDoc(docRef);
+            
+            if (docSnap.exists()) {
+                masterProductPrices = docSnap.data().prices || {};
             } else {
-                alert('Akses Ditolak!');
+                masterProductPrices = {
+                    "PENDAN WULUNG": 1500000,
+                    "PHEROMONE": 50000,
+                    "A POWDER": 70000,
+                    "B POWDER": 70000,
+                    "C POWDER": 70000,
+                    "A KAPSUL": 100000,
+                    "B KAPSUL": 100000,
+                    "C KAPSUL": 100000,
+                    "GM MAX": 10000,
+                    "MADU GM": 10000,
+                    "TEH BMT": 20000,
+                    "TEH CELUP GM": 75000,
+                    "GODOGAN": 80000,
+                    "HB CORE": 57000,
+                    "HXA GM": 130000,
+                    "MAGIC RING": 50000,
+                    "GM OIL": 70000,
+                    "GMS2": 100000,
+                    "RPGM": 50000,
+                    "SPRAY": 20000,
+                    "GURAH THT": 40000,
+                    "GM MUSTIKA": 75000,
+                    "GM FRESH": 18000,
+                    "PENDAN HITAM 3D": 500000,
+                    "NEW GM PELING": 50000,
+                    "GM PACE": 100000,
+                    "SPOON KUNINGAN": 75000,
+                    "VITAMAX": 20000,
+                    "GM SKINCARE": 30000,
+                    "PHEROMONE BS": 60000
+                };
+                await saveMasterProductPrices();
+            }
+        } catch (error) {
+            console.error("Error loading master product prices:", error);
+        }
+    }
+
+    async function saveMasterProductPrices() {
+        try {
+            await setDoc(doc(db, COLLECTION_PRODUCT_PRICES, "masterPrices"), {
+                prices: masterProductPrices,
+                updatedAt: serverTimestamp()
+            });
+        } catch (error) {
+            console.error("Error saving master product prices:", error);
+            alert("Gagal menyimpan harga produk: " + error.message);
+        }
+    }
+
+    window.openProductPriceModal = function() {
+        const modalBody = document.getElementById('productPriceModalBody');
+        
+        let html = '<div style="max-height: 400px; overflow-y: auto;">';
+        html += '<table style="width: 100%; font-size: 13px;">';
+        html += '<thead><tr><th style="text-align: left; padding: 8px;">Nama Produk</th><th style="text-align: right; padding: 8px;">Harga (Rp)</th><th style="padding: 8px;">Aksi</th></tr></thead>';
+        html += '<tbody>';
+        
+        Object.keys(masterProductPrices).sort().forEach(productName => {
+            const price = masterProductPrices[productName];
+            html += `
+                <tr>
+                    <td style="padding: 8px;">${productName}</td>
+                    <td style="padding: 8px; text-align: right;">
+                        <input type="number" 
+                               class="editable-price" 
+                               id="price_${productName.replace(/\s+/g, '_')}" 
+                               value="${price}" 
+                               min="0" 
+                               step="1000">
+                    </td>
+                    <td style="padding: 8px; text-align: center;">
+                        <button class="btn btn-sm btn-danger" onclick="deleteProduct('${productName}')">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += '</tbody></table></div>';
+        html += '<button class="btn btn-primary btn-add-product" onclick="addNewProduct()">➕ Tambah Produk Baru</button>';
+        
+        modalBody.innerHTML = html;
+        document.getElementById('productPriceModal').classList.add('active');
+        
+        document.getElementById('saveProductPriceBtn').onclick = async function() {
+            Object.keys(masterProductPrices).forEach(productName => {
+                const inputId = `price_${productName.replace(/\s+/g, '_')}`;
+                const inputEl = document.getElementById(inputId);
+                if (inputEl) {
+                    masterProductPrices[productName] = parseFloat(inputEl.value) || 0;
+                }
+            });
+            
+            await saveMasterProductPrices();
+            alert('✅ Harga produk berhasil disimpan!');
+            closeProductPriceModal();
+            
+            const activeTab = document.querySelector('.nav-btn.active');
+            if (activeTab) {
+                const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+                if (tabName === 'omset') {
+                    renderOmsetStokis();
+                } else if (tabName === 'report-recapitulasi') {
+                    switchTab('report-recapitulasi');
+                }
             }
         };
+    };
 
-        window.logout = () => { location.reload(); };
+    window.closeProductPriceModal = function() {
+        document.getElementById('productPriceModal').classList.remove('active');
+    };
 
-        async function initDashboard() {
-            await loadStokisList();
-            renderDashboardGlobal();
+    window.addNewProduct = function() {
+        const productName = prompt("Masukkan nama produk baru:");
+        if (!productName || productName.trim() === '') return;
+        
+        const productPrice = prompt("Masukkan harga produk (Rp):");
+        if (!productPrice) return;
+        
+        const price = parseFloat(productPrice);
+        if (isNaN(price) || price < 0) {
+            alert("Harga tidak valid!");
+            return;
+        }
+        
+        masterProductPrices[productName.trim()] = price;
+        openProductPriceModal();
+    };
+
+    window.deleteProduct = function(productName) {
+        if (!confirm(`Hapus produk "${productName}"?`)) return;
+        delete masterProductPrices[productName];
+        openProductPriceModal();
+    };
+
+    function cleanProductName(code, name) {
+        if (name && !name.toUpperCase().includes("PROD")) return name;
+        if (!code) return name || "Unknown Product";
+        
+        let result = code;
+        if (result.includes("_")) {
+            const parts = result.split("_");
+            if (parts.length >= 3) result = parts[parts.length - 1];
+        }
+        if (result.includes("-")) {
+            const parts = result.split("-");
+            if (parts.length >= 3 && parts[0].toUpperCase().includes("PROD")) {
+                result = parts.slice(2).join("-");
+            }
+        }
+        result = result.replace(/PROD-?/gi, '');
+        result = result.replace(/[^a-zA-Z0-9 ]/g, ' ');
+        result = result.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+        result = result.trim();
+        return result || name || "Unknown Product";
+    }
+
+    function findMatchingProduct(productName) {
+        if (!productName) return null;
+        
+        const normalize = (str) => str.toUpperCase().replace(/\s+/g, '').replace(/[^A-Z0-9]/g, '');
+        const normalizedInput = normalize(productName);
+        
+        let matchedKey = Object.keys(COMMISSION_RULES).find(k => normalize(k) === normalizedInput);
+        if (matchedKey) return matchedKey;
+        
+        matchedKey = Object.keys(COMMISSION_RULES).find(k => {
+            const normalizedKey = normalize(k);
+            return normalizedInput.includes(normalizedKey) || normalizedKey.includes(normalizedInput);
+        });
+        if (matchedKey) return matchedKey;
+        
+        matchedKey = Object.keys(COMMISSION_RULES).find(k => {
+            const keywords = normalize(k).split(/(?=[A-Z])/);
+            return keywords.some(keyword => normalizedInput.includes(keyword) && keyword.length > 3);
+        });
+        
+        return matchedKey || null;
+    }
+
+    const COMMISSION_RULES = {
+        "PENDAN WULUNG": { price: 1500000, rewardPool: 70000, mgtPool: 30000, levels: [49000, 7000, 5600, 4200, 2800, 1400] },
+        "PHEROMONE": { price: 50000, rewardPool: 500, mgtPool: 500, levels: [350, 100, 50] },
+        "A POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: [490, 140, 70] },
+        "B POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: [490, 140, 70] },
+        "C POWDER": { price: 70000, rewardPool: 700, mgtPool: 700, levels: [490, 140, 70] },
+        "A KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: [700, 200, 100] },
+        "B KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: [700, 200, 100] },
+        "C KAPSUL": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: [700, 200, 100] },
+        "GM MAX": { price: 10000, rewardPool: 1000, mgtPool: 1000, levels: [700, 200, 100] },
+        "MADU GM": { price: 10000, rewardPool: 1000, mgtPool: 1000, levels: [700, 200, 100] },
+        "TEH BMT": { price: 20000, rewardPool: 200, mgtPool: 200, levels: [140, 40, 20] },
+        "TEH CELUP GM": { price: 75000, rewardPool: 750, mgtPool: 750, levels: [525, 150, 75] },
+        "GODOGAN": { price: 80000, rewardPool: 800, mgtPool: 800, levels: [560, 160, 80] },
+        "HB CORE": { price: 57000, rewardPool: 570, mgtPool: 570, levels: [399, 114, 57] },
+        "HXA GM": { price: 130000, rewardPool: 1300, mgtPool: 1300, levels: [910, 260, 130] },
+        "MAGIC RING": { price: 50000, rewardPool: 500, mgtPool: 500, levels: [350, 100, 50] },
+        "GM OIL": { price: 70000, rewardPool: 700, mgtPool: 700, levels: [490, 140, 70] },
+        "GMS2": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: [700, 200, 100] },
+        "RPGM": { price: 50000, rewardPool: 500, mgtPool: 500, levels: [350, 100, 50] },
+        "SPRAY": { price: 20000, rewardPool: 200, mgtPool: 200, levels: [140, 40, 20] },
+        "GURAH THT": { price: 40000, rewardPool: 400, mgtPool: 400, levels: [280, 80, 40] },
+        "GM MUSTIKA": { price: 75000, rewardPool: 750, mgtPool: 750, levels: [525, 150, 75] },
+        "GM FRESH": { price: 18000, rewardPool: 180, mgtPool: 180, levels: [126, 36, 18] },
+        "PENDAN HITAM 3D": { price: 500000, rewardPool: 5000, mgtPool: 5000, levels: [3500, 1000, 500] },
+        "NEW GM PELING": { price: 50000, rewardPool: 500, mgtPool: 500, levels: [350, 100, 50] },
+        "GM PACE": { price: 100000, rewardPool: 1000, mgtPool: 1000, levels: [700, 200, 100] },
+        "SPOON KUNINGAN": { price: 75000, rewardPool: 750, mgtPool: 750, levels: [525, 150, 75] },
+        "VITAMAX": { price: 20000, rewardPool: 200, mgtPool: 200, levels: [140, 40, 20] },
+        "GM SKINCARE": { price: 30000, rewardPool: 3000, mgtPool: 3000, levels: [2100, 600, 300] },
+        "PHEROMONE BS": { price: 60000, rewardPool: 600, mgtPool: 600, levels: [420, 120, 60] }
+    };
+
+    window.handleAdminLogin = (e) => {
+        e.preventDefault();
+        const u = document.getElementById('adminUser').value.trim();
+        const p = document.getElementById('adminPass').value.trim();
+        if (u === 'admin' && p === 'master') {
+            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('mainSidebar').classList.remove('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            initDashboard();
+        } else {
+            alert('Akses Ditolak!');
+        }
+    };
+
+    window.logout = () => location.reload();
+
+    async function initDashboard() {
+        await loadMasterProductPrices();
+        await loadStokisList();
+        renderDashboardGlobal();
+    }
+
+    async function loadStokisList() {
+        const selector = document.getElementById('stokisSelector');
+        selector.innerHTML = '<option value="">-- Pilih Stokis --</option>';
+        try {
+            const querySnapshot = await getDocs(collection(db, COLLECTION_STOKIS));
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const nama = data.profile?.namaStokis || doc.id;
+                const option = document.createElement('option');
+                option.value = doc.id;
+                option.textContent = `${doc.id} (${nama})`;
+                selector.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Error fetching stokis list:", error);
+        }
+    }
+
+    window.loadSelectedStokis = (username) => {
+        if (currentDataUnsubscribe) {
+            currentDataUnsubscribe();
+            currentDataUnsubscribe = null;
         }
 
-        async function loadStokisList() {
-            const selector = document.getElementById('stokisSelector');
-            selector.innerHTML = '<option value="">-- Pilih Stokis --</option>';
-            try {
-                const querySnapshot = await getDocs(collection(db, COLLECTION_STOKIS));
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const nama = data.profile?.namaStokis || doc.id;
-                    const option = document.createElement('option');
-                    option.value = doc.id;
-                    option.textContent = `${doc.id} (${nama})`;
-                    selector.appendChild(option);
-                });
-            } catch (error) {
-                console.error("Error fetching stokis list:", error);
-            }
+        if (!username) {
+            currentStokisId = null;
+            document.getElementById('contentArea').innerHTML = '<div class="empty-state"><span style="font-size:40px;opacity:0.5;">📊</span><h3>Silakan Pilih Stokis</h3></div>';
+            return;
         }
 
-        window.loadSelectedStokis = (username) => {
-            if (currentDataUnsubscribe) {
-                currentDataUnsubscribe();
-                currentDataUnsubscribe = null;
-            }
-
-            if (!username) {
-                currentStokisId = null;
-                document.getElementById('contentArea').innerHTML = `<div class="empty-state"><span style="font-size:40px;opacity:0.5;">📂</span><h3>Silakan Pilih Stokis</h3></div>`;
-                return;
-            }
-
-            currentStokisId = username;
-            const docRef = doc(db, COLLECTION_STOKIS, username);
-
-            currentDataUnsubscribe = onSnapshot(docRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    stokisCache[currentStokisId] = docSnap.data();
-                    document.getElementById('stokisStatus').classList.remove('hidden');
-                    const activeTab = document.querySelector('.nav-btn.active');
-                    if (activeTab) {
-                        const tabName = activeTab.getAttribute('onclick').match(/'(.+?)'/)?.[1];
-                        if (!['dashboard', 'users'].includes(tabName) && !tabName.startsWith('report-') && !tabName.startsWith('stokis-')) {
-                            renderTabContent(tabName);
-                        } else if (tabName.startsWith('stokis-')) {
-                            renderStokisSpecificTab(tabName);
-                        }
+        currentStokisId = username;
+        const docRef = doc(db, COLLECTION_STOKIS, username);
+        currentDataUnsubscribe = onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                stokisCache[currentStokisId] = docSnap.data();
+                document.getElementById('stokisStatus').classList.remove('hidden');
+                
+                const activeTab = document.querySelector('.nav-btn.active');
+                if (activeTab) {
+                    const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+                    if (!['dashboard', 'users'].includes(tabName) && !tabName.startsWith('report-') && !tabName.startsWith('stokis-')) {
+                        renderTabContent(tabName);
+                    } else if (tabName.startsWith('stokis-')) {
+                        renderStokisSpecificTab(tabName);
                     }
                 }
-            });
-        };
-
-        window.switchTab = (tabName) => {
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            const clickedBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabName));
-            if (clickedBtn) clickedBtn.classList.add('active');
-
-            if (['dashboard', 'users'].includes(tabName)) {
-                if (tabName === 'dashboard') renderDashboardGlobal();
-                if (tabName === 'users') renderUsersManagement();
-            } else if (tabName.startsWith('report-')) {
-                handleReportTabs(tabName);
-            } else if (tabName.startsWith('stokis-')) {
-                if (!currentStokisId) {
-                    document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`;
-                    return;
-                }
-                renderStokisSpecificTab(tabName);
-            } else if (tabName === 'admin-board') {
-                renderAdminBoard();
-            } else {
-                if (!currentStokisId) {
-                    document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`;
-                    return;
-                }
-                renderTabContent(tabName);
             }
-        };
+        });
+    };
 
-        function renderDashboardGlobal() {
-            document.getElementById('contentArea').innerHTML = `
-                <h2>Dashboard Global</h2>
-                <div class="grid-dashboard">
-                    <div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value" id="g-count-stokis">...</div></div>
-                    <div class="stat-card"><div class="stat-label">Sistem</div><div class="stat-value" style="color:var(--color-success); font-size:20px; margin-top:12px;">Online</div></div>
-                </div>
-                <div class="card"><div class="card-header"><span class="card-title">Log Sistem</span></div><div style="padding:24px;"><p>Selamat datang Super Admin.</p></div></div>
-            `;
-            getDocs(collection(db, COLLECTION_STOKIS)).then(snap => {
-                const el = document.getElementById('g-count-stokis');
-                if (el) el.textContent = snap.size;
-            });
+    window.switchTab = (tabName) => {
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const clickedBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabName));
+        if (clickedBtn) clickedBtn.classList.add('active');
+
+        if (['dashboard', 'users'].includes(tabName)) {
+            if (tabName === 'dashboard') renderDashboardGlobal();
+            if (tabName === 'users') renderUsersManagement();
+        } else if (tabName.startsWith('report-')) {
+            handleReportTabs(tabName);
+        } else if (tabName.startsWith('stokis-')) {
+            if (!currentStokisId) {
+                document.getElementById('contentArea').innerHTML = '<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>';
+                return;
+            }
+            renderStokisSpecificTab(tabName);
+        } else if (tabName === 'admin-board') {
+            renderAdminBoard();
+        } else {
+            if (!currentStokisId) {
+                document.getElementById('contentArea').innerHTML = '<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>';
+                return;
+            }
+            renderTabContent(tabName);
         }
+    };
 
-        function renderAdminBoard() {
-            const content = document.getElementById('contentArea');
-            content.innerHTML = `
-                <h2>📢 Papan Informasi Admin</h2>
-                <div class="card" style="margin-top:20px;">
-                    <div style="padding:40px; text-align:center;">
-                        <div class="spinner"></div>
-                        <p>Memuat pengumuman...</p>
-                    </div>
+    function renderDashboardGlobal() {
+        document.getElementById('contentArea').innerHTML = `
+            <h2>Dashboard Global</h2>
+            <div class="grid-dashboard">
+                <div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value" id="g-count-stokis">...</div></div>
+                <div class="stat-card"><div class="stat-label">Sistem</div><div class="stat-value" style="color:var(--color-success); font-size:20px; margin-top:12px;">✓ Online</div></div>
+            </div>
+            <div class="card"><div class="card-header"><span class="card-title">Log Sistem</span></div><div style="padding:24px;"><p>Selamat datang Super Admin.</p></div></div>
+        `;
+        getDocs(collection(db, COLLECTION_STOKIS)).then(snap => {
+            const el = document.getElementById('g-count-stokis');
+            if (el) el.textContent = snap.size;
+        });
+    }
+
+    function renderAdminBoard() {
+        const content = document.getElementById('contentArea');
+        content.innerHTML = `
+            <h2>📢 Papan Informasi Admin</h2>
+            <div class="card" style="margin-top:20px;">
+                <div style="padding:40px; text-align:center;">
+                    <div class="spinner"></div>
+                    <p>Memuat pengumuman...</p>
                 </div>
-            `;
+            </div>
+        `;
 
-            const q = query(collection(db, COLLECTION_ANNOUNCEMENTS), orderBy('createdAt', 'desc'));
-            onSnapshot(q, (snapshot) => {
-                const announcements = [];
-                snapshot.forEach(doc => {
-                    announcements.push({ id: doc.id, ...doc.data() });
-                });
+        const q = query(collection(db, COLLECTION_ANNOUNCEMENTS), orderBy('createdAt', 'desc'));
+        onSnapshot(q, (snapshot) => {
+            const announcements = [];
+            snapshot.forEach(doc => {
+                announcements.push({ id: doc.id, ...doc.data() });
+            });
 
-                let html = `
-                    <h2>📢 Papan Informasi Admin</h2>
-                    <div class="card" style="margin-top:20px; background:#fffbeb; border-color:#fcd34d;">
-                        <div class="card-header">
-                            <span class="card-title">Kelola Pengumuman & File</span>
-                            <button class="btn btn-primary btn-sm" onclick="openAddAnnouncementModal()">➕ Buat Baru</button>
-                        </div>
-                        <div style="padding:20px;">
-                            <p style="margin-bottom:10px; color:#92400e; font-size:14px;">
-                                Pengumuman dan file di sini tersedia untuk dilihat dan didownload oleh <strong>Semua Stokis</strong>.
-                            </p>
-                            ${announcements.length === 0 ? `<div class="empty-state" style="padding:20px; background:white; border-radius:8px; border:1px dashed #e5e7eb;">Belum ada pengumuman.</div>` : `
-                                <div style="display:grid; gap:20px;">
-                                    ${announcements.map(a => `
-                                        <div style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:16px;">
-                                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                                                <h3 style="font-size:16px; font-weight:700; color:#1f2937;">${a.title}</h3>
-                                                <div style="display:flex; gap:10px; align-items:center;">
-                                                    <span class="badge badge-blue">Semua Stokis</span>
+            let html = `<h2>📢 Papan Informasi Admin</h2>
+            <div class="card" style="margin-top:20px; background:#fffbeb; border-color:#fcd34d;">
+                <div class="card-header">
+                    <span class="card-title">Kelola Pengumuman & File</span>
+                    <button class="btn btn-primary btn-sm" onclick="openAddAnnouncementModal()">➕ Buat Baru</button>
+                </div>
+                <div style="padding:20px;">
+                    <p style="margin-bottom:10px; color:#92400e; font-size:14px;">
+                        Pengumuman dan file di sini tersedia untuk dilihat dan didownload oleh <strong>Semua Stokis</strong>.
+                    </p>
+                    ${announcements.length === 0 ? 
+                        '<div class="empty-state" style="padding:20px; background:white; border-radius:8px; border:1px dashed #e5e7eb;">Belum ada pengumuman.</div>' : 
+                        `<div style="display:grid; gap:20px;">
+                            ${announcements.map(a => `
+                                <div style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:16px;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                        <h3 style="font-size:16px; font-weight:700; color:#1f2937;">${a.title}</h3>
+                                        <div style="display:flex; gap:10px; align-items:center;">
+                                            <span class="badge badge-blue">Semua Stokis</span>
+                                        </div>
+                                    </div>
+                                    <div style="font-size:12px; color:#6b7280;">${a.createdAt ? new Date(a.createdAt.toDate()).toLocaleDateString() : '-'}</div>
+                                    <div style="color:#374151; font-size:14px; white-space:pre-wrap; margin-bottom:12px; line-height:1.5;">${a.content}</div>
+                                    ${a.fileUrl ? `
+                                        <div class="info-file-box">
+                                            <div style="display:flex; align-items:center; gap:10px;">
+                                                <span style="font-size:24px;">📎</span>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:14px; color:#0369a1;">
+                                                        ${a.fileName || 'File'}
+                                                        <span style="font-size:11px; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-left:8px;">${a.fileType ? a.fileType.toUpperCase() : 'FILE'}</span>
+                                                    </div>
+                                                    <div style="font-size:12px; color:#64748b;">Klik tombol untuk download</div>
                                                 </div>
                                             </div>
-                                            <div style="font-size:12px; color:#6b7280;">${a.createdAt ? new Date(a.createdAt.toDate()).toLocaleDateString() : '-'}</div>
-                                            <div style="color:#374151; font-size:14px; white-space:pre-wrap; margin-bottom:12px; line-height:1.5;">${a.content}</div>
-                                            ${a.fileUrl ? `
-                                                <div class="info-file-box">
-                                                    <div style="display:flex; align-items:center; gap:10px;">
-                                                        <span style="font-size:24px;">📎</span>
-                                                        <div>
-                                                            <div style="font-weight:600; font-size:14px; color:#0369a1;">
-                                                                ${a.fileName || 'File'}
-                                                                <span style="font-size:11px; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-left:8px;">${a.fileType ? a.fileType.toUpperCase() : 'FILE'}</span>
-                                                            </div>
-                                                            <div style="font-size:12px; color:#64748b;">Klik tombol untuk download</div>
-                                                        </div>
-                                                    </div>
-                                                    <a href="${a.fileUrl}" target="_blank" class="btn btn-primary btn-sm">📥 Download</a>
-                                                </div>
-                                            ` : ''}
-                                            <div style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:10px;">
-                                                <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${a.id}')">🗑 Hapus</button>
+                                            <div>
+                                                <a href="${a.fileUrl}" target="_blank" class="btn btn-primary btn-sm">⬇ Download</a>
                                             </div>
                                         </div>
-                                    `).join('')}
+                                    ` : ''}
+                                    <div style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:10px;">
+                                        <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${a.id}')">🗑️ Hapus</button>
+                                    </div>
                                 </div>
-                            `}
-                        </div>
-                    </div>
-                `;
-                content.innerHTML = html;
-            }, (error) => {
-                content.innerHTML = `<h2>Error</h2><p>${error.message}</p>`;
-            });
-        }
-
-        window.openAddAnnouncementModal = () => {
-            document.getElementById('modalTitle').textContent = 'Buat Pengumuman Baru';
-            document.getElementById('modalBody').innerHTML = `
-                <div class="form-group"><label>Judul</label><input id="anntitle"></div>
-                <div class="form-group"><label>Isi Pesan / Teks</label><textarea id="anncontent" rows="5"></textarea></div>
-                <div style="margin: 20px 0 10px 0; border-top: 1px dashed #cbd5e1; padding-top:10px;"><strong style="font-size:12px; color:#6366f1;">📎 LAMPIRAN FILE (Opsional)</strong></div>
-                <div class="form-group"><label>Nama File (Contoh: Katalog.pdf)</label><input id="annfname" placeholder="Nama File"></div>
-                <div class="form-group">
-                    <label>Format File</label>
-                    <select id="annfiletype">
-                        <option value="pdf">PDF</option>
-                        <option value="docx">Word (DOCX)</option>
-                        <option value="xlsx">Excel (XLSX)</option>
-                        <option value="pptx">PowerPoint (PPTX)</option>
-                        <option value="jpg">Gambar (JPG)</option>
-                        <option value="png">Gambar (PNG)</option>
-                    </select>
+                            `).join('')}
+                        </div>`
+                    }
                 </div>
-                <div class="form-group"><label>Link Download File (URL)</label><input id="annurl" placeholder="https://drive.google.com/..."></div>
-            `;
-            document.getElementById('modalActionBtn').onclick = async () => {
-                const title = document.getElementById('anntitle').value;
-                const content = document.getElementById('anncontent').value;
-                const fname = document.getElementById('annfname').value;
-                const furl = document.getElementById('annurl').value;
-                const ftype = document.getElementById('annfiletype').value;
-                if (!title) return alert('Judul wajib diisi');
-                try {
-                    await addDoc(collection(db, COLLECTION_ANNOUNCEMENTS), {
-                        title,
-                        content,
-                        fileName: fname,
-                        fileUrl: furl,
-                        fileType: ftype,
-                        target: 'all',
-                        createdAt: serverTimestamp()
-                    });
-                    alert('✅ Terkirim');
-                    closeModal();
-                } catch (e) {
-                    alert('Gagal: ' + e.message);
-                }
-            };
-            document.getElementById('genericModal').classList.add('active');
-        };
+            </div>`;
+            
+            content.innerHTML = html;
+        }, (error) => {
+            content.innerHTML = `<h2>Error</h2><p>${error.message}</p>`;
+        });
+    }
 
-        window.deleteAnnouncement = async (id) => {
-            if (!confirm('Hapus pengumuman ini?')) return;
+    window.openAddAnnouncementModal = () => {
+        document.getElementById('modalTitle').textContent = 'Buat Pengumuman Baru';
+        document.getElementById('modalBody').innerHTML = `
+            <div class="form-group"><label>Judul</label><input id="anntitle"></div>
+            <div class="form-group"><label>Isi Pesan / Teks</label><textarea id="anncontent" rows="5"></textarea></div>
+            <div style="margin: 20px 0 10px 0; border-top: 1px dashed #cbd5e1; padding-top:10px;"><strong style="font-size:12px; color:#6366f1;">📎 LAMPIRAN FILE (Opsional)</strong></div>
+            <div class="form-group"><label>Nama File (Contoh: Katalog.pdf)</label><input id="annfname" placeholder="Nama File"></div>
+            <div class="form-group">
+                <label>Format File</label>
+                <select id="annfiletype">
+                    <option value="pdf">PDF</option>
+                    <option value="docx">Word (DOCX)</option>
+                    <option value="xlsx">Excel (XLSX)</option>
+                    <option value="pptx">PowerPoint (PPTX)</option>
+                    <option value="jpg">Gambar (JPG)</option>
+                    <option value="png">Gambar (PNG)</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Link Download File (URL)</label><input id="annurl" placeholder="https://drive.google.com/..."></div>
+        `;
+        document.getElementById('modalActionBtn').onclick = async () => {
+            const title = document.getElementById('anntitle').value;
+            const content = document.getElementById('anncontent').value;
+            const fname = document.getElementById('annfname').value;
+            const furl = document.getElementById('annurl').value;
+            const ftype = document.getElementById('annfiletype').value;
+            
+            if (!title) return alert('Judul wajib diisi');
+            
             try {
-                await deleteDoc(doc(db, COLLECTION_ANNOUNCEMENTS, id));
+                await addDoc(collection(db, COLLECTION_ANNOUNCEMENTS), {
+                    title,
+                    content,
+                    fileName: fname,
+                    fileUrl: furl,
+                    fileType: ftype,
+                    target: 'all',
+                    createdAt: serverTimestamp()
+                });
+                alert('✅ Terkirim');
+                closeModal();
             } catch (e) {
                 alert('Gagal: ' + e.message);
             }
         };
+        document.getElementById('genericModal').classList.add('active');
+    };
 
-        function renderStokisSpecificTab(tabName) {
-            const data = stokisCache[currentStokisId];
-            if (!data) return;
+    window.deleteAnnouncement = async (id) => {
+        if (!confirm('Hapus pengumuman ini?')) return;
+        try {
+            await deleteDoc(doc(db, COLLECTION_ANNOUNCEMENTS, id));
+        } catch (e) {
+            alert('Gagal: ' + e.message);
+        }
+    };
 
-            if (tabName === 'stokis-purchase-member') {
-                const memberLookup = {};
-                data.members?.forEach(m => { memberLookup[m.id] = m.name; });
-                const list = data.transactions?.map(t => ({
-                    date: t.date,
-                    id: t.id,
-                    memberId: t.memberId,
-                    memberName: memberLookup[t.memberId] || t.memberName || "Unknown",
-                    productName: cleanProductName(t.productCode, t.productName),
-                    qty: t.qty,
-                    points: t.totalPoints
-                }));
-                purchaseReportState.data = list;
-                purchaseReportState.page = 1;
-                purchaseReportState.filtered = list;
-                renderPurchaseReportTable('stokis');
-            }
+    function renderStokisSpecificTab(tabName) {
+        const data = stokisCache[currentStokisId];
+        if (!data) return;
+
+        if (tabName === 'stokis-purchase-member') {
+            const memberLookup = {};
+            data.members?.forEach(m => memberLookup[m.id] = m.name);
+
+            const list = (data.transactions || []).map(t => ({
+                date: t.date,
+                id: t.id,
+                memberId: t.memberId,
+                memberName: memberLookup[t.memberId] || t.memberName || 'Unknown',
+                productName: cleanProductName(t.productCode, t.productName),
+                qty: t.qty,
+                points: t.totalPoints
+            }));
+
+            purchaseReportState.data = list;
+            purchaseReportState.page = 1;
+            purchaseReportState.filtered = list;
+            renderPurchaseReportTable('stokis');
+        }
+    }
+
+    // FUNGSI RENDER OMSET STOKIS DENGAN FILTER TANGGAL
+    function renderOmsetStokis() {
+        const data = stokisCache[currentStokisId];
+        if (!data) return;
+
+        const transactions = data.transactions || [];
+        
+        // Apply date filter
+        let filteredTransactions = transactions;
+        if (omsetFilterState.dateFrom || omsetFilterState.dateTo) {
+            filteredTransactions = transactions.filter(t => {
+                const matchFrom = !omsetFilterState.dateFrom || t.date >= omsetFilterState.dateFrom;
+                const matchTo = !omsetFilterState.dateTo || t.date <= omsetFilterState.dateTo;
+                return matchFrom && matchTo;
+            });
         }
 
-        window.applyFilter = (type) => {
-            const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
-            const targetName = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
-            const targetProd = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
-            const targetDateFrom = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
-            const targetDateTo = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
+        const productSales = new Map();
+        let totalOmsetStokis = 0;
 
-            const nameInput = document.getElementById(targetName)?.value.toLowerCase() || '';
-            const prodInput = document.getElementById(targetProd)?.value.toLowerCase() || '';
-            const fromInput = document.getElementById(targetDateFrom)?.value || '';
-            const toInput = document.getElementById(targetDateTo)?.value || '';
-
-            state.filtered = state.data.filter(t => {
-                const matchName = t.memberName.toLowerCase().includes(nameInput);
-                const matchProd = t.productName.toLowerCase().includes(prodInput);
-                const matchDateFrom = !fromInput || t.date >= fromInput;
-                const matchDateTo = !toInput || t.date <= toInput;
-                return matchName && matchProd && matchDateFrom && matchDateTo;
+        filteredTransactions.forEach(t => {
+            const qty = parseInt(t.qty) || 0;
+            const cleanProdName = cleanProductName(t.productCode, t.productName);
+            
+            const normalize = (str) => str.toUpperCase().replace(/\s/g, '');
+            const normalizedInput = normalize(cleanProdName);
+            
+            let matchedKey = Object.keys(masterProductPrices).find(k => {
+                const normalizedKey = normalize(k);
+                return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
             });
 
-            state.page = 1;
-            renderPurchaseReportTable(type);
-        };
-
-        function renderPurchaseReportTable(type) {
-            const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
-            const title = type === 'global' ? 'Laporan Belanja Global (Detail)' : `Laporan Belanja ${currentStokisId} (IDs)`;
-            const targetNameId = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
-            const targetProdId = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
-            const targetDateFromId = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
-            const targetDateToId = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
-
-            const limit = 10;
-            const totalPages = Math.ceil(state.filtered.length / limit) || 1;
-            const start = (state.page - 1) * limit;
-            const pagedData = state.filtered.slice(start, start + limit);
-
-            const html = `
-                <h2>${title}</h2>
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-header"><span class="card-title">Filter Transaksi</span></div>
-                    <div class="filter-bar no-print" style="padding:16px;">
-                        <input type="text" id="${targetNameId}" class="filter-input" placeholder="Cari Nama Member...">
-                        <input type="text" id="${targetProdId}" class="filter-input" placeholder="Cari Nama Produk...">
-                        <input type="date" id="${targetDateFromId}" class="filter-input" title="Dari Tanggal">
-                        <input type="date" id="${targetDateToId}" class="filter-input" title="Sampai Tanggal">
-                        <button class="btn btn-primary" onclick="applyFilter('${type}')">Terapkan</button>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Tanggal</th><th>ID Member</th><th>Nama Member</th><th>Produk</th><th>Qty</th><th>Point</th></tr></thead>
-                            <tbody>
-                                ${pagedData.length === 0 ? '<tr><td colspan="6" class="empty-state">Data tidak ditemukan</td></tr>' :
-                                    pagedData.map(t => `
-                                        <tr>
-                                            <td>${t.date}</td>
-                                            <td>${t.memberId}</td>
-                                            <td><strong>${t.memberName}</strong></td>
-                                            <td>${t.productName}</td>
-                                            <td style="font-weight:bold;">${t.qty}</td>
-                                            <td style="color:var(--color-accent); font-weight:bold;">${parseFloat(t.points || 0).toFixed(2)}</td>
-                                        </tr>
-                                    `).join('')
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="pagination-bar no-print">
-                    <span>Hal ${state.page} dari ${totalPages} (${state.filtered.length} total)</span>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-sm" ${state.page === 1 ? 'disabled' : ''} onclick="if('${type}'==='global') { globalPurchaseReportState.page--; renderPurchaseReportTable('global'); } else { purchaseReportState.page--; renderPurchaseReportTable('stokis'); }">Prev</button>
-                        <button class="btn btn-sm" ${state.page === totalPages ? 'disabled' : ''} onclick="if('${type}'==='global') { globalPurchaseReportState.page++; renderPurchaseReportTable('global'); } else { purchaseReportState.page++; renderPurchaseReportTable('stokis'); }">Next</button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('contentArea').innerHTML = html;
-        }
-
-        async function fetchGlobalData() {
-            const content = document.getElementById('contentArea');
-            content.innerHTML = `<div class="spinner"></div><p style="text-align:center;">Menggabungkan data ID Member...</p>`;
-
-            try {
-                const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-                const result = {
-                    stokisList: [],
-                    totalStokis: stokisSnap.size,
-                    totalMembers: 0,
-                    totalPoints: 0,
-                    totalSalesPoints: 0, // METRIC BARU: Total Poin Penjualan
-                    membersMap: new Map(),
-                    stokisDetails: [],
-                    allTransactions: [] // Menyimpan semua transaksi untuk perhitungan sales
-                };
-
-                stokisSnap.forEach(doc => {
-                    const sId = doc.id;
-                    const sData = doc.data();
-                    const sName = sData.profile?.namaStokis || sId;
-                    let sPoints = 0;
-                    let sMemberCount = sData.members?.length || 0;
-                    let sSalesPoints = 0; // Poin penjualan internal stokis
-
-                    sData.members?.forEach(m => {
-                        const mId = m.id;
-                        const mPoints = m.totalPoints || 0;
-                        sPoints += mPoints;
-
-                        if (!result.membersMap.has(mId)) {
-                            result.membersMap.set(mId, {
-                                id: mId,
-                                name: m.name,
-                                points: 0,
-                                upline: m.upline,
-                                stokisSources: []
-                            });
-                            result.totalMembers++;
-                        }
-
-                        const globalMember = result.membersMap.get(mId);
-                        globalMember.points += mPoints;
-                        globalMember.stokisSources.push(sName);
-                        if (!globalMember.name || globalMember.name === 'NA') globalMember.name = m.name;
-                        if (m.upline) globalMember.upline = m.upline;
-                    });
-
-                    // Hitung total poin dari transaksi internal
-                    sData.transactions?.forEach(t => {
-                        const tPoints = parseFloat(t.totalPoints || 0);
-                        sSalesPoints += tPoints;
-                        result.allTransactions.push({
-                            stokisId: sId,
-                            date: t.date,
-                            points: tPoints
-                        });
-                    });
-
-                    result.stokisDetails.push({
-                        id: sId,
-                        name: sName,
-                        totalPoints: sPoints,
-                        salesPoints: sSalesPoints, // TAMBAHAN: Poin penjualan
-                        memberCount: sMemberCount
-                    });
-
-                    result.totalSalesPoints += sSalesPoints;
-                });
-
-                result.membersMap.forEach(m => {
-                    result.totalPoints += m.points;
-                });
-
-                return result;
-            } catch (error) {
-                console.error(error);
-                alert('Error: ' + error.message);
-                return null;
-            }
-        }
-
-        async function fetchGlobalTransactionList() {
-            const content = document.getElementById('contentArea');
-            content.innerHTML = `<div class="spinner"></div><p style="text-align:center;">Menganalisa Transaksi Global...</p>`;
-
-            try {
-                const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-                const transactionList = [];
-
-                stokisSnap.forEach(doc => {
-                    const sData = doc.data();
-                    const sName = sData.profile?.namaStokis || doc.id;
-                    const memberLookup = {};
-                    sData.members?.forEach(m => { memberLookup[m.id] = m.name; });
-
-                    sData.transactions?.forEach(t => {
-                        const cleanProd = cleanProductName(t.productCode, t.productName);
-                        transactionList.push({
-                            date: t.date,
-                            id: t.id,
-                            memberId: t.memberId,
-                            memberName: memberLookup[t.memberId] || t.memberName || "Unknown",
-                            productName: cleanProd,
-                            rawProductName: cleanProd,
-                            qty: t.qty,
-                            points: t.totalPoints,
-                            stokisName: sName
-                        });
-                    });
-                });
-
-                return transactionList;
-            } catch (error) {
-                console.error(error);
-                alert('Error Transaksi: ' + error.message);
-                return null;
-            }
-        }
-
-        async function handleReportTabs(tabName) {
-            const tList = await fetchGlobalTransactionList();
-            if (!tList) return;
-
-            if (tabName === 'report-summary') {
-                const data = await fetchGlobalData();
-                if (data) renderReportSummary(data);
-            } else if (tabName === 'report-stokis') {
-                const data = await fetchGlobalData();
-                if (data) renderReportStokisRanking(data);
-            } else if (tabName === 'report-member-sales') {
-                const data = await fetchGlobalData();
-                if (data) renderReportMemberSales(data);
-            } else if (tabName === 'report-tree') {
-                const data = await fetchGlobalData();
-                if (data) renderReportTree(data);
-            } else if (tabName === 'report-purchase-member') {
-                globalPurchaseReportState.data = tList;
-                globalPurchaseReportState.page = 1;
-                globalPurchaseReportState.filtered = tList;
-                renderPurchaseReportTable('global');
-            } else if (tabName === 'report-recapitulasi') {
-                const data = await fetchGlobalData();
-                if (data) renderReportRecapitulasi(tList, data.membersMap);
-            }
-        }
-
-        function renderReportSummary(data) {
-            const html = `
-                <h2>Laporan Gabungan (By Member ID)</h2>
-                <div class="grid-dashboard" style="margin-top:20px;">
-                    <div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value">${data.totalStokis}</div></div>
-                    <div class="stat-card"><div class="stat-label">Total Member (Unique ID)</div><div class="stat-value">${data.totalMembers}</div></div>
-                    <div class="stat-card"><div class="stat-label">Total Poin Global (Agregat)</div><div class="stat-value" style="color:var(--color-accent);">${parseFloat(data.totalPoints || 0).toFixed(2)}</div></div>
-                    <div class="stat-card" style="border-left: 3px solid #10b981;"><div class="stat-label">Total Poin Penjualan</div><div class="stat-value" style="color:#10b981;">${parseFloat(data.totalSalesPoints || 0).toFixed(2)}</div><small style="color:#64748b;">Dari Semua Transaksi</small></div>
-                </div>
-                <div class="card">
-                    <div class="card-header"><span class="card-title">Ringkasan Per Stokis</span></div>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Nama Stokis</th><th>Jml Member</th><th>Total Poin Internal</th></tr></thead>
-                            <tbody>
-                                ${data.stokisDetails.map(s => `<tr><td>${s.name}</td><td>${s.memberCount}</td><td>${parseFloat(s.totalPoints || 0).toFixed(2)}</td></tr>`).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-            document.getElementById('contentArea').innerHTML = html;
-        }
-
-        function renderReportStokisRanking(data) {
-            // Simpan data mentah untuk filter
-            rankingStokisState.rawData = data;
-            
-            const html = `
-                <h2>🏅 Ranking Stokis</h2>
+            if (matchedKey) {
+                const price = masterProductPrices[matchedKey];
+                const omset = qty * price;
                 
-                <!-- FILTER TANGGAL -->
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-header"><span class="card-title">Filter Periode Transaksi</span></div>
-                    <div class="filter-bar no-print" style="padding:16px;">
-                        <input type="date" id="rankStokisDateFrom" class="filter-input" placeholder="Dari Tanggal">
-                        <input type="date" id="rankStokisDateTo" class="filter-input" placeholder="Sampai Tanggal">
-                        <button class="btn btn-primary" onclick="applyStokisRankingFilter()">Terapkan Filter</button>
-                        <button class="btn" style="background:#e2e8f0;" onclick="resetStokisRankingFilter()">Reset</button>
-                    </div>
-                </div>
+                if (!productSales.has(matchedKey)) {
+                    productSales.set(matchedKey, { qty: 0, omset: 0 });
+                }
+                
+                const currentData = productSales.get(matchedKey);
+                currentData.qty += qty;
+                currentData.omset += omset;
+                totalOmsetStokis += omset;
+            }
+        });
 
-                <div id="stokisRankingTableContainer"></div>
-            `;
+        const allProducts = Object.keys(masterProductPrices).sort();
+
+        let html = `
+            <h2>💵 Laporan Omset ${currentStokisId}</h2>
             
-            document.getElementById('contentArea').innerHTML = html;
-            renderStokisRankingTable(data.stokisDetails);
-        }
-
-        // Fungsi untuk render tabel ranking stokis
-        function renderStokisRankingTable(stokisDetails) {
-            const sorted = [...stokisDetails].sort((a, b) => b.salesPoints - a.salesPoints);
-
-            const tableHtml = `
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-header"><span class="card-title">Berdasarkan Transaksi Internal</span></div>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Rank</th><th>Nama Stokis</th><th>Member</th><th>Total Point Penjualan</th></tr></thead>
-                            <tbody>
-                                ${sorted.map((s, idx) => {
-                                    let rClass = 'rank-other';
-                                    if (idx < 3) rClass = `rank-${idx + 1}`;
-                                    return `
-                                        <tr>
-                                            <td><div class="rank-badge ${rClass}">${idx + 1}</div></td>
-                                            <td><strong>${s.name}</strong></td>
-                                            <td>${s.memberCount}</td>
-                                            <td style="font-weight:bold; color:#10b981;">${parseFloat(s.salesPoints || 0).toFixed(2)}</td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- FILTER TANGGAL -->
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header"><span class="card-title">Filter Periode</span></div>
+                <div class="filter-bar no-print" style="padding:16px;">
+                    <input type="date" id="omsetDateFrom" class="filter-input" placeholder="Dari Tanggal" value="${omsetFilterState.dateFrom}">
+                    <input type="date" id="omsetDateTo" class="filter-input" placeholder="Sampai Tanggal" value="${omsetFilterState.dateTo}">
+                    <button class="btn btn-primary" onclick="applyOmsetFilter()">Terapkan</button>
+                    <button class="btn" style="background:#e2e8f0;" onclick="resetOmsetFilter()">Reset</button>
                 </div>
-            `;
-
-            document.getElementById('stokisRankingTableContainer').innerHTML = tableHtml;
-        }
-
-        // Fungsi untuk apply filter tanggal pada ranking stokis
-        window.applyStokisRankingFilter = () => {
-            const fromInput = document.getElementById('rankStokisDateFrom')?.value || '';
-            const toInput = document.getElementById('rankStokisDateTo')?.value || '';
-
-            rankingStokisState.dateFrom = fromInput;
-            rankingStokisState.dateTo = toInput;
-
-            // Filter transaksi berdasarkan tanggal
-            const filteredStokisDetails = rankingStokisState.rawData.stokisDetails.map(stokis => {
-                // Hitung ulang salesPoints berdasarkan transaksi yang difilter
-                const filteredTransactions = rankingStokisState.rawData.allTransactions.filter(t => {
-                    if (t.stokisId !== stokis.id) return false;
-                    const matchDateFrom = !fromInput || t.date >= fromInput;
-                    const matchDateTo = !toInput || t.date <= toInput;
-                    return matchDateFrom && matchDateTo;
-                });
-
-                const newSalesPoints = filteredTransactions.reduce((sum, t) => sum + t.points, 0);
-
-                return {
-                    ...stokis,
-                    salesPoints: newSalesPoints
-                };
-            });
-
-            renderStokisRankingTable(filteredStokisDetails);
-        };
-
-        // Fungsi untuk reset filter
-        window.resetStokisRankingFilter = () => {
-            document.getElementById('rankStokisDateFrom').value = '';
-            document.getElementById('rankStokisDateTo').value = '';
-            rankingStokisState.dateFrom = '';
-            rankingStokisState.dateTo = '';
+            </div>
             
-            renderStokisRankingTable(rankingStokisState.rawData.stokisDetails);
-        };
-
-        function renderReportMemberSales(data) {
-            const sortedMembers = Array.from(data.membersMap.values()).sort((a, b) => b.points - a.points);
-            rankingMemberState.data = sortedMembers;
-            rankingMemberState.filtered = sortedMembers;
-            rankingMemberState.page = 1;
-
-            const html = `
-                <h2>💎 Ranking Member (By ID Global)</h2>
-                <p style="color:#64748b; margin-bottom:16px;">Poin dijumlahkan jika ID member sama muncul di beberapa Stokis.</p>
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-header"><span class="card-title">Filter Member</span></div>
-                    <div class="filter-bar no-print" style="padding:16px;">
-                        <input type="text" id="rankFilter" class="filter-input" placeholder="Cari Nama / ID Member...">
-                        <button class="btn btn-primary" onclick="applyRankingFilter()">Terapkan</button>
-                    </div>
-                    <div class="table-container">
-                        <table id="rankingTableBody"><!-- Content rendered by JS --></table>
-                    </div>
+            <div class="grid-dashboard" style="margin-top:20px;">
+                <div class="stat-card omset-card">
+                    <div class="stat-label">Total Omset Stokis</div>
+                    <div class="stat-value">Rp ${totalOmsetStokis.toLocaleString('id-ID')}</div>
+                    <small style="color:rgba(255,255,255,0.8);">Dari ${filteredTransactions.length} transaksi</small>
                 </div>
-                <div class="pagination-bar no-print">
-                    <span id="rankPaginationInfo">Hal 1</span>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-sm" id="rankPrev" disabled>Prev</button>
-                        <button class="btn btn-sm" id="rankNext">Next</button>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Produk Terjual</div>
+                    <div class="stat-value" style="color:var(--color-success);">${Array.from(productSales.values()).reduce((sum, p) => sum + p.qty, 0)}</div>
+                    <small style="color:#64748b;">Unit</small>
                 </div>
-            `;
-            document.getElementById('contentArea').innerHTML = html;
-            renderRankingTable();
-        }
+                <div class="stat-card">
+                    <div class="stat-label">Jenis Produk</div>
+                    <div class="stat-value" style="color:var(--color-accent);">${productSales.size}</div>
+                    <small style="color:#64748b;">Dari ${allProducts.length} produk</small>
+                </div>
+            </div>
 
-        window.applyRankingFilter = () => {
-            const val = document.getElementById('rankFilter').value.toLowerCase();
-            rankingMemberState.filtered = rankingMemberState.data.filter(m =>
-                m.name.toLowerCase().includes(val) || m.id.toLowerCase().includes(val)
-            );
-            rankingMemberState.page = 1;
-            renderRankingTable();
-        };
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header">
+                    <span class="card-title">Detail Omset Per Produk</span>
+                    <button class="btn btn-primary btn-sm" onclick="openProductPriceModal()">⚙️ Edit Harga Master</button>
+                </div>
+                <div class="table-container">
+                    <table style="font-size: 13px;">
+                        <thead>
+                            <tr>
+                                <th>Nama Produk</th>
+                                <th style="text-align: right;">Harga Satuan</th>
+                                <th style="text-align: center;">Qty Terjual</th>
+                                <th style="text-align: right;">Total Omset</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        `;
 
-        function renderRankingTable() {
-            const limit = 10;
-            const total = rankingMemberState.filtered.length;
-            const totalPages = Math.ceil(total / limit) || 1;
-            const start = (rankingMemberState.page - 1) * limit;
-            const pagedData = rankingMemberState.filtered.slice(start, start + limit);
-
-            const tbody = document.getElementById('rankingTableBody');
-            if (!tbody) return;
-
-            let rows = `<thead><tr><th>Rank</th><th>Nama</th><th>ID</th><th>Stokis</th><th>Point</th></tr></thead><tbody>`;
-            rows += pagedData.map((m, idx) => {
-                const absIdx = start + idx;
-                let rClass = 'rank-other';
-                if (absIdx < 3) rClass = `rank-${absIdx + 1}`;
-                const stokisBadge = m.stokisSources.length > 3 ? m.stokisSources.slice(0, 3).join(', ') + ` (+${m.stokisSources.length - 3})` : m.stokisSources.join(', ');
-                return `
-                    <tr>
-                        <td><div class="rank-badge ${rClass}">${absIdx + 1}</div></td>
-                        <td><strong>${m.name}</strong></td>
-                        <td>${m.id}</td>
-                        <td><span class="badge badge-green" style="font-weight:400;">${stokisBadge}</span></td>
-                        <td style="font-weight:bold; color:var(--color-primary);">${parseFloat(m.points || 0).toFixed(2)}</td>
+        allProducts.forEach(productName => {
+            const price = masterProductPrices[productName];
+            const salesData = productSales.get(productName);
+            
+            if (salesData && salesData.qty > 0) {
+                html += `
+                    <tr style="background: #f0f9ff;">
+                        <td class="product-name-col">${productName}</td>
+                        <td style="text-align: right;">Rp ${price.toLocaleString('id-ID')}</td>
+                        <td style="text-align: center; font-weight: 700; color: var(--color-accent);">${salesData.qty}</td>
+                        <td style="text-align: right; font-weight: 700; color: var(--color-success);">Rp ${salesData.omset.toLocaleString('id-ID')}</td>
                     </tr>
                 `;
-            }).join('');
-            rows += `</tbody>`;
+            } else {
+                html += `
+                    <tr style="opacity: 0.5;">
+                        <td>${productName}</td>
+                        <td style="text-align: right;">Rp ${price.toLocaleString('id-ID')}</td>
+                        <td style="text-align: center; color: #cbd5e1;">-</td>
+                        <td style="text-align: right; color: #cbd5e1;">Rp 0</td>
+                    </tr>
+                `;
+            }
+        });
 
-            tbody.innerHTML = rows || '<tr><td colspan="5" class="empty-state">Tidak ada data</td></tr>';
+        html += `
+                            <tr class="total-row">
+                                <td colspan="2" style="text-align: right;"><strong>TOTAL OMSET</strong></td>
+                                <td style="text-align: center; font-weight: 700;">${Array.from(productSales.values()).reduce((sum, p) => sum + p.qty, 0)}</td>
+                                <td style="text-align: right; font-weight: 700; font-size: 15px; color: var(--color-primary);">Rp ${totalOmsetStokis.toLocaleString('id-ID')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-            document.getElementById('rankPaginationInfo').textContent = `Hal ${rankingMemberState.page} dari ${totalPages} (${total} total)`;
-            document.getElementById('rankPrev').disabled = rankingMemberState.page === 1;
-            document.getElementById('rankNext').disabled = rankingMemberState.page === totalPages;
+            <div style="padding:16px; font-size:12px; color:#64748b; background:#f8fafc; border-radius:8px; margin-top:16px;">
+                <strong>Catatan:</strong>
+                <ul style="margin-left:20px; margin-top:8px;">
+                    <li>Harga produk menggunakan master harga yang dapat diedit</li>
+                    <li>Omset dihitung dari: Qty × Harga Master Produk</li>
+                    <li>Data transaksi real-time dari sistem</li>
+                    <li>Gunakan filter tanggal untuk melihat omset periode tertentu</li>
+                </ul>
+            </div>
+        `;
 
-            document.getElementById('rankPrev').onclick = () => {
-                rankingMemberState.page--;
-                renderRankingTable();
+        document.getElementById('contentArea').innerHTML = html;
+    }
+
+    window.applyOmsetFilter = () => {
+        omsetFilterState.dateFrom = document.getElementById('omsetDateFrom').value;
+        omsetFilterState.dateTo = document.getElementById('omsetDateTo').value;
+        renderOmsetStokis();
+    };
+
+    window.resetOmsetFilter = () => {
+        omsetFilterState.dateFrom = '';
+        omsetFilterState.dateTo = '';
+        document.getElementById('omsetDateFrom').value = '';
+        document.getElementById('omsetDateTo').value = '';
+        renderOmsetStokis();
+    };
+
+    window.applyFilter = (type) => {
+        const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
+        const targetName = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
+        const targetProd = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
+        const targetDateFrom = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
+        const targetDateTo = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
+
+        const nameInput = document.getElementById(targetName)?.value.toLowerCase() || '';
+        const prodInput = document.getElementById(targetProd)?.value.toLowerCase() || '';
+        const fromInput = document.getElementById(targetDateFrom)?.value || '';
+        const toInput = document.getElementById(targetDateTo)?.value || '';
+
+        state.filtered = state.data.filter(t => {
+            const matchName = t.memberName.toLowerCase().includes(nameInput);
+            const matchProd = t.productName.toLowerCase().includes(prodInput);
+            const matchDateFrom = !fromInput || t.date >= fromInput;
+            const matchDateTo = !toInput || t.date <= toInput;
+            return matchName && matchProd && matchDateFrom && matchDateTo;
+        });
+
+        state.page = 1;
+        renderPurchaseReportTable(type);
+    };
+
+    function renderPurchaseReportTable(type) {
+        const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
+        const title = type === 'global' ? '🛒 Laporan Belanja Global (Detail)' : `🛒 Laporan Belanja ${currentStokisId} (IDs)`;
+        const targetNameId = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
+        const targetProdId = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
+        const targetDateFromId = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
+        const targetDateToId = type === 'global' ? 'filterDateToGlobal' : 'filterDateToStokis';
+
+        const limit = 10;
+        const totalPages = Math.ceil(state.filtered.length / limit) || 1;
+        const start = (state.page - 1) * limit;
+        const pagedData = state.filtered.slice(start, start + limit);
+
+        const html = `
+            <h2>${title}</h2>
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header"><span class="card-title">Filter Transaksi</span></div>
+                <div class="filter-bar no-print" style="padding:16px;">
+                    <input type="text" id="${targetNameId}" class="filter-input" placeholder="Cari Nama Member...">
+                    <input type="text" id="${targetProdId}" class="filter-input" placeholder="Cari Nama Produk...">
+                    <input type="date" id="${targetDateFromId}" class="filter-input" title="Dari Tanggal">
+                    <input type="date" id="${targetDateToId}" class="filter-input" title="Sampai Tanggal">
+                    <button class="btn btn-primary" onclick="applyFilter('${type}')">Terapkan</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Tanggal</th><th>ID Member</th><th>Nama Member</th><th>Produk</th><th>Qty</th><th>Point</th></tr></thead>
+                        <tbody>
+                            ${pagedData.length === 0 ? 
+                                '<tr><td colspan="6" class="empty-state">Data tidak ditemukan</td></tr>' : 
+                                pagedData.map(t => `
+                                    <tr>
+                                        <td>${t.date}</td>
+                                        <td>${t.memberId}</td>
+                                        <td><strong>${t.memberName}</strong></td>
+                                        <td>${t.productName}</td>
+                                        <td style="font-weight:bold;">${t.qty}</td>
+                                        <td style="color:var(--color-accent); font-weight:bold;">${parseFloat(t.points || 0).toFixed(2)}</td>
+                                    </tr>
+                                `).join('')
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pagination-bar no-print">
+                <span>Hal ${state.page} dari ${totalPages} (${state.filtered.length} total)</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-sm" ${state.page === 1 ? 'disabled' : ''} onclick="if('${type}'==='global'){globalPurchaseReportState.page--; renderPurchaseReportTable('global');}else{purchaseReportState.page--; renderPurchaseReportTable('stokis');}">‹ Prev</button>
+                    <button class="btn btn-sm" ${state.page === totalPages ? 'disabled' : ''} onclick="if('${type}'==='global'){globalPurchaseReportState.page++; renderPurchaseReportTable('global');}else{purchaseReportState.page++; renderPurchaseReportTable('stokis');}">Next ›</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('contentArea').innerHTML = html;
+    }
+
+    async function fetchGlobalData() {
+        const content = document.getElementById('contentArea');
+        content.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; min-height:400px;"><div><div class="spinner"></div><p style="text-align:center;">Menggabungkan data ID Member...</p></div></div>';
+        
+        try {
+            const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+            const result = {
+                stokisList: [],
+                totalStokis: stokisSnap.size,
+                totalMembers: 0,
+                totalPoints: 0,
+                totalSalesPoints: 0,
+                totalOmset: 0,
+                membersMap: new Map(),
+                stokisDetails: [],
+                allTransactions: []
             };
-            document.getElementById('rankNext').onclick = () => {
-                rankingMemberState.page++;
-                renderRankingTable();
-            };
+
+            stokisSnap.forEach(doc => {
+                const sId = doc.id;
+                const sData = doc.data();
+                const sName = sData.profile?.namaStokis || sId;
+                let sPoints = 0;
+                let sMemberCount = sData.members?.length || 0;
+                let sSalesPoints = 0;
+                let sOmset = 0;
+
+                sData.members?.forEach(m => {
+                    const mId = m.id;
+                    const mPoints = m.totalPoints || 0;
+                    sPoints += mPoints;
+
+                    if (!result.membersMap.has(mId)) {
+                        result.membersMap.set(mId, {
+                            id: mId,
+                            name: m.name,
+                            points: 0,
+                            upline: m.upline,
+                            stokisSources: []
+                        });
+                        result.totalMembers++;
+                    }
+
+                    const globalMember = result.membersMap.get(mId);
+                    globalMember.points += mPoints;
+                    globalMember.stokisSources.push(sName);
+                    if (!globalMember.name) globalMember.name = 'NA';
+                    globalMember.name = m.name;
+                    if (m.upline) globalMember.upline = m.upline;
+                });
+
+                sData.transactions?.forEach(t => {
+                    const tPoints = parseFloat(t.totalPoints || 0);
+                    sSalesPoints += tPoints;
+                    
+                    const qty = parseInt(t.qty) || 0;
+                    const cleanProdName = cleanProductName(t.productCode, t.productName);
+                    const normalize = (str) => str.toUpperCase().replace(/\s/g, '');
+                    const normalizedInput = normalize(cleanProdName);
+                    
+                    let matchedKey = Object.keys(masterProductPrices).find(k => {
+                        const normalizedKey = normalize(k);
+                        return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
+                    });
+
+                    if (matchedKey) {
+                        const price = masterProductPrices[matchedKey];
+                        const omset = qty * price;
+                        sOmset += omset;
+                    }
+                    
+                    result.allTransactions.push({
+                        stokisId: sId,
+                        date: t.date,
+                        points: tPoints
+                    });
+                });
+
+                result.stokisDetails.push({
+                    id: sId,
+                    name: sName,
+                    totalPoints: sPoints,
+                    salesPoints: sSalesPoints,
+                    omset: sOmset,
+                    memberCount: sMemberCount
+                });
+
+                result.totalSalesPoints += sSalesPoints;
+                result.totalOmset += sOmset;
+            });
+
+            result.membersMap.forEach(m => {
+                result.totalPoints += m.points;
+            });
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            alert('Error: ' + error.message);
+            return null;
         }
+    }
 
-        function renderReportTree(data) {
-            const nodes = new Map();
-            data.membersMap.forEach(m => {
-                nodes.set(m.id, {
-                    id: m.id,
-                    name: m.name,
-                    points: m.points,
-                    children: [],
-                    expanded: true
+    async function fetchGlobalTransactionList() {
+        const content = document.getElementById('contentArea');
+        content.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; min-height:400px;"><div><div class="spinner"></div><p style="text-align:center;">Menganalisa Transaksi Global...</p></div></div>';
+        
+        try {
+            const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+            const transactionList = [];
+
+            stokisSnap.forEach(doc => {
+                const sData = doc.data();
+                const sName = sData.profile?.namaStokis || doc.id;
+                const memberLookup = {};
+                sData.members?.forEach(m => memberLookup[m.id] = m.name);
+
+                sData.transactions?.forEach(t => {
+                    const cleanProd = cleanProductName(t.productCode, t.productName);
+                    transactionList.push({
+                        date: t.date,
+                        id: t.id,
+                        memberId: t.memberId,
+                        memberName: memberLookup[t.memberId] || t.memberName || 'Unknown',
+                        productName: cleanProd,
+                        rawProductName: cleanProd,
+                        qty: t.qty,
+                        points: t.totalPoints,
+                        stokisName: sName
+                    });
                 });
             });
 
-            const roots = [];
-            const childIds = new Set();
+            return transactionList;
+        } catch (error) {
+            console.error(error);
+            alert('Error Transaksi: ' + error.message);
+            return null;
+        }
+    }
 
-            data.membersMap.forEach(m => {
-                const node = nodes.get(m.id);
-                if (m.upline && nodes.has(m.upline)) {
-                    const parent = nodes.get(m.upline);
-                    if (parent) {
-                        if (!parent.children.includes(node)) {
-                            parent.children.push(node);
-                        }
-                        childIds.add(m.id);
+    async function handleReportTabs(tabName) {
+        const tList = await fetchGlobalTransactionList();
+        if (!tList) return;
+
+        if (tabName === 'report-summary') {
+            const data = await fetchGlobalData();
+            if (data) renderReportSummary(data);
+        } else if (tabName === 'report-stokis') {
+            const data = await fetchGlobalData();
+            if (data) renderReportStokisRanking(data);
+        } else if (tabName === 'report-member-sales') {
+            const data = await fetchGlobalData();
+            if (data) renderReportMemberSales(data);
+        } else if (tabName === 'report-tree') {
+            const data = await fetchGlobalData();
+            if (data) renderReportTree(data);
+        } else if (tabName === 'report-purchase-member') {
+            globalPurchaseReportState.data = tList;
+            globalPurchaseReportState.page = 1;
+            globalPurchaseReportState.filtered = tList;
+            renderPurchaseReportTable('global');
+        } else if (tabName === 'report-recapitulasi') {
+            const data = await fetchGlobalData();
+            recapFilterState.allTransactions = tList;
+            if (data) renderReportRecapitulasi(tList, data);
+        }
+    }
+
+    function renderReportSummary(data) {
+        const html = `
+            <h2>Laporan Gabungan (By Member ID)</h2>
+            <div class="grid-dashboard" style="margin-top:20px;">
+                <div class="stat-card"><div class="stat-label">Total Stokis</div><div class="stat-value">${data.totalStokis}</div></div>
+                <div class="stat-card"><div class="stat-label">Total Member (Unique ID)</div><div class="stat-value">${data.totalMembers}</div></div>
+                <div class="stat-card"><div class="stat-label">Total Poin Global (Agregat)</div><div class="stat-value" style="color:var(--color-accent);">${parseFloat(data.totalPoints || 0).toFixed(2)}</div></div>
+                <!-- ADDED: Total Poin Penjualan -->
+                <div class="stat-card" style="border-left: 4px solid var(--color-warning);">
+                    <div class="stat-label">Total Poin Penjualan</div>
+                    <div class="stat-value" style="color:var(--color-warning);">${parseFloat(data.totalSalesPoints || 0).toLocaleString('id-ID')}</div>
+                    <small style="color:#64748b;">Akumulasi Transaksi</small>
+                </div>
+                <div class="stat-card omset-card"><div class="stat-label">Total Omset Gabungan</div><div class="stat-value">Rp ${data.totalOmset.toLocaleString('id-ID')}</div><small style="color:rgba(255,255,255,0.8);">Dari Semua Stokis</small></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><span class="card-title">Ringkasan Per Stokis</span></div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Nama Stokis</th><th>Jml Member</th><th>Total Poin Internal</th><th style="text-align:right;">Omset</th></tr></thead>
+                        <tbody>
+                            ${data.stokisDetails.map(s => `
+                                <tr>
+                                    <td>${s.name}</td>
+                                    <td>${s.memberCount}</td>
+                                    <td>${parseFloat(s.totalPoints || 0).toFixed(2)}</td>
+                                    <td style="text-align:right; font-weight:700; color:var(--color-success);">Rp ${s.omset.toLocaleString('id-ID')}</td>
+                                </tr>
+                            `).join('')}
+                            <tr class="total-row">
+                                <td colspan="3" style="text-align:right;"><strong>TOTAL OMSET</strong></td>
+                                <td style="text-align:right; font-weight:700; font-size:15px;">Rp ${data.totalOmset.toLocaleString('id-ID')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        document.getElementById('contentArea').innerHTML = html;
+    }
+
+    function renderReportStokisRanking(data) {
+        rankingStokisState.rawData = data;
+
+        const html = `
+            <h2>🏅 Ranking Stokis</h2>
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header"><span class="card-title">Filter Periode Transaksi</span></div>
+                <div class="filter-bar no-print" style="padding:16px;">
+                    <input type="date" id="rankStokisDateFrom" class="filter-input" placeholder="Dari Tanggal">
+                    <input type="date" id="rankStokisDateTo" class="filter-input" placeholder="Sampai Tanggal">
+                    <button class="btn btn-primary" onclick="applyStokisRankingFilter()">Terapkan Filter</button>
+                    <button class="btn" style="background:#e2e8f0;" onclick="resetStokisRankingFilter()">Reset</button>
+                </div>
+            </div>
+            <div id="stokisRankingTableContainer"></div>
+        `;
+        
+        document.getElementById('contentArea').innerHTML = html;
+        renderStokisRankingTable(data.stokisDetails);
+    }
+
+    window.applyStokisRankingFilter = async () => {
+        const fromInput = document.getElementById('rankStokisDateFrom')?.value || '';
+        const toInput = document.getElementById('rankStokisDateTo')?.value || '';
+        rankingStokisState.dateFrom = fromInput;
+        rankingStokisState.dateTo = toInput;
+
+        // Fetch raw data again to calculate accurately
+        const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+        const newDetails = [];
+
+        stokisSnap.forEach(doc => {
+            const sId = doc.id;
+            const sData = doc.data();
+            const sName = sData.profile?.namaStokis || sId;
+            
+            // Filter transactions by date
+            let sOmset = 0;
+            let sSalesPoints = 0;
+            
+            const transactions = sData.transactions || [];
+            transactions.forEach(t => {
+                const matchFrom = !fromInput || t.date >= fromInput;
+                const matchTo = !toInput || t.date <= toInput;
+                
+                if (matchFrom && matchTo) {
+                    const tPoints = parseFloat(t.totalPoints || 0);
+                    sSalesPoints += tPoints;
+
+                    // Calculate Omset (Duplicate logic from fetchGlobalData for accuracy)
+                    const qty = parseInt(t.qty) || 0;
+                    const cleanProdName = cleanProductName(t.productCode, t.productName);
+                    const normalize = (str) => str.toUpperCase().replace(/\s/g, '');
+                    const normalizedInput = normalize(cleanProdName);
+                    
+                    let matchedKey = Object.keys(masterProductPrices).find(k => {
+                        const normalizedKey = normalize(k);
+                        return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
+                    });
+
+                    if (matchedKey) {
+                        const price = masterProductPrices[matchedKey];
+                        const omset = qty * price;
+                        sOmset += omset;
                     }
                 }
             });
 
-            nodes.forEach(node => {
-                if (!childIds.has(node.id)) {
-                    roots.push(node);
-                }
+            newDetails.push({
+                id: sId,
+                name: sName,
+                memberCount: sData.members?.length || 0,
+                totalPoints: 0, // Not needed for this table sort usually, but keeping structure
+                salesPoints: sSalesPoints,
+                omset: sOmset
             });
+        });
 
-            treeState.nodes = roots;
+        renderStokisRankingTable(newDetails);
+    };
 
-            let html = `
-                <h2>🌳 Pohon Jaringan Global (ID)</h2>
-                <p style="color:#64748b; margin-bottom:16px;">Struktur digabungkan berdasarkan ID Member. Klik member untuk expand/collapse.</p>
-                <div class="card" style="margin-top:20px;">
-                    <div class="tree-container tree"><div id="treeRoot"></div></div>
+    window.resetStokisRankingFilter = () => {
+        document.getElementById('rankStokisDateFrom').value = '';
+        document.getElementById('rankStokisDateTo').value = '';
+        rankingStokisState.dateFrom = '';
+        rankingStokisState.dateTo = '';
+        renderStokisRankingTable(rankingStokisState.rawData.stokisDetails);
+    };
+
+    function renderStokisRankingTable(stokisDetails) {
+        const sorted = [...stokisDetails].sort((a, b) => b.omset - a.omset);
+        
+        const tableHtml = `
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header"><span class="card-title">Berdasarkan Total Omset</span></div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Rank</th><th>Nama Stokis</th><th>Member</th><th style="text-align:right;">Total Point</th><th style="text-align:right;">Total Omset</th></tr></thead>
+                        <tbody>
+                            ${sorted.map((s, idx) => {
+                                let rClass = 'rank-other';
+                                if (idx < 3) rClass = `rank-${idx + 1}`;
+                                return `
+                                    <tr>
+                                        <td><div class="rank-badge ${rClass}">${idx + 1}</div></td>
+                                        <td><strong>${s.name}</strong></td>
+                                        <td>${s.memberCount}</td>
+                                        <td style="text-align:right; font-weight:bold; color:var(--color-accent);">${parseFloat(s.salesPoints || 0).toFixed(2)}</td>
+                                        <td style="text-align:right; font-weight:bold; color:#10b981;">Rp ${s.omset.toLocaleString('id-ID')}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('stokisRankingTableContainer').innerHTML = tableHtml;
+    }
+
+    function renderReportMemberSales(data) {
+        const sortedMembers = Array.from(data.membersMap.values()).sort((a, b) => b.points - a.points);
+        rankingMemberState.data = sortedMembers;
+        rankingMemberState.filtered = sortedMembers;
+        rankingMemberState.page = 1;
+
+        const html = `
+            <h2>💎 Ranking Member (By ID Global)</h2>
+            <p style="color:#64748b; margin-bottom:16px;">Poin dijumlahkan jika ID member sama muncul di beberapa Stokis.</p>
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header"><span class="card-title">Filter Member</span></div>
+                <div class="filter-bar no-print" style="padding:16px;">
+                    <input type="text" id="rankFilter" class="filter-input" placeholder="Cari Nama / ID Member...">
+                    <button class="btn btn-primary" onclick="applyRankingFilter()">Terapkan</button>
+                </div>
+                <div class="table-container">
+                    <table id="rankingTableBody"><!-- Content rendered by JS --></table>
+                </div>
+            </div>
+            <div class="pagination-bar no-print">
+                <span id="rankPaginationInfo">Hal 1</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-sm" id="rankPrev" disabled>‹ Prev</button>
+                    <button class="btn btn-sm" id="rankNext">Next ›</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('contentArea').innerHTML = html;
+        renderRankingTable();
+    }
+
+    window.applyRankingFilter = () => {
+        const val = document.getElementById('rankFilter').value.toLowerCase();
+        rankingMemberState.filtered = rankingMemberState.data.filter(m => 
+            m.name.toLowerCase().includes(val) || m.id.toLowerCase().includes(val)
+        );
+        rankingMemberState.page = 1;
+        renderRankingTable();
+    };
+
+    function renderRankingTable() {
+        const limit = 10;
+        const total = rankingMemberState.filtered.length;
+        const totalPages = Math.ceil(total / limit) || 1;
+        const start = (rankingMemberState.page - 1) * limit;
+        const pagedData = rankingMemberState.filtered.slice(start, start + limit);
+
+        const tbody = document.getElementById('rankingTableBody');
+        if (!tbody) return;
+
+        let rows = '<thead><tr><th>Rank</th><th>Nama</th><th>ID</th><th>Stokis</th><th>Point</th></tr></thead><tbody>';
+        
+        rows += pagedData.map((m, idx) => {
+            const absIdx = start + idx;
+            let rClass = 'rank-other';
+            if (absIdx < 3) rClass = `rank-${absIdx + 1}`;
+            
+            const stokisBadge = m.stokisSources.length > 3 ? 
+                m.stokisSources.slice(0, 3).join(', ') + ` (+${m.stokisSources.length - 3})` : 
+                m.stokisSources.join(', ');
+            
+            return `
+                <tr>
+                    <td><div class="rank-badge ${rClass}">${absIdx + 1}</div></td>
+                    <td><strong>${m.name}</strong></td>
+                    <td>${m.id}</td>
+                    <td><span class="badge badge-green" style="font-weight:400;">${stokisBadge}</span></td>
+                    <td style="font-weight:bold; color:var(--color-primary);">${parseFloat(m.points || 0).toFixed(2)}</td>
+                </tr>
+            `;
+        }).join('');
+        
+        rows += '</tbody>';
+        
+        tbody.innerHTML = rows || '<tr><td colspan="5" class="empty-state">Tidak ada data</td></tr>';
+        
+        document.getElementById('rankPaginationInfo').textContent = `Hal ${rankingMemberState.page} dari ${totalPages} (${total} total)`;
+        document.getElementById('rankPrev').disabled = rankingMemberState.page === 1;
+        document.getElementById('rankNext').disabled = rankingMemberState.page === totalPages;
+
+        document.getElementById('rankPrev').onclick = () => {
+            rankingMemberState.page--;
+            renderRankingTable();
+        };
+        document.getElementById('rankNext').onclick = () => {
+            rankingMemberState.page++;
+            renderRankingTable();
+        };
+    }
+
+    // POHON JARINGAN DENGAN COLLAPSE/EXPAND + FILTER
+    function renderReportTree(data) {
+        const content = document.getElementById('contentArea');
+        
+        // Simpan data untuk keperluan filter (agar bisa diakses sebelum timeout selesai)
+        window.currentTreeData = data;
+
+        content.innerHTML = `
+            <h2>🌳 Pohon Jaringan (By ID Global)</h2>
+            <p style="color:#64748b; margin-bottom:16px;">Struktur jaringan member berdasarkan ID dan upline. <strong>Klik tanda ▼ untuk collapse/expand</strong>.</p>
+            
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header">
+                    <span class="card-title">Struktur Jaringan</span>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span class="badge badge-blue">${data.totalMembers} Total Member</span>
+                        <button class="btn btn-sm btn-primary" onclick="expandAllTreeNodes()">Expand All</button>
+                        <button class="btn btn-sm" style="background:#e2e8f0;" onclick="collapseAllTreeNodes()">Collapse All</button>
+                    </div>
+                </div>
+                
+                <!-- FILTER TREE -->
+                <div class="filter-bar no-print" style="padding:16px; background:#f8fafc;">
+                    <input type="text" id="treeFilterInput" class="filter-input" placeholder="Cari ID / Nama Member..." style="flex:1; max-width:300px;" onkeydown="if(event.key === 'Enter') applyTreeFilter()">
+                    <button class="btn btn-primary btn-sm" onclick="applyTreeFilter()">Cari Jaringan</button>
+                    <button class="btn btn-sm" style="background:#e2e8f0;" onclick="resetTreeFilter()">Reset</button>
+                </div>
+
+                <div class="tree-container" id="treeContainer">
+                    <div class="spinner"></div>
+                    <p style="text-align:center;">Membangun pohon jaringan...</p>
+                </div>
+            </div>
+        `;
+
+        setTimeout(() => {
+            buildNetworkTree(data);
+        }, 100);
+    }
+
+    window.applyTreeFilter = () => {
+        const query = document.getElementById('treeFilterInput').value.toLowerCase();
+        if (!query) {
+            resetTreeFilter();
+            return;
+        }
+        
+        // Recalculate visible nodes based on search
+        // Need access to data, ideally stored in DOM or retrieved from state
+        // Let's use window.currentTreeData which is set in renderReportTree
+        
+        if (!window.currentTreeData) {
+             alert("Data belum dimuat, silakan coba lagi.");
+             return;
+        }
+        
+        const membersMap = window.currentTreeData.membersMap;
+        const visibleIds = new Set();
+        const matchedIds = new Set();
+
+        // 1. Find matches
+        membersMap.forEach((m, id) => {
+            if (m.id.toLowerCase().includes(query) || m.name.toLowerCase().includes(query)) {
+                matchedIds.add(id);
+            }
+        });
+
+        // 2. Walk upline tree for all matches
+        matchedIds.forEach(mid => {
+            let curr = membersMap.get(mid);
+            while(curr) {
+                visibleIds.add(curr.id);
+                if (!curr.upline) break;
+                curr = membersMap.get(curr.upline);
+            }
+        });
+
+        // 3. Build tree with filter
+        buildNetworkTree(window.currentTreeData, visibleIds);
+    };
+
+    window.resetTreeFilter = () => {
+        document.getElementById('treeFilterInput').value = '';
+        if (window.currentTreeData) {
+            buildNetworkTree(window.currentTreeData);
+        }
+    };
+
+    function buildNetworkTree(data, filterSet = null) {
+        // Ensure data is globally stored
+        window.currentTreeData = data;
+
+        const membersMap = data.membersMap;
+        
+        const roots = [];
+        const childrenMap = new Map();
+        
+        membersMap.forEach((member, id) => {
+            if (!member.upline || !membersMap.has(member.upline)) {
+                roots.push(member);
+            }
+            
+            if (member.upline && membersMap.has(member.upline)) {
+                if (!childrenMap.has(member.upline)) {
+                    childrenMap.set(member.upline, []);
+                }
+                childrenMap.get(member.upline).push(member);
+            }
+        });
+
+        if (roots.length === 0) {
+            document.getElementById('treeContainer').innerHTML = `
+                <div class="empty-state">
+                    <span style="font-size:40px;">🌳</span>
+                    <h3>Tidak ada struktur jaringan yang dapat ditampilkan</h3>
+                    <p>Pastikan data member dan upline sudah benar.</p>
                 </div>
             `;
-            document.getElementById('contentArea').innerHTML = html;
-            renderTreeNodes();
+            return;
         }
 
-        window.toggleNode = (id) => {
-            function traverse(list) {
-                for (const n of list) {
-                    if (n.id === id) {
-                        n.expanded = !n.expanded;
-                        return true;
-                    }
-                    if (n.children && traverse(n.children)) return true;
-                }
+        let treeHTML = '<div class="tree"><ul>';
+        
+        // Filter roots if filterSet exists
+        let displayRoots = roots;
+        if (filterSet) {
+            displayRoots = roots.filter(r => filterSet.has(r.id));
+        }
+        
+        const limitRoots = displayRoots.slice(0, 10);
+        limitRoots.forEach(root => {
+            treeHTML += buildTreeNode(root, childrenMap, membersMap, 0, filterSet);
+        });
+        
+        treeHTML += '</ul></div>';
+        
+        if (displayRoots.length > 10) {
+            treeHTML += `
+                <div style="padding:16px; text-align:center; background:#f8fafc; border-radius:8px; margin-top:16px;">
+                    <p style="color:#64748b; font-size:14px;">
+                        Menampilkan 10 dari ${displayRoots.length} cabang utama. 
+                        <strong>${displayRoots.length - 10}</strong> cabang lainnya tidak ditampilkan untuk performa.
+                    </p>
+                </div>
+            `;
+        }
+
+        document.getElementById('treeContainer').innerHTML = treeHTML;
+    }
+
+    function buildTreeNode(member, childrenMap, membersMap, depth, filterSet = null) {
+        const maxDepth = 10;
+        
+        if (depth > maxDepth) {
+            return '';
+        }
+
+        // Filter check: if filterSet exists and member ID not in it, skip
+        if (filterSet && !filterSet.has(member.id)) {
+            return '';
+        }
+
+        const children = childrenMap.get(member.id) || [];
+        const hasChildren = children.length > 0;
+        
+        // Default state: COLLAPSED (class="collapsed") unless filtered
+        const isCollapsed = filterSet === null ? 'collapsed' : '';
+        
+        let html = '<li class="' + isCollapsed + '" data-member-id="' + member.id + '">';
+        
+        html += `
+            <div class="tree-node">
+                <strong>${member.name || 'No Name'}</strong>
+                <span class="node-id">${member.id}</span>
+                <span class="node-points">${parseFloat(member.points || 0).toFixed(2)} Pts</span>
+                ${member.stokisSources && member.stokisSources.length > 0 ? 
+                    `<small>${member.stokisSources.slice(0, 2).join(', ')}</small>` : 
+                    ''}
+                ${hasChildren ? '<div class="toggle-btn" onclick="toggleTreeNode(event, \'' + member.id + '\')"></div>' : ''}
+            </div>
+        `;
+        
+        if (hasChildren) {
+            html += '<ul>';
+            children.forEach(child => {
+                html += buildTreeNode(child, childrenMap, membersMap, depth + 1, filterSet);
+            });
+            html += '</ul>';
+        }
+        
+        html += '</li>';
+        return html;
+    }
+
+    window.toggleTreeNode = (event, memberId) => {
+        event.stopPropagation();
+        const li = document.querySelector(`li[data-member-id="${memberId}"]`);
+        if (li) {
+            li.classList.toggle('collapsed');
+        }
+    };
+
+    window.expandAllTreeNodes = () => {
+        document.querySelectorAll('.tree li').forEach(li => {
+            li.classList.remove('collapsed');
+        });
+    };
+
+    window.collapseAllTreeNodes = () => {
+        document.querySelectorAll('.tree li').forEach(li => {
+            const hasChildren = li.querySelector('ul');
+            if (hasChildren) {
+                li.classList.add('collapsed');
             }
-            traverse(treeState.nodes);
-            renderTreeNodes();
+        });
+    };
+
+    // REKAPITULASI DENGAN FILTER TANGGAL
+    function renderReportRecapitulasi(transactions, data) {
+        // Apply date filter if set
+        let filteredTransactions = transactions;
+        if (recapFilterState.dateFrom || recapFilterState.dateTo) {
+            filteredTransactions = transactions.filter(t => {
+                const matchFrom = !recapFilterState.dateFrom || t.date >= recapFilterState.dateFrom;
+                const matchTo = !recapFilterState.dateTo || t.date <= recapFilterState.dateTo;
+                return matchFrom && matchTo;
+            });
+        }
+
+        const recapData = {
+            totalOmset: 0,
+            totalReward: 0,
+            totalMgt: 0,
+            totalBreakage: 0,
+            details: new Map()
         };
 
-        function renderTreeNodes() {
-            const container = document.getElementById('treeRoot');
-            if (!container) return;
+        const membersMap = data.membersMap;
 
-            const buildTreeHtml = (nodeList) => {
-                if (!nodeList || nodeList.length === 0) return '';
-                return `<ul>${nodeList.map(node => {
-                    const hasChildren = node.children && node.children.length > 0;
-                    const isExpanded = node.expanded;
-                    let childrenHtml = '';
-                    if (hasChildren && isExpanded) {
-                        childrenHtml = buildTreeHtml(node.children);
-                    }
-                    return `
-                        <li>
-                            <div class="tree-node" onclick="toggleNode('${node.id}')">
-                                ${hasChildren ? `<span class="tree-toggle-icon">${isExpanded ? '▼' : '▶'}</span>` : '<span style="width:20px; display:inline-block;"></span>'}
-                                <strong>${node.name}</strong>
-                                <small>${node.id}</small>
-                                <small style="display:block; color:var(--color-accent); font-weight:bold;">${parseFloat(node.points || 0).toFixed(2)} Pts</small>
-                            </div>
-                            ${childrenHtml}
-                        </li>
-                    `;
-                }).join('')}</ul>`;
-            };
-
-            container.innerHTML = buildTreeHtml(treeState.nodes);
-        }
-
-        function renderReportRecapitulasi(transactions, membersMap) {
-            const recapData = {
-                totalOmset: 0,
-                totalReward: 0,
-                totalMgt: 0,
-                totalBreakage: 0,
-                details: new Map()
-            };
-
-            const getMember = (mid) => {
-                if (!recapData.details.has(mid)) {
-                    const m = membersMap.get(mid) || { name: "Unknown Member" };
-                    recapData.details.set(mid, {
-                        id: mid,
-                        name: m.name,
-                        reward: 0,
-                        mgt: 0,
-                        total: 0,
-                        levelDetails: {}
-                    });
-                }
-                return recapData.details.get(mid);
-            };
-
-            transactions.forEach(t => {
-                const qty = parseInt(t.qty) || 0;
-                const cleanProdName = t.rawProductName;
-
-                const normalize = (str) => str.toUpperCase().replace(/\s/g, '');
-                const normalizedInput = normalize(cleanProdName);
-
-                let matchedKey = Object.keys(COMMISSION_RULES).find(k => {
-                    const normalizedKey = normalize(k);
-                    return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
-                });
-
-                if (!matchedKey) return;
-
-                const rule = COMMISSION_RULES[matchedKey];
-                const transOmset = rule.price * qty;
-                const transRewardPool = rule.rewardPool * qty;
-                const transMgtPool = rule.mgtPool * qty;
-
-                recapData.totalOmset += transOmset;
-                recapData.totalReward += transRewardPool;
-                recapData.totalMgt += transMgtPool;
-
-                const sellerId = t.memberId;
-                const seller = getMember(sellerId);
-                const lvl0Reward = (rule.levels[0] || 0) * qty;
-                const lvl0Mgt = transMgtPool;
-
-                seller.reward += lvl0Reward;
-                seller.mgt += lvl0Mgt;
-                seller.total += (lvl0Reward + lvl0Mgt);
-                seller.levelDetails[0] = (seller.levelDetails[0] || 0) + (lvl0Reward + lvl0Mgt);
-
-                const isPendan = matchedKey === "PENDAN WULUNG";
-                const maxDepth = isPendan ? 5 : 2;
-
-                let currentUplineId = membersMap.get(sellerId)?.upline;
-
-                for (let lvl = 1; lvl <= maxDepth; lvl++) {
-                    const amount = (rule.levels[lvl] || 0) * qty;
-                    if (currentUplineId) {
-                        const upline = getMember(currentUplineId);
-                        upline.reward += amount;
-                        upline.total += amount;
-                        upline.levelDetails[lvl] = (upline.levelDetails[lvl] || 0) + amount;
-
-                        const nextMember = membersMap.get(currentUplineId);
-                        currentUplineId = nextMember ? nextMember.upline : null;
-                    } else {
-                        recapData.totalBreakage += amount;
-                    }
-                }
+        // Recalculate omset for filtered data
+        filteredTransactions.forEach(t => {
+            const qty = parseInt(t.qty) || 0;
+            const cleanProdName = t.rawProductName;
+            const normalize = (str) => str.toUpperCase().replace(/\s/g, '');
+            const normalizedInput = normalize(cleanProdName);
+            
+            let matchedKey = Object.keys(masterProductPrices).find(k => {
+                const normalizedKey = normalize(k);
+                return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
             });
 
+            if (matchedKey) {
+                const price = masterProductPrices[matchedKey];
+                const omset = qty * price;
+                recapData.totalOmset += omset;
+            }
+        });
+
+        const getMember = (mid) => {
+            if (!recapData.details.has(mid)) {
+                const m = membersMap.get(mid) || { name: 'Unknown Member' };
+                recapData.details.set(mid, {
+                    id: mid,
+                    name: m.name,
+                    reward: 0,
+                    mgt: 0,
+                    total: 0,
+                    levelDetails: {}
+                });
+            }
+            return recapData.details.get(mid);
+        };
+
+        filteredTransactions.forEach((t) => {
+            const qty = parseInt(t.qty) || 0;
+            const cleanProdName = t.rawProductName;
+            
+            const matchedKey = findMatchingProduct(cleanProdName);
+            
+            if (!matchedKey) {
+                return;
+            }
+
+            const rule = COMMISSION_RULES[matchedKey];
+            const transRewardPool = rule.rewardPool * qty;
+            const transMgtPool = rule.mgtPool * qty;
+
+            recapData.totalReward += transRewardPool;
+            recapData.totalMgt += transMgtPool;
+
+            const sellerId = t.memberId;
+            const seller = getMember(sellerId);
+            
+            const lvl0Reward = rule.levels[0] * qty;
+            const lvl0Mgt = transMgtPool;
+            seller.reward += lvl0Reward;
+            seller.mgt += lvl0Mgt;
+            seller.total += lvl0Reward + lvl0Mgt;
+            seller.levelDetails[0] = (seller.levelDetails[0] || 0) + lvl0Reward + lvl0Mgt;
+
+            const maxLevels = rule.levels.length;
+            let currentUplineId = membersMap.get(sellerId)?.upline;
+
+            for (let lvl = 1; lvl < maxLevels; lvl++) {
+                const amount = rule.levels[lvl] * qty;
+                
+                if (currentUplineId && membersMap.has(currentUplineId)) {
+                    const upline = getMember(currentUplineId);
+                    upline.reward += amount;
+                    upline.total += amount;
+                    upline.levelDetails[lvl] = (upline.levelDetails[lvl] || 0) + amount;
+                    
+                    const nextMember = membersMap.get(currentUplineId);
+                    currentUplineId = nextMember ? nextMember.upline : null;
+                } else {
+                    recapData.totalBreakage += amount;
+                }
+            }
+        });
+
+        if (recapData.totalBreakage > 0) {
             recapData.details.set('BREAKAGE_COMPANY', {
                 id: 'PERUSAHAAN',
                 name: 'PERUSAHAAN (Sisa Alokasi)',
-                reward: 0,
+                reward: recapData.totalBreakage,
                 mgt: 0,
                 total: recapData.totalBreakage,
                 isBreakage: true
             });
+        }
 
-            const sortedMembers = Array.from(recapData.details.values()).sort((a, b) => {
-                if (a.isBreakage) return 1;
-                if (b.isBreakage) return -1;
-                return b.total - a.total;
-            });
+        const sortedMembers = Array.from(recapData.details.values()).sort((a, b) => {
+            if (a.isBreakage) return 1;
+            if (b.isBreakage) return -1;
+            return b.total - a.total;
+        });
 
-            const grandTotalValue = recapData.totalReward + recapData.totalMgt;
+        const grandTotalValue = recapData.totalReward + recapData.totalMgt;
 
-            const html = `
-                <h2>📊 Rekapitulasi Global (Reward vs Management)</h2>
-                <div class="grid-dashboard" style="margin-top:20px;">
-                    <div class="stat-card" style="border-left: 4px solid var(--color-primary);">
-                        <div class="stat-label">Total Omset</div>
-                        <div class="stat-value">${recapData.totalOmset.toLocaleString('id-ID')}</div>
-                    </div>
-                    <div class="stat-card" style="border-left: 4px solid var(--color-success);">
-                        <div class="stat-label">Total Reward Jaringan</div>
-                        <div class="stat-value" style="color:var(--color-success);">${recapData.totalReward.toLocaleString('id-ID')}</div>
-                        <small style="color:#64748b;">Terbagi ke Members</small>
-                    </div>
-                    <div class="stat-card" style="border-left: 4px solid var(--color-warning);">
-                        <div class="stat-label">Total Management Pool</div>
-                        <div class="stat-value" style="color:var(--color-warning);">${recapData.totalMgt.toLocaleString('id-ID')}</div>
-                        <small style="color:#64748b;">Alokasi Khusus</small>
-                    </div>
-                    <div class="stat-card" style="border-left: 4px solid var(--color-breakage);">
-                        <div class="stat-label">Sisa Alokasi</div>
-                        <div class="stat-value" style="color:var(--color-breakage);">${recapData.totalBreakage.toLocaleString('id-ID')}</div>
-                        <small style="color:#64748b;">Upline Tidak Ada</small>
-                    </div>
+        let html = `
+            <h2>📊 Rekapitulasi Global (Reward vs Management)</h2>
+            
+            <!-- FILTER TANGGAL -->
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header"><span class="card-title">Filter Periode Transaksi</span></div>
+                <div class="filter-bar no-print" style="padding:16px;">
+                    <input type="date" id="recapDateFrom" class="filter-input" placeholder="Dari Tanggal" value="${recapFilterState.dateFrom}">
+                    <input type="date" id="recapDateTo" class="filter-input" placeholder="Sampai Tanggal" value="${recapFilterState.dateTo}">
+                    <button class="btn btn-primary" onclick="applyRecapFilter()">Terapkan</button>
+                    <button class="btn" style="background:#e2e8f0;" onclick="resetRecapFilter()">Reset</button>
                 </div>
-
-                <!-- FILTER TANGGAL DITAMBAHKAN DI SINI -->
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-header"><span class="card-title">Filter Periode Omset</span></div>
-                    <div class="filter-bar no-print" style="padding:16px;">
-                        <input type="date" id="recapDateFrom" class="filter-input" placeholder="Dari Tanggal">
-                        <input type="date" id="recapDateTo" class="filter-input" placeholder="Sampai Tanggal">
-                        <button class="btn btn-primary" onclick="applyRecapDateFilter()">Terapkan Filter</button>
-                        <button class="btn" style="background:#e2e8f0;" onclick="resetRecapDateFilter()">Reset</button>
-                    </div>
+            </div>
+            
+            <div class="grid-dashboard" style="margin-top:20px;">
+                <div class="stat-card omset-card">
+                    <div class="stat-label">Total Omset (Gabungan)</div>
+                    <div class="stat-value">Rp ${recapData.totalOmset.toLocaleString('id-ID')}</div>
+                    <small style="color:rgba(255,255,255,0.8);">Dari ${filteredTransactions.length} transaksi</small>
                 </div>
+                <div class="stat-card" style="border-left: 4px solid var(--color-success);">
+                    <div class="stat-label">Total Reward Jaringan</div>
+                    <div class="stat-value" style="color:var(--color-success);">${recapData.totalReward.toLocaleString('id-ID')}</div>
+                    <small style="color:#64748b;">Terbagi ke Members</small>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--color-warning);">
+                    <div class="stat-label">Total Management Pool</div>
+                    <div class="stat-value" style="color:var(--color-warning);">${recapData.totalMgt.toLocaleString('id-ID')}</div>
+                    <small style="color:#64748b;">Alokasi Khusus</small>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--color-breakage);">
+                    <div class="stat-label">Sisa Alokasi</div>
+                    <div class="stat-value" style="color:var(--color-breakage);">${recapData.totalBreakage.toLocaleString('id-ID')}</div>
+                    <small style="color:#64748b;">Upline Tidak Ada</small>
+                </div>
+            </div>
 
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-header">
-                        <span class="card-title">Detail Per Member & Perusahaan</span>
-                        <button class="btn btn-print btn-sm" onclick="window.print()">Cetak</button>
-                    </div>
-                    <div class="table-container">
-                        <table class="recap-table">
-                            <thead>
-                                <tr>
-                                    <th style="min-width:150px;">Nama Member</th>
-                                    <th>ID</th>
-                                    <th style="text-align:right;">Total Reward</th>
-                                    <th style="text-align:right;">Total Management</th>
-                                    <th style="text-align:right;">Total Terima</th>
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header">
+                    <span class="card-title">Detail Per Member & Perusahaan</span>
+                    <button class="btn btn-print btn-sm" onclick="window.print()">🖨️ Cetak</button>
+                </div>
+                <div class="table-container">
+                    <table class="recap-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:150px;">Nama Member</th>
+                                <th>ID</th>
+                                <th style="text-align:right;">Total Reward</th>
+                                <th style="text-align:right;">Total Management</th>
+                                <th style="text-align:right;">Total Terima</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sortedMembers.map(m => `
+                                <tr${m.isBreakage ? ' class="row-breakage"' : ''}>
+                                    <td><strong>${m.name}</strong></td>
+                                    <td>${m.id}</td>
+                                    <td style="text-align:right;" class="${m.isBreakage ? 'val-breakage' : 'val-reward'}">${m.reward.toLocaleString('id-ID')}</td>
+                                    <td style="text-align:right;" class="${m.isBreakage ? 'val-breakage' : 'val-mgt'}">${m.mgt.toLocaleString('id-ID')}</td>
+                                    <td style="text-align:right;" class="${m.isBreakage ? 'val-breakage' : 'val-total'}">${m.total.toLocaleString('id-ID')}</td>
                                 </tr>
-                            </thead>
+                            `).join('')}
+                        </tbody>
+                        <tfoot style="background:#f1f5f9; font-weight:bold;">
+                            <tr>
+                                <td colspan="2" style="text-align:right;">GRAND TOTAL</td>
+                                <td style="text-align:right;" class="val-reward">${recapData.totalReward.toLocaleString('id-ID')}</td>
+                                <td style="text-align:right;" class="val-mgt">${recapData.totalMgt.toLocaleString('id-ID')}</td>
+                                <td style="text-align:right;" class="val-total">${grandTotalValue.toLocaleString('id-ID')}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div style="padding:16px; font-size:12px; color:#64748b; background:#f8fafc; border-radius:8px; margin-top:16px;">
+                <strong>Catatan:</strong>
+                <ul style="margin-left:20px; margin-top:8px;">
+                    <li><strong>Total Omset (Gabungan)</strong> adalah hasil penjumlahan omset dari setiap stokis</li>
+                    <li>Omset per stokis dapat dilihat di menu <strong>Editor Stokis → 💵 Omset Stokis</strong></li>
+                    <li>Grand Total = Total Reward Pool + Total Management Pool</li>
+                    <li>Sisa Alokasi (Breakage) adalah bagian dari Reward Pool yang tidak terdistribusi ke upline</li>
+                    <li>Gunakan filter tanggal untuk melihat rekapitulasi periode tertentu</li>
+                </ul>
+            </div>
+        `;
+        
+        document.getElementById('contentArea').innerHTML = html;
+    }
+
+    window.applyRecapFilter = () => {
+        recapFilterState.dateFrom = document.getElementById('recapDateFrom').value;
+        recapFilterState.dateTo = document.getElementById('recapDateTo').value;
+        
+        fetchGlobalData().then(data => {
+            if (data) {
+                renderReportRecapitulasi(recapFilterState.allTransactions, data);
+            }
+        });
+    };
+
+    window.resetRecapFilter = () => {
+        recapFilterState.dateFrom = '';
+        recapFilterState.dateTo = '';
+        document.getElementById('recapDateFrom').value = '';
+        document.getElementById('recapDateTo').value = '';
+        
+        fetchGlobalData().then(data => {
+            if (data) {
+                renderReportRecapitulasi(recapFilterState.allTransactions, data);
+            }
+        });
+    };
+
+    function renderTabContent(t) {
+        const data = stokisCache[currentStokisId];
+        if (!data) return;
+
+        if (t === 'omset') {
+            renderOmsetStokis();
+        } else if (t === 'profile') {
+            const p = data.profile || {};
+            document.getElementById('contentArea').innerHTML = `
+                <h2>👤 Profil ${currentStokisId}</h2>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><span>Edit Identitas</span></div>
+                    <div style="padding:24px;">
+                        <div class="form-group"><label>Nama Koordinat</label><input id="pkoord" value="${p.namaKoordinat || ''}"></div>
+                        <div class="form-group"><label>Kode</label><input id="pkode" value="${p.kodeKoordinat || ''}"></div>
+                        <div class="form-group"><label>Nama Stokis</label><input id="pnama" value="${p.namaStokis || ''}"></div>
+                        <div class="form-group"><label>Alamat</label><textarea id="palamat">${p.alamatStokis || ''}</textarea></div>
+                        <div class="form-group"><label>WA</label><input id="pwa" value="${p.waNumber || ''}"></div>
+                        <button class="btn btn-primary" onclick="saveProfile()">💾 Simpan</button>
+                    </div>
+                </div>
+            `;
+        } else if (t === 'products') {
+            document.getElementById('contentArea').innerHTML = `
+                <h2>📦 Produk ${currentStokisId}</h2>
+                <button class="btn btn-primary" style="margin:10px 0;" onclick="addProductModal()">➕ Tambah</button>
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Nama</th><th>Poin</th><th>Stok</th><th>Aksi</th></tr></thead>
                             <tbody>
-                                ${sortedMembers.map(m => `
-                                    <tr ${m.isBreakage ? 'class="row-breakage"' : ''}>
-                                        <td><strong>${m.name}</strong></td>
-                                        <td>${m.id}</td>
-                                        <td style="text-align:right;" class="${m.isBreakage ? 'val-breakage' : 'val-reward'}">${m.reward.toLocaleString('id-ID')}</td>
-                                        <td style="text-align:right;" class="${m.isBreakage ? 'val-breakage' : 'val-mgt'}">${m.mgt.toLocaleString('id-ID')}</td>
-                                        <td style="text-align:right;" class="${m.isBreakage ? 'val-breakage' : 'val-total'}">${m.total.toLocaleString('id-ID')}</td>
+                                ${(data.products || []).map((p, i) => `
+                                    <tr>
+                                        <td>${p.name}</td>
+                                        <td>${parseFloat(p.point || 0).toFixed(2)}</td>
+                                        <td>${p.pembelian || 0}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" onclick="editProduct(${i})">✏️ Edit</button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteItem('products',${i})">🗑️ Hapus</button>
+                                        </td>
                                     </tr>
                                 `).join('')}
                             </tbody>
-                            <tfoot style="background:#f1f5f9; font-weight:bold;">
-                                <tr>
-                                    <td colspan="2" style="text-align:right;">GRAND TOTAL</td>
-                                    <td style="text-align:right;" class="val-reward">${recapData.totalReward.toLocaleString('id-ID')}</td>
-                                    <td style="text-align:right;" class="val-mgt">${recapData.totalMgt.toLocaleString('id-ID')}</td>
-                                    <td style="text-align:right;" class="val-total">${grandTotalValue.toLocaleString('id-ID')}</td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
-                <div style="padding:16px; font-size:12px; color:#64748b;">
-                    <strong>Grand Total</strong> = Total Reward Pool + Total Management Pool.<br>
-                    <strong>Sisa Alokasi (Breakage)</strong> adalah bagian dari Reward Pool yang tidak terdistribusi ke upline karena tidak ada upline.
-                </div>
             `;
-
-            document.getElementById('contentArea').innerHTML = html;
-        }
-
-        // Fungsi untuk apply filter tanggal pada rekapitulasi
-        window.applyRecapDateFilter = async () => {
-            const fromInput = document.getElementById('recapDateFrom')?.value || '';
-            const toInput = document.getElementById('recapDateTo')?.value || '';
-
-            const allTransactions = await fetchGlobalTransactionList();
-            if (!allTransactions) return;
-
-            let filteredTransactions = allTransactions;
-            if (fromInput || toInput) {
-                filteredTransactions = allTransactions.filter(t => {
-                    const matchDateFrom = !fromInput || t.date >= fromInput;
-                    const matchDateTo = !toInput || t.date <= toInput;
-                    return matchDateFrom && matchDateTo;
-                });
-            }
-
-            const data = await fetchGlobalData();
-            if (!data) return;
-
-            renderReportRecapitulasi(filteredTransactions, data.membersMap);
-        };
-
-        // Fungsi untuk reset filter tanggal
-        window.resetRecapDateFilter = async () => {
-            document.getElementById('recapDateFrom').value = '';
-            document.getElementById('recapDateTo').value = '';
-            
-            const allTransactions = await fetchGlobalTransactionList();
-            const data = await fetchGlobalData();
-            if (allTransactions && data) {
-                renderReportRecapitulasi(allTransactions, data.membersMap);
-            }
-        };
-
-        function renderTabContent(t) {
-            const data = stokisCache[currentStokisId];
-            if (!data) return;
-
-            if (t === 'profile') {
-                const p = data.profile || {};
-                document.getElementById('contentArea').innerHTML = `
-                    <h2>Profil ${currentStokisId}</h2>
-                    <div class="card" style="margin-top:16px;">
-                        <div class="card-header"><span>Edit Identitas</span></div>
-                        <div style="padding:24px;">
-                            <div class="form-group"><label>Nama Koordinat</label><input id="pkoord" value="${p.namaKoordinat || ''}"></div>
-                            <div class="form-group"><label>Kode</label><input id="pkode" value="${p.kodeKoordinat || ''}"></div>
-                            <div class="form-group"><label>Nama Stokis</label><input id="pnama" value="${p.namaStokis || ''}"></div>
-                            <div class="form-group"><label>Alamat</label><textarea id="palamat">${p.alamatStokis || ''}</textarea></div>
-                            <div class="form-group"><label>WA</label><input id="pwa" value="${p.waNumber || ''}"></div>
-                            <button class="btn btn-primary" onclick="saveProfile()">Simpan</button>
-                        </div>
-                    </div>
-                `;
-            } else if (t === 'products') {
-                document.getElementById('contentArea').innerHTML = `
-                    <h2>Produk ${currentStokisId}</h2>
-                    <button class="btn btn-primary" style="margin:10px 0;" onclick="addProductModal()">Tambah</button>
-                    <div class="card">
-                        <div class="table-container">
-                            <table>
-                                <thead><tr><th>Nama</th><th>Poin</th><th>Stok</th><th>Aksi</th></tr></thead>
-                                <tbody>
-                                    ${(data.products || []).map((p, i) => `
-                                        <tr>
-                                            <td>${p.name}</td>
-                                            <td>${parseFloat(p.point || 0).toFixed(2)}</td>
-                                            <td>${p.pembelian || 0}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary" onclick="editProduct(${i})">Edit</button>
-                                                <button class="btn btn-sm btn-danger" onclick="deleteItem('products',${i})">Hapus</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            } else if (t === 'members') {
-                document.getElementById('contentArea').innerHTML = `
-                    <h2>Member ${currentStokisId}</h2>
-                    <button class="btn btn-primary" style="margin:10px 0;" onclick="addMemberModal()">Tambah</button>
-                    <div class="card">
-                        <div class="table-container">
-                            <table>
-                                <thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Poin</th><th>Aksi</th></tr></thead>
-                                <tbody>
-                                    ${(data.members || []).map((m, i) => `
-                                        <tr>
-                                            <td>${m.id}</td>
-                                            <td>${m.name}</td>
-                                            <td>${m.upline || '-'}</td>
-                                            <td>${parseFloat(m.totalPoints || 0).toFixed(2)}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary" onclick="editMember(${i})">Edit</button>
-                                                <button class="btn btn-sm btn-danger" onclick="deleteItem('members',${i})">Hapus</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            } else if (t === 'transactions') {
-                transactionState.data = data.transactions || [];
-                transactionState.page = 1;
-                renderTransactionTable();
-            }
-        }
-
-        function renderTransactionTable() {
-            const limit = 10;
-            const totalPages = Math.ceil(transactionState.data.length / limit) || 1;
-            const start = (transactionState.page - 1) * limit;
-            const pagedData = transactionState.data.slice(start, start + limit);
-
-            const html = `
-                <h2>Transaksi ${currentStokisId}</h2>
-                <div class="card" style="margin-top:20px;">
+        } else if (t === 'members') {
+            document.getElementById('contentArea').innerHTML = `
+                <h2>👥 Member ${currentStokisId}</h2>
+                <button class="btn btn-primary" style="margin:10px 0;" onclick="addMemberModal()">➕ Tambah</button>
+                <div class="card">
                     <div class="table-container">
                         <table>
-                            <thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>ID</th><th>Nama</th><th>Upline</th><th>Poin</th><th>Aksi</th></tr></thead>
                             <tbody>
-                                ${pagedData.length === 0 ? '<tr><td colspan="7" class="empty-state">Tidak ada transaksi</td></tr>' :
-                                    pagedData.map((t, i) => `
-                                        <tr>
-                                            <td>${t.date}</td>
-                                            <td>${t.code || t.id || 'N/A'}</td>
-                                            <td>${t.memberId}</td>
-                                            <td>${cleanProductName(t.productCode, t.productName)}</td>
-                                            <td>${t.qty}</td>
-                                            <td>${parseFloat(t.totalPoints || 0).toFixed(2)}</td>
-                                            <td><button class="btn btn-sm btn-danger" onclick="deleteItem('transactions',${start + i})">Batal</button></td>
-                                        </tr>
-                                    `).join('')
-                                }
+                                ${(data.members || []).map((m, i) => `
+                                    <tr>
+                                        <td>${m.id}</td>
+                                        <td>${m.name}</td>
+                                        <td>${m.upline || '-'}</td>
+                                        <td>${parseFloat(m.totalPoints || 0).toFixed(2)}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" onclick="editMember(${i})">✏️ Edit</button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteItem('members',${i})">🗑️ Hapus</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="pagination-bar no-print">
-                    <span>Hal ${transactionState.page} dari ${totalPages} (${transactionState.data.length} total)</span>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-sm" ${transactionState.page === 1 ? 'disabled' : ''} onclick="transactionState.page--; renderTransactionTable();">Prev</button>
-                        <button class="btn btn-sm" ${transactionState.page === totalPages ? 'disabled' : ''} onclick="transactionState.page++; renderTransactionTable();">Next</button>
-                    </div>
-                </div>
             `;
+        } else if (t === 'transactions') {
+            transactionState.data = data.transactions || [];
+            transactionState.page = 1;
+            renderTransactionTable();
+        }
+    }
 
-            document.getElementById('contentArea').innerHTML = html;
+    function renderTransactionTable() {
+        const limit = 10;
+        const totalPages = Math.ceil(transactionState.data.length / limit) || 1;
+        const start = (transactionState.page - 1) * limit;
+        const pagedData = transactionState.data.slice(start, start + limit);
+
+        const html = `
+            <h2>💰 Transaksi ${currentStokisId}</h2>
+            <div class="card" style="margin-top:20px;">
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Tgl</th><th>Kode</th><th>Member</th><th>Produk</th><th>Jml</th><th>Poin</th><th>Aksi</th></tr></thead>
+                        <tbody>
+                            ${pagedData.length === 0 ? 
+                                '<tr><td colspan="7" class="empty-state">Tidak ada transaksi</td></tr>' : 
+                                pagedData.map((t, i) => `
+                                    <tr>
+                                        <td>${t.date}</td>
+                                        <td>${t.code || t.id || 'NA'}</td>
+                                        <td>${t.memberId}</td>
+                                        <td>${cleanProductName(t.productCode, t.productName)}</td>
+                                        <td>${t.qty}</td>
+                                        <td>${parseFloat(t.totalPoints || 0).toFixed(2)}</td>
+                                        <td><button class="btn btn-sm btn-danger" onclick="deleteItem('transactions',${start + i})">🗑️ Batal</button></td>
+                                    </tr>
+                                `).join('')
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pagination-bar no-print">
+                <span>Hal ${transactionState.page} dari ${totalPages} (${transactionState.data.length} total)</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-sm" ${transactionState.page === 1 ? 'disabled' : ''} onclick="transactionState.page--; renderTransactionTable();">‹ Prev</button>
+                    <button class="btn btn-sm" ${transactionState.page === totalPages ? 'disabled' : ''} onclick="transactionState.page++; renderTransactionTable();">Next ›</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('contentArea').innerHTML = html;
+    }
+
+    async function renderUsersManagement() {
+        const content = document.getElementById('contentArea');
+        content.innerHTML = `
+            <h2 style="margin-bottom: 24px;">👥 Manajemen Akun</h2>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Daftar Stokis</span>
+                    <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">➕ Buat</button>
+                </div>
+                <div class="table-container">
+                    <table id="usersTable">
+                        <thead><tr><th>Username</th><th>Pass</th><th>Nama</th><th>Aksi</th></tr></thead>
+                        <tbody><tr><td colspan="4">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+
+        const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
+        const tbody = document.querySelector('#usersTable tbody');
+        tbody.innerHTML = '';
+
+        if (stokisSnap.empty) {
+            tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Data kosong</td></tr>';
+            return;
         }
 
-        window.saveProfile = async () => {
-            if (!confirm('Simpan profil?')) return;
-            const newData = {
-                ...stokisCache[currentStokisId],
-                profile: {
-                    ...stokisCache[currentStokisId].profile,
-                    namaKoordinat: document.getElementById('pkoord').value,
-                    kodeKoordinat: document.getElementById('pkode').value,
-                    namaStokis: document.getElementById('pnama').value,
-                    alamatStokis: document.getElementById('palamat').value,
-                    waNumber: document.getElementById('pwa').value
+        for (const doc of stokisSnap.docs) {
+            const username = doc.id;
+            const data = doc.data();
+            const namaStokis = data.profile?.namaStokis || 'NA';
+            
+            let passDisplay = '<span style="color:#cbd5e1;">Belum diset</span>';
+            try {
+                const userDoc = await getDoc(doc(db, COLLECTION_USERS, username));
+                if (userDoc.exists()) {
+                    passDisplay = `<strong>${userDoc.data().password}</strong>`;
                 }
-            };
-            await saveData(newData);
-        };
+            } catch (e) {
+                console.error(e);
+            }
 
-        window.deleteItem = async (c, i) => {
-            if (!confirm('Hapus?')) return;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${username}</strong></td>
+                <td>${passDisplay}</td>
+                <td>${namaStokis}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="openEditUserModal('${username}')">✏️ Edit</button>
+                    <button class="btn btn-sm btn-primary" style="background:var(--color-success);" onclick="openMigrateModal('${username}')">📋 Copy</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteStokisData('${username}')">🗑️ Hapus</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    window.openEditUserModal = (u) => {
+        document.getElementById('modalTitle').textContent = `Edit Pass ${u}`;
+        document.getElementById('modalBody').innerHTML = '<div class="form-group"><label>New Pass</label><input id="newUserPass"></div>';
+        document.getElementById('modalActionBtn').onclick = async () => {
+            const p = document.getElementById('newUserPass').value.trim();
+            if (!p) return alert('Kosong');
+            await setDoc(doc(db, COLLECTION_USERS, u), { username: u, password: p, updatedAt: new Date() });
+            alert('✅ Disimpan');
+            closeModal();
+            renderUsersManagement();
+        };
+        document.getElementById('genericModal').classList.add('active');
+    };
+
+    window.deleteStokisData = async (u) => {
+        if (!confirm(`Hapus data ${u}?`)) return;
+        try {
+            await deleteDoc(doc(db, COLLECTION_STOKIS, u));
+            await deleteDoc(doc(db, COLLECTION_USERS, u));
+            alert('✅ Dihapus');
+            renderUsersManagement();
+            loadStokisList();
+        } catch (e) {
+            alert('Gagal: ' + e.message);
+        }
+    };
+
+    window.openMigrateModal = (d) => {
+        document.getElementById('migrateModal').classList.add('active');
+        const s = document.getElementById('migrateSource');
+        const dest = document.getElementById('migrateDest');
+        s.innerHTML = '<option value="">-- Sumber --</option>';
+        dest.innerHTML = '<option value="">-- Tujuan --</option>';
+        
+        document.querySelectorAll('#stokisSelector option').forEach(opt => {
+            if (opt.value) {
+                s.innerHTML += `<option value="${opt.value}" ${opt.value === d ? 'selected' : ''}>${opt.textContent}</option>`;
+                dest.innerHTML += `<option value="${opt.value}">${opt.textContent}</option>`;
+            }
+        });
+    };
+
+    window.closeMigrateModal = () => {
+        document.getElementById('migrateModal').classList.remove('active');
+    };
+
+    window.executeMigrate = async () => {
+        const s = document.getElementById('migrateSource').value;
+        const d = document.getElementById('migrateDest').value;
+        const o = document.getElementById('migrateOverwrite').checked;
+        
+        if (!s || !d) return alert('Pilih keduanya!');
+        if (s === d) return alert('Sama!');
+        
+        try {
+            const snap = await getDoc(doc(db, COLLECTION_STOKIS, s));
+            if (!snap.exists()) return alert('Sumber kosong');
+            const srcData = snap.data();
+            
+            const destSnap = await getDoc(doc(db, COLLECTION_STOKIS, d));
+            let newData;
+            if (o || !destSnap.exists()) {
+                newData = srcData;
+            } else {
+                const destData = destSnap.data();
+                newData = {
+                    profile: { ...destData.profile, ...srcData.profile },
+                    products: [...(destData.products || []), ...(srcData.products || [])],
+                    members: [...(destData.members || []), ...(srcData.members || [])],
+                    transactions: [...(destData.transactions || []), ...(srcData.transactions || [])]
+                };
+            }
+            
+            await setDoc(doc(db, COLLECTION_STOKIS, d), newData, { merge: true });
+            alert('✅ Berhasil');
+            closeMigrateModal();
+            if (currentStokisId === d) {
+                loadSelectedStokis(d);
+            }
+        } catch (e) {
+            alert('Gagal: ' + e.message);
+        }
+    };
+
+    window.saveProfile = async () => {
+        if (!confirm('Simpan profil?')) return;
+        const newData = {
+            ...stokisCache[currentStokisId],
+            profile: {
+                ...stokisCache[currentStokisId].profile,
+                namaKoordinat: document.getElementById('pkoord').value,
+                kodeKoordinat: document.getElementById('pkode').value,
+                namaStokis: document.getElementById('pnama').value,
+                alamatStokis: document.getElementById('palamat').value,
+                waNumber: document.getElementById('pwa').value
+            }
+        };
+        await saveData(newData);
+    };
+
+    window.deleteItem = async (c, i) => {
+        if (!confirm('Hapus?')) return;
+        const d = stokisCache[currentStokisId];
+        d[c].splice(i, 1);
+        await saveData(d);
+    };
+
+    window.addProductModal = () => {
+        showModalForm('Tambah Produk', `
+            <input id="en" placeholder="Nama" style="width:100%;margin-bottom:10px;">
+            <input id="ep" type="number" step="0.01" placeholder="Poin" style="width:100%;margin-bottom:10px;">
+            <input id="es" type="number" placeholder="Stok" style="width:100%;">
+        `, async () => {
+            const n = document.getElementById('en').value;
+            const p = parseFloat(document.getElementById('ep').value);
+            const s = parseInt(document.getElementById('es').value);
+            if (!n || isNaN(p)) return alert('Lengkapi');
+            
             const d = stokisCache[currentStokisId];
-            d[c].splice(i, 1);
+            if (!d.products) d.products = [];
+            d.products.push({ code: `PROD-${Date.now()}`, name: n, point: p, pembelian: s });
             await saveData(d);
-        };
+        });
+    };
 
-        window.addProductModal = () => {
-            showModalForm('Tambah Produk', `
-                <input id="en" placeholder="Nama" style="width:100%;margin-bottom:10px;">
-                <input id="ep" type="number" step="0.01" placeholder="Poin" style="width:100%;margin-bottom:10px;">
-                <input id="es" type="number" placeholder="Stok" style="width:100%;">
-            `, async () => {
-                const n = document.getElementById('en').value, p = parseFloat(document.getElementById('ep').value), s = parseInt(document.getElementById('es').value);
-                if (!n || isNaN(p)) return alert('Lengkapi');
-                const d = stokisCache[currentStokisId];
-                if (!d.products) d.products = [];
-                d.products.push({ code: `PROD-${Date.now()}`, name: n, point: p, pembelian: s });
-                await saveData(d);
-            });
-        };
+    window.addMemberModal = () => {
+        showModalForm('Tambah Member', `
+            <input id="mid" placeholder="ID" style="width:100%;margin-bottom:10px;">
+            <input id="mn" placeholder="Nama" style="width:100%;margin-bottom:10px;">
+            <input id="mu" placeholder="Upline ID" style="width:100%;">
+        `, async () => {
+            const i = document.getElementById('mid').value;
+            const n = document.getElementById('mn').value;
+            const u = document.getElementById('mu').value;
+            if (!i) return alert('ID Wajib');
+            
+            const d = stokisCache[currentStokisId];
+            if (!d.members) d.members = [];
+            d.members.push({ id: i, name: n, upline: u, totalPoints: 0 });
+            await saveData(d);
+        });
+    };
 
-        window.addMemberModal = () => {
-            showModalForm('Tambah Member', `
-                <input id="mid" placeholder="ID" style="width:100%;margin-bottom:10px;">
-                <input id="mn" placeholder="Nama" style="width:100%;margin-bottom:10px;">
-                <input id="mu" placeholder="Upline ID" style="width:100%;">
-            `, async () => {
-                const i = document.getElementById('mid').value, n = document.getElementById('mn').value, u = document.getElementById('mu').value;
-                if (!i) return alert('ID Wajib');
-                const d = stokisCache[currentStokisId];
-                if (!d.members) d.members = [];
-                d.members.push({ id: i, name: n, upline: u, totalPoints: 0 });
-                await saveData(d);
-            });
-        };
+    function showModalForm(title, body, onConfirm) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalBody').innerHTML = body;
+        document.getElementById('modalActionBtn').onclick = onConfirm;
+        document.getElementById('genericModal').classList.add('active');
+    }
 
-        function showModalForm(title, body, onConfirm) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalBody').innerHTML = body;
-            document.getElementById('modalActionBtn').onclick = onConfirm;
-            document.getElementById('genericModal').classList.add('active');
+    window.closeModal = () => {
+        document.getElementById('genericModal').classList.remove('active');
+    };
+
+    async function saveData(data) {
+        try {
+            await setDoc(doc(db, COLLECTION_STOKIS, currentStokisId), data, { merge: true });
+            alert('✅ Tersimpan');
+        } catch (e) {
+            alert('Gagal: ' + e.message);
         }
+    }
 
-        window.closeModal = () => {
-            document.getElementById('genericModal').classList.remove('active');
-        };
+    window.editProduct = (i) => {
+        const p = stokisCache[currentStokisId].products[i];
+        showModalForm('Edit Produk', `
+            <input id="en" value="${p.name}" style="width:100%;margin-bottom:10px;">
+            <input id="ep" type="number" step="0.01" value="${p.point}" style="width:100%;margin-bottom:10px;">
+            <input id="es" type="number" value="${p.pembelian}" style="width:100%;">
+        `, async () => {
+            const n = document.getElementById('en').value;
+            const p = parseFloat(document.getElementById('ep').value);
+            const s = parseInt(document.getElementById('es').value);
+            if (!n || isNaN(p)) return alert('Lengkapi');
+            
+            const d = stokisCache[currentStokisId];
+            d.products[i] = { ...d.products[i], name: n, point: p, pembelian: s };
+            await saveData(d);
+        });
+    };
 
-        async function saveData(data) {
-            try {
-                await setDoc(doc(db, COLLECTION_STOKIS, currentStokisId), data, { merge: true });
-                alert('✅ Tersimpan');
-            } catch (e) {
-                alert('Gagal: ' + e.message);
-            }
-        }
+    window.editMember = (i) => {
+        const m = stokisCache[currentStokisId].members[i];
+        showModalForm('Edit Member', `
+            <input id="mid" value="${m.id}" readonly style="width:100%;margin-bottom:10px;background:#f1f5f9;">
+            <input id="mn" value="${m.name}" style="width:100%;margin-bottom:10px;">
+            <input id="mu" value="${m.upline}" placeholder="Upline ID" style="width:100%;">
+        `, async () => {
+            const n = document.getElementById('mn').value;
+            const u = document.getElementById('mu').value;
+            
+            const d = stokisCache[currentStokisId];
+            d.members[i] = { ...d.members[i], name: n, upline: u };
+            await saveData(d);
+        });
+    };
+</script>
 
-        window.editProduct = (i) => {
-            const p = stokisCache[currentStokisId].products[i];
-            showModalForm('Edit Produk', `
-                <input id="en" value="${p.name}" style="width:100%;margin-bottom:10px;">
-                <input id="ep" type="number" step="0.01" value="${p.point}" style="width:100%;margin-bottom:10px;">
-                <input id="es" type="number" value="${p.pembelian}" style="width:100%;">
-            `, async () => {
-                const n = document.getElementById('en').value, p = parseFloat(document.getElementById('ep').value), s = parseInt(document.getElementById('es').value);
-                if (!n || isNaN(p)) return alert('Lengkapi');
-                const d = stokisCache[currentStokisId];
-                d.products[i] = { ...d.products[i], name: n, point: p, pembelian: s };
-                await saveData(d);
-            });
-        };
-
-        window.editMember = (i) => {
-            const m = stokisCache[currentStokisId].members[i];
-            showModalForm('Edit Member', `
-                <input id="mid" value="${m.id}" readonly style="width:100%;margin-bottom:10px;background:#f1f5f9;">
-                <input id="mn" value="${m.name}" style="width:100%;margin-bottom:10px;">
-                <input id="mu" value="${m.upline || ''}" placeholder="Upline ID" style="width:100%;">
-            `, async () => {
-                const n = document.getElementById('mn').value, u = document.getElementById('mu').value;
-                const d = stokisCache[currentStokisId];
-                d.members[i] = { ...d.members[i], name: n, upline: u };
-                await saveData(d);
-            });
-        };
-
-        async function renderUsersManagement() {
-            const content = document.getElementById('contentArea');
-            content.innerHTML = `
-                <h2 style="margin-bottom: 24px;">Manajemen Akun</h2>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Daftar Stokis</span>
-                        <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">➕ Buat</button>
-                    </div>
-                    <div class="table-container">
-                        <table id="usersTable">
-                            <thead><tr><th>Username</th><th>Pass</th><th>Nama</th><th>Aksi</th></tr></thead>
-                            <tbody><tr><td colspan="4">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-
-            const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
-            const tbody = document.querySelector('#usersTable tbody');
-            tbody.innerHTML = '';
-
-            if (stokisSnap.empty) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Data kosong</td></tr>';
-                return;
-            }
-
-            for (const doc of stokisSnap.docs) {
-                const username = doc.id;
-                const data = doc.data();
-                const namaStokis = data.profile?.namaStokis || 'N/A';
-
-                let passDisplay = '<span style="color:#cbd5e1;">Belum diset</span>';
-                try {
-                    const userDoc = await getDoc(doc(db, COLLECTION_USERS, username));
-                    if (userDoc.exists()) {
-                        passDisplay = `<strong>${userDoc.data().password}</strong>`;
-                    }
-                } catch (e) { }
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${username}</strong></td>
-                    <td>${passDisplay}</td>
-                    <td>${namaStokis}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="openEditUserModal('${username}')">Edit</button>
-                        <button class="btn btn-sm btn-primary" style="background:var(--color-success);" onclick="openMigrateModal('${username}')">Copy</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteStokisData('${username}')">Hapus</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            }
-        }
-
-        window.openEditUserModal = (u) => {
-            document.getElementById('modalTitle').textContent = 'Edit Pass ' + u;
-            document.getElementById('modalBody').innerHTML = `<div class="form-group"><label>New Pass</label><input id="newUserPass"></div>`;
-            document.getElementById('modalActionBtn').onclick = async () => {
-                const p = document.getElementById('newUserPass').value.trim();
-                if (!p) return alert('Kosong');
-                await setDoc(doc(db, COLLECTION_USERS, u), { username: u, password: p, updatedAt: new Date() });
-                alert('✅ Disimpan');
-                closeModal();
-                renderUsersManagement();
-            };
-            document.getElementById('genericModal').classList.add('active');
-        };
-
-        window.deleteStokisData = async (u) => {
-            if (!confirm(`Hapus data ${u}?`)) return;
-            try {
-                await deleteDoc(doc(db, COLLECTION_STOKIS, u));
-                await deleteDoc(doc(db, COLLECTION_USERS, u));
-                alert('✅ Dihapus');
-                renderUsersManagement();
-                loadStokisList();
-            } catch (e) {
-                alert('Gagal: ' + e.message);
-            }
-        };
-
-        window.openMigrateModal = (d) => {
-            document.getElementById('migrateModal').classList.add('active');
-            const s = document.getElementById('migrateSource');
-            const dest = document.getElementById('migrateDest');
-            s.innerHTML = '<option value="">-- Sumber --</option>';
-            dest.innerHTML = '<option value="">-- Tujuan --</option>';
-
-            document.querySelectorAll('#stokisSelector option').forEach(opt => {
-                if (opt.value) {
-                    s.innerHTML += `<option value="${opt.value}" ${opt.value === d ? 'selected' : ''}>${opt.textContent}</option>`;
-                    dest.innerHTML += `<option value="${opt.value}">${opt.textContent}</option>`;
-                }
-            });
-        };
-
-        window.closeMigrateModal = () => {
-            document.getElementById('migrateModal').classList.remove('active');
-        };
-
-        window.executeMigrate = async () => {
-            const s = document.getElementById('migrateSource').value;
-            const d = document.getElementById('migrateDest').value;
-            const o = document.getElementById('migrateOverwrite').checked;
-            if (!s || !d) return alert('Pilih keduanya!');
-            if (s === d) return alert('Sama!');
-
-            try {
-                const snap = await getDoc(doc(db, COLLECTION_STOKIS, s));
-                if (!snap.exists()) return alert('Sumber kosong');
-                const srcData = snap.data();
-
-                const destSnap = await getDoc(doc(db, COLLECTION_STOKIS, d));
-                let newData;
-                if (o || !destSnap.exists()) {
-                    newData = srcData;
-                } else {
-                    const destData = destSnap.data();
-                    newData = {
-                        profile: { ...destData.profile, ...srcData.profile },
-                        products: [...(destData.products || []), ...(srcData.products || [])],
-                        members: [...(destData.members || []), ...(srcData.members || [])],
-                        transactions: [...(destData.transactions || []), ...(srcData.transactions || [])]
-                    };
-                }
-
-                await setDoc(doc(db, COLLECTION_STOKIS, d), newData, { merge: true });
-                alert('✅ Berhasil');
-                closeMigrateModal();
-                if (currentStokisId === d) loadSelectedStokis(d);
-            } catch (e) {
-                alert('Gagal: ' + e.message);
-            }
-        };
-
-    </script>
 </body>
 </html>
