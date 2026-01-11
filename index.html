@@ -2813,6 +2813,65 @@
         }
     }
 
+    // FUNGSI TAMBAHAN UNTUK MEMBUAT USER BARU
+    window.openAddUserModal = () => {
+        document.getElementById('modalTitle').textContent = "Buat Akun Stokis Baru";
+        document.getElementById('modalBody').innerHTML = `
+            <div class="form-group">
+                <label>Username (ID Stokis)</label>
+                <input type="text" id="newStokisId" placeholder="Contoh: STK001">
+            </div>
+            <div class="form-group">
+                <label>Nama Stokis</label>
+                <input type="text" id="newStokisName" placeholder="Nama Lengkap">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="text" id="newStokisPass" placeholder="Password Login">
+            </div>
+        `;
+        
+        document.getElementById('modalActionBtn').onclick = async () => {
+            const username = document.getElementById('newStokisId').value.trim();
+            const nama = document.getElementById('newStokisName').value.trim();
+            const password = document.getElementById('newStokisPass').value.trim();
+
+            if(!username || !password) {
+                return alert('Username dan Password wajib diisi!');
+            }
+
+            try {
+                // 1. Simpan ke collection stokisusers (Login)
+                await setDoc(doc(db, COLLECTION_USERS, username), {
+                    username: username,
+                    password: password,
+                    createdAt: serverTimestamp()
+                });
+
+                // 2. Simpan struktur awal ke stokisDatas (Data Utama)
+                await setDoc(doc(db, COLLECTION_STOKIS, username), {
+                    profile: {
+                        namaStokis: nama || username,
+                        createdAt: serverTimestamp()
+                    },
+                    members: [],
+                    products: [],
+                    transactions: []
+                });
+
+                alert('✅ Akun Stokis berhasil dibuat!');
+                closeModal();
+                renderUsersManagement(); // Refresh tabel
+                loadStokisList(); // Refresh dropdown di sidebar
+            } catch (e) {
+                console.error(e);
+                alert('Gagal membuat akun: ' + e.message);
+            }
+        };
+
+        document.getElementById('genericModal').classList.add('active');
+    };
+
     window.openEditUserModal = (u) => {
         document.getElementById('modalTitle').textContent = `Edit Pass ${u}`;
         document.getElementById('modalBody').innerHTML = '<div class="form-group"><label>New Pass</label><input id="newUserPass"></div>';
