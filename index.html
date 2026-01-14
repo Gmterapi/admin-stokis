@@ -16,18 +16,9 @@
             --color-text: #0f172a;
             --color-text-light: #64748b;
             --color-border: #e2e8f0;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-error: #ef4444;
-            --color-breakage: #64748b;
-            --spacing-4: 4px;
-            --spacing-8: 8px;
-            --spacing-16: 16px;
-            --spacing-24: 24px;
-            --radius: 8px;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 8px;
         }
-
         * {
             margin: 0;
             padding: 0;
@@ -582,7 +573,7 @@
             }
         }
 
-        /* TREE STYLES */
+        /* TREE STYLES - FIXED SCROLL */
         .tree-container {
             padding: 20px;
             overflow: auto;
@@ -605,7 +596,7 @@
             padding-left: 0;
             display: flex;
             justify-content: center;
-            width: max-content;
+            width: max-content; /* FIX: Memaksa lebar ul mengikuti konten pohon */
             min-width: 100%;
         }
 
@@ -956,7 +947,7 @@
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('member-board')">📋 Papan Informasi Member</button></li>
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('settings')">⚙️ Pengaturan Sistem</button></li>
         </ul>
-        <div class="sidebar-footer">v2.8.0 Global ID<br>Fixed Pagination & Bonus</div>
+        <div class="sidebar-footer">v2.9.0 Global ID<br>Fixed Pagination & Bonus Sync</div>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -1220,7 +1211,7 @@
             }
         };
 
-        // ================== BONUS MEMBER LOGIC (PER STOKIS) ==================
+        // ================== BONUS MEMBER LOGIC ==================
         
         function renderBonusStokis() {
             const data = stokisCache[currentStokisId];
@@ -1347,10 +1338,26 @@
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        window.applyBonusFilter = () => {
+        window.applyBonusFilter = async () => {
+            // Ambil nilai tanggal
             window.bonusFilterState.dateFrom = document.getElementById('bonusDateFrom').value;
             window.bonusFilterState.dateTo = document.getElementById('bonusDateTo').value;
-            renderBonusStokis();
+            
+            // --- LOGIKA BARU: SIMPAN KE SYSTEM CONFIG ---
+            try {
+                // Pastikan 'doc' sudah diimport di paling atas script
+                await setDoc(doc(db, COLLECTION_SYSTEM_CONFIG, 'bonusFilter'), {
+                    dateFrom: window.bonusFilterState.dateFrom,
+                    dateTo: window.bonusFilterState.dateTo,
+                    updatedAt: new Date()
+                });
+                alert('✅ Filter diterapkan dan disinkronkan ke Member Area.');
+            } catch (e) {
+                console.error("Gagal menyimpan filter bonus:", e);
+            }
+            
+            // Update tampilan Admin
+            renderBonusStokis(); 
         };
 
         window.resetBonusFilter = () => {
@@ -1368,7 +1375,7 @@
             content.innerHTML = `
                 <h2>⚙️ Pengaturan Sistem</h2>
                 <div class="grid-dashboard" style="margin-top:20px;">
-                    <div class="stat-card"><div class="stat-label">Versi Sistem</div><div class="stat-value">2.8.0</div></div>
+                    <div class="stat-card"><div class="stat-label">Versi Sistem</div><div class="stat-value">2.9.0</div></div>
                     <div class="stat-card"><div class="stat-label">Status DB</div><div class="stat-value" style="color:var(--color-success); font-size:20px; margin-top:12px;">Firebase Connected</div></div>
                 </div>
 
@@ -1672,9 +1679,7 @@
                                         <span style="font-size:24px;">📎</span>
                                         <div>
                                             <div style="font-weight:600; font-size:14px; color:#0369a1;">
-                                                📄 ${a.fileName || 'File'}
-                                                <span style="font-size:11px; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-left:8px;">${a.fileType ? a.fileType.toUpperCase() : 'FILE'}</span>
-                                            </div>
+                                                📄 ${a.fileName} <span class="info-file-type">${a.fileType ? a.fileType.toUpperCase() : 'FILE'}</span></div>
                                             <div style="font-size:12px; color:#64748b;">Klik tombol untuk download</div>
                                         </div>
                                     </div>
@@ -1729,6 +1734,7 @@
                     });
                     alert('✅ Terkirim');
                     closeModal();
+                    renderAdminBoard();
                 } catch (e) {
                     alert(`Gagal: ${e.message}`);
                 }
@@ -1770,6 +1776,7 @@
                     });
                     alert('✅ Informasi member berhasil dibuat');
                     closeModal();
+                    renderMemberBoard();
                 } catch (e) {
                     alert(`Gagal: ${e.message}`);
                 }
@@ -1837,7 +1844,9 @@
                         }
                         const globalMember = result.membersMap.get(mId);
                         globalMember.points += mPoints;
-                        globalMember.stokisSources.push(sName);
+                        if (!globalMember.stokisSources.includes(sName)) {
+                            globalMember.stokisSources.push(sName);
+                        }
                         if (!globalMember.name) globalMember.name = 'NA';
                         globalMember.name = m.name;
                         if (m.upline) globalMember.upline = m.upline;
@@ -2347,7 +2356,7 @@
             });
         };
 
-        // ========== REKAPITULASI ==========
+        // ========== REKAPITULASI (FIXED) ==========
 
         function renderReportRecapitulasi(transactions, data) {
             let filteredTransactions = transactions;
@@ -2607,7 +2616,7 @@
                         <input type="text" id="${targetProdId}" class="filter-input" placeholder="Cari Nama Produk...">
                         <input type="date" id="${targetDateFromId}" class="filter-input" title="Dari Tanggal">
                         <input type="date" id="${targetDateToId}" class="filter-input" title="Sampai Tanggal">
-                        <button class="btn btn-primary" onclick="applyFilter('${type}')">Terapkan</button>
+                        <button class="btn btn-primary" onclick="window.applyFilter('${type}')">Terapkan</button>
                     </div>
                 </div>
                 <div class="table-container">
@@ -2656,8 +2665,8 @@
                 const matchDateTo = !toInput || t.date <= toInput;
                 return matchName && matchProd && matchDateFrom && matchDateTo;
             });
-            // Don't reset page on filter apply, or reset if desired? Usually keep page but if empty results, page 1 is safer. 
-            // For simplicity, let's keep page where it is unless > totalPages.
+            // Don't reset page on filter apply, or reset if desired. 
+            // For safety in this fix: keep page if it is within bounds, else set to 1.
             if (state.page > Math.ceil(state.filtered.length / 10)) state.page = 1;
             renderPurchaseReportTable(type);
         };
