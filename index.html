@@ -589,11 +589,13 @@
             background: #ffffff;
             border-radius: 8px;
             min-height: 400px;
+            text-align: center;
         }
 
         .tree {
             margin: 0;
             padding: 0;
+            display: inline-block;
         }
 
         .tree ul {
@@ -603,6 +605,8 @@
             padding-left: 0;
             display: flex;
             justify-content: center;
+            width: max-content;
+            min-width: 100%;
         }
 
         .tree li {
@@ -934,6 +938,7 @@
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('members')">👥 Member</button></li>
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('transactions')">💰 Transaksi</button></li>
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('omset')">💵 Omset Stokis</button></li>
+            <li class="nav-item"><button class="nav-btn" onclick="switchTab('bonus-member')">🎁 Bonus Member</button></li>
 
             <li style="margin: 16px 0 8px 16px; font-size:11px; text-transform:uppercase; color:#64748b; font-weight:700;">Laporan Per Stokis</li>
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('stokis-purchase-member')">🛒 Belanja per Member</button></li>
@@ -951,7 +956,7 @@
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('member-board')">📋 Papan Informasi Member</button></li>
             <li class="nav-item"><button class="nav-btn" onclick="switchTab('settings')">⚙️ Pengaturan Sistem</button></li>
         </ul>
-        <div class="sidebar-footer">v2.7.1 Global ID<br>Fixed Copy Migrate</div>
+        <div class="sidebar-footer">v2.8.0 Global ID<br>Fixed Pagination & Bonus</div>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -1034,10 +1039,14 @@
         let currentStokisId = null;
         let currentDataUnsubscribe = null;
         let stokisCache = {};
-        let purchaseReportState = { page: 1, data: [], filtered: [] };
-        let globalPurchaseReportState = { page: 1, data: [], filtered: [] };
-        let transactionState = { page: 1, data: [] };
-        let rankingMemberState = { page: 1, data: [], filtered: [] };
+        
+        // EXPOSE TO WINDOW FOR ONCLICK HANDLERS
+        window.purchaseReportState = { page: 1, data: [], filtered: [] };
+        window.globalPurchaseReportState = { page: 1, data: [], filtered: [] };
+        window.transactionState = { page: 1, data: [] };
+        window.rankingMemberState = { page: 1, data: [], filtered: [] };
+        window.bonusFilterState = { dateFrom: '', dateTo: '' }; // New state for Bonus
+        
         let rankingStokisState = { rawData: {}, dateFrom: '', dateTo: '' };
         let recapFilterState = { dateFrom: '', dateTo: '', allTransactions: [] };
         let omsetFilterState = { dateFrom: '', dateTo: '' };
@@ -1157,10 +1166,16 @@
                     const activeTab = document.querySelector('.nav-btn.active');
                     if (activeTab) {
                         const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)?.[1];
-                        if (!['dashboard', 'users', 'settings'].includes(tabName) && !tabName.startsWith('report-') && !tabName.startsWith('stokis-') && tabName !== 'admin-board' && tabName !== 'member-board') {
-                            renderTabContent(tabName);
-                        } else if (tabName.startsWith('stokis-')) {
-                            renderStokisSpecificTab(tabName);
+                        // Check if tab requires stokis data
+                        const stokisTabs = ['bonus-member', 'profile', 'products', 'members', 'transactions', 'omset', 'stokis-purchase-member'];
+                        if (stokisTabs.includes(tabName)) {
+                            if (tabName === 'bonus-member') {
+                                renderBonusStokis();
+                            } else if (tabName.startsWith('stokis-')) {
+                                renderStokisSpecificTab(tabName);
+                            } else {
+                                renderTabContent(tabName);
+                            }
                         } else if (tabName === 'settings') {
                             renderSettings();
                         }
@@ -1180,6 +1195,12 @@
                 if (tabName === 'settings') renderSettings();
             } else if (tabName.startsWith('report-')) {
                 handleReportTabs(tabName);
+            } else if (tabName === 'bonus-member') {
+                if (!currentStokisId) {
+                    document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`;
+                    return;
+                }
+                renderBonusStokis();
             } else if (tabName.startsWith('stokis-')) {
                 if (!currentStokisId) {
                     document.getElementById('contentArea').innerHTML = `<div class="empty-state"><h3>Pilih Stokis Dulu</h3></div>`;
@@ -1199,6 +1220,147 @@
             }
         };
 
+        // ================== BONUS MEMBER LOGIC (PER STOKIS) ==================
+        
+        function renderBonusStokis() {
+            const data = stokisCache[currentStokisId];
+            if (!data) return;
+
+            // 1. Filter transactions based on state
+            const transactions = data.transactions || [];
+            let filteredTransactions = transactions;
+            
+            if (window.bonusFilterState.dateFrom || window.bonusFilterState.dateTo) {
+                filteredTransactions = transactions.filter(t => {
+                    const matchFrom = !window.bonusFilterState.dateFrom || t.date >= window.bonusFilterState.dateFrom;
+                    const matchTo = !window.bonusFilterState.dateTo || t.date <= window.bonusFilterState.dateTo;
+                    return matchFrom && matchTo;
+                });
+            }
+
+            // 2. Calculate Bonus
+            const memberLookup = {};
+            data.members?.forEach(m => { memberLookup[m.id] = m.name; });
+            
+            const bonusMap = new Map();
+
+            filteredTransactions.forEach(t => {
+                const memberId = t.memberId;
+                const memberName = memberLookup[memberId] || t.memberName || 'Unknown';
+                
+                const cleanProdName = cleanProductName(t.productCode, t.productName);
+                const normalize = str => str.toUpperCase().replace(/\s/g, '');
+                const matchedKey = Object.keys(masterProductPrices).find(k => {
+                    const normalizedKey = normalize(k);
+                    return normalize(cleanProdName) === normalizedKey || normalize(cleanProdName).includes(normalizedKey);
+                });
+
+                if (matchedKey) {
+                    const price = masterProductPrices[matchedKey];
+                    const qty = parseInt(t.qty) || 0;
+                    // LOGIC: 7% dari harga satuan
+                    const bonusPerUnit = price * 0.07;
+                    const totalBonus = bonusPerUnit * qty;
+
+                    if (!bonusMap.has(memberId)) {
+                        bonusMap.set(memberId, {
+                            id: memberId,
+                            name: memberName,
+                            totalBonus: 0,
+                            count: 0
+                        });
+                    }
+                    const entry = bonusMap.get(memberId);
+                    entry.totalBonus += totalBonus;
+                    entry.count += 1;
+                }
+            });
+
+            // 3. Sort
+            const sortedBonuses = Array.from(bonusMap.values()).sort((a, b) => b.totalBonus - a.totalBonus);
+            const grandTotal = sortedBonuses.reduce((sum, item) => sum + item.totalBonus, 0);
+
+            // 4. Render
+            const html = `
+                <h2>🎁 Bonus Member (${currentStokisId})</h2>
+                <div class="card" style="margin-top:20px;">
+                    <div class="card-header">
+                        <span class="card-title">Filter Periode Tanggal</span>
+                    </div>
+                    <div class="filter-bar no-print" style="padding:16px;">
+                        <label style="font-weight:600; font-size:13px;">Dari:</label>
+                        <input type="date" id="bonusDateFrom" class="filter-input" value="${window.bonusFilterState.dateFrom}">
+                        <label style="font-weight:600; font-size:13px;">Sampai:</label>
+                        <input type="date" id="bonusDateTo" class="filter-input" value="${window.bonusFilterState.dateTo}">
+                        <button class="btn btn-primary" onclick="applyBonusFilter()">Terapkan</button>
+                        <button class="btn" style="background:#e2e8f0;" onclick="resetBonusFilter()">Reset</button>
+                    </div>
+                </div>
+                
+                <div class="grid-dashboard" style="margin-top:20px;">
+                    <div class="stat-card" style="background:#eff6ff; border-color:#bfdbfe;">
+                        <div class="stat-label">Total Bonus Dibayarkan</div>
+                        <div class="stat-value" style="color:var(--color-accent);">Rp ${grandTotal.toLocaleString('id-ID')}</div>
+                        <small style="color:#64748b;">Dari ${filteredTransactions.length} Transaksi</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Member Penerima</div>
+                        <div class="stat-value">${sortedBonuses.length}</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:20px;">
+                    <div class="card-header">
+                        <span class="card-title">Rincian Bonus (7% dari Harga Satuan)</span>
+                        <button class="btn btn-print btn-sm" onclick="window.print()">🖨️ Cetak</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Member</th>
+                                    <th>Nama Member</th>
+                                    <th style="text-align:center;">Jml Transaksi</th>
+                                    <th style="text-align:right;">Total Bonus</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sortedBonuses.length === 0 ? `<tr><td colspan="4" class="empty-state">Tidak ada data bonus pada periode ini.</td></tr>` : sortedBonuses.map(m => `
+                                    <tr>
+                                        <td>${m.id}</td>
+                                        <td><strong>${m.name}</strong></td>
+                                        <td style="text-align:center;">${m.count}</td>
+                                        <td style="text-align:right; font-weight:bold; color:var(--color-success);">Rp ${m.totalBonus.toLocaleString('id-ID')}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                            <tfoot style="background:#f8fafc; font-weight:bold;">
+                                <tr>
+                                    <td colspan="3" style="text-align:right;">GRAND TOTAL</td>
+                                    <td style="text-align:right;">Rp ${grandTotal.toLocaleString('id-ID')}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            `;
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        window.applyBonusFilter = () => {
+            window.bonusFilterState.dateFrom = document.getElementById('bonusDateFrom').value;
+            window.bonusFilterState.dateTo = document.getElementById('bonusDateTo').value;
+            renderBonusStokis();
+        };
+
+        window.resetBonusFilter = () => {
+            window.bonusFilterState.dateFrom = '';
+            window.bonusFilterState.dateTo = '';
+            document.getElementById('bonusDateFrom').value = '';
+            document.getElementById('bonusDateTo').value = '';
+            renderBonusStokis();
+        };
+
         // ================== SETTINGS LOGIC ==================
         
         function renderSettings() {
@@ -1206,7 +1368,7 @@
             content.innerHTML = `
                 <h2>⚙️ Pengaturan Sistem</h2>
                 <div class="grid-dashboard" style="margin-top:20px;">
-                    <div class="stat-card"><div class="stat-label">Versi Sistem</div><div class="stat-value">2.7.1</div></div>
+                    <div class="stat-card"><div class="stat-label">Versi Sistem</div><div class="stat-value">2.8.0</div></div>
                     <div class="stat-card"><div class="stat-label">Status DB</div><div class="stat-value" style="color:var(--color-success); font-size:20px; margin-top:12px;">Firebase Connected</div></div>
                 </div>
 
@@ -1285,7 +1447,6 @@
 
         window.downloadBackup = async () => {
             try {
-                // Show loading
                 const btn = event.target;
                 const originalText = btn.innerHTML;
                 btn.innerHTML = "⏳ Memproses...";
@@ -1293,43 +1454,36 @@
 
                 const backupData = {};
 
-                // 1. Stokis Data
                 const stokisSnap = await getDocs(collection(db, COLLECTION_STOKIS));
                 stokisSnap.forEach(doc => {
                     backupData[`${COLLECTION_STOKIS}/${doc.id}`] = doc.data();
                 });
 
-                // 2. Users
                 const usersSnap = await getDocs(collection(db, COLLECTION_USERS));
                 usersSnap.forEach(doc => {
                     backupData[`${COLLECTION_USERS}/${doc.id}`] = doc.data();
                 });
 
-                // 3. Announcements
                 const annSnap = await getDocs(collection(db, COLLECTION_ANNOUNCEMENTS));
                 annSnap.forEach(doc => {
                     backupData[`${COLLECTION_ANNOUNCEMENTS}/${doc.id}`] = doc.data();
                 });
 
-                // 4. Member Announcements
                 const memSnap = await getDocs(collection(db, COLLECTION_MEMBER_ANNOUNCEMENTS));
                 memSnap.forEach(doc => {
                     backupData[`${COLLECTION_MEMBER_ANNOUNCEMENTS}/${doc.id}`] = doc.data();
                 });
 
-                // 5. Product Prices
                 const priceSnap = await getDoc(doc(db, COLLECTION_PRODUCT_PRICES, 'masterPrices'));
                 if (priceSnap.exists()) {
                     backupData[`${COLLECTION_PRODUCT_PRICES}/masterPrices`] = priceSnap.data();
                 }
 
-                // 6. System Config
                 const configSnap = await getDoc(doc(db, COLLECTION_SYSTEM_CONFIG, 'adminLogin'));
                 if (configSnap.exists()) {
                     backupData[`${COLLECTION_SYSTEM_CONFIG}/adminLogin`] = configSnap.data();
                 }
 
-                // Create Blob and Download
                 const dataStr = JSON.stringify(backupData, null, 2);
                 const blob = new Blob([dataStr], { type: "application/json" });
                 const url = URL.createObjectURL(blob);
@@ -1370,8 +1524,6 @@
                     try {
                         const json = JSON.parse(e.target.result);
                         let count = 0;
-
-                        // Show loading overlay or status
                         const btn = event.target;
                         const originalText = btn.innerHTML;
                         btn.innerHTML = "⏳ Memulihkan...";
@@ -1386,7 +1538,7 @@
                         }
                         
                         alert(`✅ Berhasil memulihkan ${count} dokumen.`);
-                        location.reload(); // Reload to ensure fresh state
+                        location.reload();
                     } catch (err) {
                         alert("❌ Format file JSON tidak valid: " + err.message);
                         btn.innerHTML = "⬆️ Upload & Restore";
@@ -1785,9 +1937,9 @@
             } else if (tabName === 'report-purchase-member') {
                 const tList = await fetchGlobalTransactionList();
                 if (tList) {
-                    globalPurchaseReportState.data = tList;
-                    globalPurchaseReportState.page = 1;
-                    globalPurchaseReportState.filtered = tList;
+                    window.globalPurchaseReportState.data = tList;
+                    window.globalPurchaseReportState.page = 1;
+                    window.globalPurchaseReportState.filtered = tList;
                     renderPurchaseReportTable('global');
                 }
             } else if (tabName === 'report-recapitulasi') {
@@ -1940,9 +2092,9 @@
 
         function renderReportMemberSales(data) {
             const sortedMembers = Array.from(data.membersMap.values()).sort((a, b) => b.points - a.points);
-            rankingMemberState.data = sortedMembers;
-            rankingMemberState.filtered = sortedMembers;
-            rankingMemberState.page = 1;
+            window.rankingMemberState.data = sortedMembers;
+            window.rankingMemberState.filtered = sortedMembers;
+            window.rankingMemberState.page = 1;
             const html = `
                 <h2>💎 Ranking Member (By ID Global)</h2>
                 <p style="color:#64748b; margin-bottom:16px;">Poin dijumlahkan jika ID member sama muncul di beberapa Stokis.</p>
@@ -1970,19 +2122,19 @@
 
         window.applyRankingFilter = () => {
             const val = document.getElementById('rankFilter').value.toLowerCase();
-            rankingMemberState.filtered = rankingMemberState.data.filter(m => 
+            window.rankingMemberState.filtered = window.rankingMemberState.data.filter(m => 
                 m.name.toLowerCase().includes(val) || m.id.toLowerCase().includes(val)
             );
-            rankingMemberState.page = 1;
+            window.rankingMemberState.page = 1;
             renderRankingTable();
         };
 
         function renderRankingTable() {
             const limit = 10;
-            const total = rankingMemberState.filtered.length;
+            const total = window.rankingMemberState.filtered.length;
             const totalPages = Math.ceil(total / limit) || 1;
-            const start = (rankingMemberState.page - 1) * limit;
-            const pagedData = rankingMemberState.filtered.slice(start, start + limit);
+            const start = (window.rankingMemberState.page - 1) * limit;
+            const pagedData = window.rankingMemberState.filtered.slice(start, start + limit);
             const tbody = document.getElementById('rankingTableBody');
             if (!tbody) return;
             let rows = `<thead><tr><th>Rank</th><th>Nama</th><th>ID</th><th>Stokis</th><th>Point</th></tr></thead><tbody>`;
@@ -2005,20 +2157,20 @@
             }).join('');
             rows += `</tbody>`;
             tbody.innerHTML = rows || `<tr><td colspan="5" class="empty-state">Tidak ada data</td></tr>`;
-            document.getElementById('rankPaginationInfo').textContent = `Hal ${rankingMemberState.page} dari ${totalPages} (${total} total)`;
-            document.getElementById('rankPrev').disabled = rankingMemberState.page === 1;
-            document.getElementById('rankNext').disabled = rankingMemberState.page >= totalPages;
+            document.getElementById('rankPaginationInfo').textContent = `Hal ${window.rankingMemberState.page} dari ${totalPages} (${total} total)`;
+            document.getElementById('rankPrev').disabled = window.rankingMemberState.page === 1;
+            document.getElementById('rankNext').disabled = window.rankingMemberState.page >= totalPages;
             document.getElementById('rankPrev').onclick = () => {
-                rankingMemberState.page--;
+                window.rankingMemberState.page--;
                 renderRankingTable();
             };
             document.getElementById('rankNext').onclick = () => {
-                rankingMemberState.page++;
+                window.rankingMemberState.page++;
                 renderRankingTable();
             };
         }
 
-        // ========== POHON JARINGAN (FIXED) ==========
+        // ========== POHON JARINGAN (FIXED SCROLL) ==========
 
         function renderReportTree(data) {
             const content = document.getElementById('contentArea');
@@ -2195,7 +2347,7 @@
             });
         };
 
-        // ========== REKAPITULASI (FIXED) ==========
+        // ========== REKAPITULASI ==========
 
         function renderReportRecapitulasi(transactions, data) {
             let filteredTransactions = transactions;
@@ -2426,15 +2578,16 @@
                     qty: t.qty,
                     points: t.totalPoints
                 }));
-                purchaseReportState.data = list;
-                purchaseReportState.page = 1;
-                purchaseReportState.filtered = list;
+                window.purchaseReportState.data = list;
+                window.purchaseReportState.page = 1;
+                window.purchaseReportState.filtered = list;
                 renderPurchaseReportTable('stokis');
             }
         }
 
+        // FIXED: Pagination Logic and Window State Access
         function renderPurchaseReportTable(type) {
-            const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
+            const state = type === 'global' ? window.globalPurchaseReportState : window.purchaseReportState;
             const title = type === 'global' ? '🛒 Laporan Belanja Global' : `🛒 Detail Laporan Belanja ${currentStokisId} (ID)`;
             const targetNameId = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
             const targetProdId = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
@@ -2444,6 +2597,7 @@
             const totalPages = Math.ceil(state.filtered.length / limit) || 1;
             const start = (state.page - 1) * limit;
             const pagedData = state.filtered.slice(start, start + limit);
+            
             const html = `
                 <h2>${title}</h2>
                 <div class="card" style="margin-top:20px;">
@@ -2476,8 +2630,9 @@
                 <div class="pagination-bar no-print">
                     <span>Hal ${state.page} dari ${totalPages} (${state.filtered.length} total)</span>
                     <div style="display:flex; gap:8px;">
-                        <button class="btn btn-sm" ${state.page === 1 ? 'disabled' : ''} onclick="if('${type}'==='global'){globalPurchaseReportState.page--; renderPurchaseReportTable('global')}else{purchaseReportState.page--; renderPurchaseReportTable('stokis')}">« Prev</button>
-                        <button class="btn btn-sm" ${state.page === totalPages ? 'disabled' : ''} onclick="if('${type}'==='global'){globalPurchaseReportState.page++; renderPurchaseReportTable('global')}else{purchaseReportState.page++; renderPurchaseReportTable('stokis')}">Next »</button>
+                        <button class="btn btn-sm" ${state.page === 1 ? 'disabled' : ''} onclick="window.applyFilter('${type}'); if('${type}'==='global'){window.globalPurchaseReportState.page--;}else{window.purchaseReportState.page--}; renderPurchaseReportTable('${type}')">« Prev</button>
+                        
+                        <button class="btn btn-sm" ${state.page === totalPages ? 'disabled' : ''} onclick="window.applyFilter('${type}'); if('${type}'==='global'){window.globalPurchaseReportState.page++;}else{window.purchaseReportState.page++}; renderPurchaseReportTable('${type}')">Next »</button>
                     </div>
                 </div>
             `;
@@ -2485,7 +2640,7 @@
         }
 
         window.applyFilter = (type) => {
-            const state = type === 'global' ? globalPurchaseReportState : purchaseReportState;
+            const state = type === 'global' ? window.globalPurchaseReportState : window.purchaseReportState;
             const targetName = type === 'global' ? 'filterNameGlobal' : 'filterNameStokis';
             const targetProd = type === 'global' ? 'filterProdGlobal' : 'filterProdStokis';
             const targetDateFrom = type === 'global' ? 'filterDateFromGlobal' : 'filterDateFromStokis';
@@ -2501,7 +2656,9 @@
                 const matchDateTo = !toInput || t.date <= toInput;
                 return matchName && matchProd && matchDateFrom && matchDateTo;
             });
-            state.page = 1;
+            // Don't reset page on filter apply, or reset if desired? Usually keep page but if empty results, page 1 is safer. 
+            // For simplicity, let's keep page where it is unless > totalPages.
+            if (state.page > Math.ceil(state.filtered.length / 10)) state.page = 1;
             renderPurchaseReportTable(type);
         };
 
@@ -2680,17 +2837,17 @@
                     </div>
                 `;
             } else if (t === 'transactions') {
-                transactionState.data = data.transactions || [];
-                transactionState.page = 1;
+                window.transactionState.data = data.transactions || [];
+                window.transactionState.page = 1;
                 renderTransactionTable();
             }
         }
 
         function renderTransactionTable() {
             const limit = 10;
-            const totalPages = Math.ceil(transactionState.data.length / limit) || 1;
-            const start = (transactionState.page - 1) * limit;
-            const pagedData = transactionState.data.slice(start, start + limit);
+            const totalPages = Math.ceil(window.transactionState.data.length / limit) || 1;
+            const start = (window.transactionState.page - 1) * limit;
+            const pagedData = window.transactionState.data.slice(start, start + limit);
             const html = `
                 <h2>💰 Transaksi ${currentStokisId}</h2>
                 <div class="card" style="margin-top:20px;">
@@ -2714,10 +2871,10 @@
                     </div>
                 </div>
                 <div class="pagination-bar no-print">
-                    <span>Hal ${transactionState.page} dari ${totalPages} (${transactionState.data.length} total)</span>
+                    <span>Hal ${window.transactionState.page} dari ${totalPages} (${window.transactionState.data.length} total)</span>
                     <div style="display:flex; gap:8px;">
-                        <button class="btn btn-sm" ${transactionState.page === 1 ? 'disabled' : ''} onclick="transactionState.page--; renderTransactionTable()">« Prev</button>
-                        <button class="btn btn-sm" ${transactionState.page === totalPages ? 'disabled' : ''} onclick="transactionState.page++; renderTransactionTable()">Next »</button>
+                        <button class="btn btn-sm" ${window.transactionState.page === 1 ? 'disabled' : ''} onclick="window.transactionState.page--; renderTransactionTable()">« Prev</button>
+                        <button class="btn btn-sm" ${window.transactionState.page === totalPages ? 'disabled' : ''} onclick="window.transactionState.page++; renderTransactionTable()">Next »</button>
                     </div>
                 </div>
             `;
@@ -2768,7 +2925,7 @@
                     <td>${namaStokis}</td>
                     <td>
                         <button class="btn btn-sm btn-primary" onclick="openEditUserModal('${username}')">✏️ Edit</button>
-                        <button class="btn btn-sm btn-primary" style="background:var(--color-success);" onclick="openMigrateModal('${username}')">📋 Copy</button>
+                        <button class="btn btn-primary btn-sm" style="background:var(--color-success);" onclick="openMigrateModal('${username}')">📋 Copy</button>
                         <button class="btn btn-sm btn-danger" onclick="deleteStokisData('${username}')">🗑️ Hapus</button>
                     </td>
                 `;
@@ -3082,6 +3239,8 @@
                         renderOmsetStokis();
                     } else if (tabName === 'report-recapitulasi') {
                         switchTab('report-recapitulasi');
+                    } else if (tabName === 'bonus-member') {
+                        renderBonusStokis();
                     }
                 }
             };
@@ -3182,6 +3341,14 @@
             "GM SKINCARE": { price: 30000, rewardPool: 3000, mgtPool: 3000, levels: [2100, 600, 300] },
             "PHEROMONE BS": { price: 60000, rewardPool: 600, mgtPool: 600, levels: [420, 120, 60] }
         };
+
+        // EXPOSE FUNCTIONS TO WINDOW FOR ONCLICK HANDLERS
+        window.renderTransactionTable = renderTransactionTable;
+        window.renderPurchaseReportTable = renderPurchaseReportTable;
+        window.renderRankingTable = renderRankingTable;
+        window.renderBonusStokis = renderBonusStokis;
+        window.applyBonusFilter = applyBonusFilter;
+        window.resetBonusFilter = resetBonusFilter;
     </script>
 </body>
 </html>
