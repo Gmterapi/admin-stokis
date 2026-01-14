@@ -1116,6 +1116,21 @@
         async function initDashboard() {
             await loadSystemConfig();
             await loadMasterProductPrices();
+            
+            // LOAD BONUS FILTER STATE FROM DB (Persisted State)
+            try {
+                const bonusFilterRef = doc(db, COLLECTION_SYSTEM_CONFIG, 'bonusFilter');
+                const bonusFilterSnap = await getDoc(bonusFilterRef);
+                if (bonusFilterSnap.exists()) {
+                    window.bonusFilterState = {
+                        dateFrom: bonusFilterSnap.data().dateFrom || '',
+                        dateTo: bonusFilterSnap.data().dateTo || ''
+                    };
+                }
+            } catch (error) {
+                console.error("Gagal memuat saved bonus filter:", error);
+            }
+
             await loadStokisList();
             renderDashboardGlobal();
         }
@@ -1283,7 +1298,14 @@
                         <input type="date" id="bonusDateFrom" class="filter-input" value="${window.bonusFilterState.dateFrom}">
                         <label style="font-weight:600; font-size:13px;">Sampai:</label>
                         <input type="date" id="bonusDateTo" class="filter-input" value="${window.bonusFilterState.dateTo}">
+                        
+                        <!-- Button Terapkan (Preview) -->
                         <button class="btn btn-primary" onclick="applyBonusFilter()">Terapkan</button>
+                        
+                        <!-- Button Simpan Default (Persist) -->
+                        <button class="btn" style="background:#10b981; color:white;" onclick="saveBonusFilter()">💾 Simpan Default</button>
+                        
+                        <!-- Button Reset -->
                         <button class="btn" style="background:#e2e8f0;" onclick="resetBonusFilter()">Reset</button>
                     </div>
                 </div>
@@ -1338,33 +1360,60 @@
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        window.applyBonusFilter = async () => {
-            // Ambil nilai tanggal
+        /**
+         * Menerapkan filter tampilan secara lokal (Preview).
+         * Tidak menyimpan ke database.
+         */
+        window.applyBonusFilter = () => {
+            // Update state lokal
             window.bonusFilterState.dateFrom = document.getElementById('bonusDateFrom').value;
             window.bonusFilterState.dateTo = document.getElementById('bonusDateTo').value;
             
-            // --- LOGIKA BARU: SIMPAN KE SYSTEM CONFIG ---
-            try {
-                // Pastikan 'doc' sudah diimport di paling atas script
-                await setDoc(doc(db, COLLECTION_SYSTEM_CONFIG, 'bonusFilter'), {
-                    dateFrom: window.bonusFilterState.dateFrom,
-                    dateTo: window.bonusFilterState.dateTo,
-                    updatedAt: new Date()
-                });
-                alert('✅ Filter diterapkan dan disinkronkan ke Member Area.');
-            } catch (e) {
-                console.error("Gagal menyimpan filter bonus:", e);
-            }
-            
-            // Update tampilan Admin
+            // Update tampilan
             renderBonusStokis(); 
         };
 
+        /**
+         * Menyimpan filter saat ini ke database sebagai Default.
+         * Nilai ini akan dimuat kembali saat login/logout.
+         */
+        window.saveBonusFilter = async () => {
+            // Ambil nilai tanggal dari input
+            const from = document.getElementById('bonusDateFrom').value;
+            const to = document.getElementById('bonusDateTo').value;
+
+            // Update state lokal
+            window.bonusFilterState = { dateFrom: from, dateTo: to };
+
+            // Simpan ke Database
+            try {
+                await setDoc(doc(db, COLLECTION_SYSTEM_CONFIG, 'bonusFilter'), {
+                    dateFrom: from,
+                    dateTo: to,
+                    updatedAt: serverTimestamp()
+                });
+                alert('✅ Periode filter berhasil disimpan sebagai Default.\nFilter ini akan otomatis muncul saat Anda login kembali.');
+            } catch (e) {
+                console.error("Gagal menyimpan filter bonus:", e);
+                alert('❌ Gagal menyimpan ke database: ' + e.message);
+            }
+        };
+
+        /**
+         * Reset filter tampilan menjadi kosong.
+         * Tidak menghapus data yang tersimpan di database (default tetap ada).
+         */
         window.resetBonusFilter = () => {
+            // Hanya reset state lokal dan tampilan input
             window.bonusFilterState.dateFrom = '';
             window.bonusFilterState.dateTo = '';
-            document.getElementById('bonusDateFrom').value = '';
-            document.getElementById('bonusDateTo').value = '';
+            
+            // Kosongkan input di DOM
+            const fromInput = document.getElementById('bonusDateFrom');
+            const toInput = document.getElementById('bonusDateTo');
+            if (fromInput) fromInput.value = '';
+            if (toInput) toInput.value = '';
+            
             renderBonusStokis();
         };
 
@@ -3358,6 +3407,7 @@
         window.renderBonusStokis = renderBonusStokis;
         window.applyBonusFilter = applyBonusFilter;
         window.resetBonusFilter = resetBonusFilter;
+        window.saveBonusFilter = saveBonusFilter;
     </script>
 </body>
 </html>
