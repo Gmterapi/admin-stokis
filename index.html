@@ -1907,10 +1907,11 @@
                         const cleanProdName = cleanProductName(t.productCode, t.productName);
                         const normalize = str => str.toUpperCase().replace(/\s/g, '');
                         const normalizedInput = normalize(cleanProdName);
-                        let matchedKey = Object.keys(masterProductPrices).find(k => {
-                            const normalizedKey = normalize(k);
-                            return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
-                        });
+                        const sortedKeys = Object.keys(masterProductPrices).sort((a, b) => b.length - a.length)
+    let matchedKey = sortedKeys.find(k => {
+      const normalizedKey = normalize(k)
+      return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey)
+    })
                         if (matchedKey) {
                             const price = masterProductPrices[matchedKey];
                             const omset = qty * price;
@@ -2118,10 +2119,11 @@
                     const cleanProdName = cleanProductName(t.productCode, t.productName);
                     const normalize = str => str.toUpperCase().replace(/\s/g, '');
                     const normalizedInput = normalize(cleanProdName);
-                    let matchedKey = Object.keys(masterProductPrices).find(k => {
-                        const normalizedKey = normalize(k);
-                        return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
-                    });
+                    const sortedKeys = Object.keys(masterProductPrices).sort((a, b) => b.length - a.length)
+    let matchedKey = sortedKeys.find(k => {
+      const normalizedKey = normalize(k)
+      return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey)
+    })
                     if (matchedKey) {
                         const price = masterProductPrices[matchedKey];
                         const omset = qty * price;
@@ -2432,10 +2434,11 @@
                 const cleanProdName = t.rawProductName || cleanProductName(t.productCode, t.productName);
                 const normalize = str => str.toUpperCase().replace(/\s/g, '');
                 const normalizedInput = normalize(cleanProdName);
-                let matchedKey = Object.keys(masterProductPrices).find(k => {
-                    const normalizedKey = normalize(k);
-                    return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
-                });
+                const sortedKeys = Object.keys(masterProductPrices).sort((a, b) => b.length - a.length)
+    let matchedKey = sortedKeys.find(k => {
+      const normalizedKey = normalize(k)
+      return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey)
+    })
                 if (matchedKey) {
                     const price = masterProductPrices[matchedKey];
                     const omset = qty * price;
@@ -2739,10 +2742,11 @@
                 const cleanProdName = cleanProductName(t.productCode, t.productName);
                 const normalize = str => str.toUpperCase().replace(/\s/g, '');
                 const normalizedInput = normalize(cleanProdName);
-                let matchedKey = Object.keys(masterProductPrices).find(k => {
-                    const normalizedKey = normalize(k);
-                    return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey);
-                });
+                const sortedKeys = Object.keys(masterProductPrices).sort((a, b) => b.length - a.length)
+    let matchedKey = sortedKeys.find(k => {
+      const normalizedKey = normalize(k)
+      return normalizedKey === normalizedInput || normalizedInput.includes(normalizedKey)
+    })
                 if (matchedKey) {
                     const price = masterProductPrices[matchedKey];
                     const omset = qty * price;
@@ -3410,4 +3414,5 @@
         window.saveBonusFilter = saveBonusFilter;
     </script>
 </body>
+
 </html>
